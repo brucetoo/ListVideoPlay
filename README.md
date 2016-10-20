@@ -1,6 +1,8 @@
 # Play video in ListView,RecyclerView,and support full-screen,and more feature about video play control
 
-# LIST VIEW EFFECT
+## The same as "今日头条" "UC头条" "腾讯视频" video model. 
+
+# EFFECT
 
 [YOUTUBE Video](https://youtu.be/HEVXZVjTPBk)
 
@@ -23,14 +25,15 @@
 
 ### How to use
 
-More details see detail code
+More details see demo code
 
 
 #THANKS
 
-VideoPlayerManager [VideoPlayerManager](https://github.com/danylovolokh/VideoPlayerManager)
+[VideoPlayerManager](https://github.com/danylovolokh/VideoPlayerManager): Changes happened in many places,
+so there is no plan PR to origin lib.
 
-VideoControllerView [VideoControllerView](https://github.com/brucetoo/VideoControllerView)
+[VideoControllerView](https://github.com/brucetoo/VideoControllerView): For more feature about video play control
 
 ## License
 

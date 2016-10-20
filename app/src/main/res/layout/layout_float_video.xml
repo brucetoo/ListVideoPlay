@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/layout_float_video_container"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/video_item_portrait_height"
+             android:visibility="invisible">
+
+
+    <!--Offer a background for not full-screen Video source-->
+    <View
+        android:id="@+id/video_player_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone"
+        />
+
+    <com.brucetoo.listvideoplay.videomanage.ui.VideoPlayerView
+        android:id="@+id/video_player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <!--Offer a mask view to cover the last played video
+    frame until current video frame start rendering -->
+    <ImageView
+        android:id="@+id/video_player_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone"
+        />
+
+    <ProgressBar
+        android:id="@+id/video_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/video_loading"
+        android:indeterminateDuration="500"
+        android:visibility="visible"
+        />
+
+</FrameLayout>

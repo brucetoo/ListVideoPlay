@@ -189,7 +189,7 @@ public abstract class MediaPlayerWrapper
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        if (SHOW_LOGS) Logger.v(VIDEO_TAG, "onBufferingUpdate");
+        if (SHOW_LOGS) Logger.v(VIDEO_TAG, "onBufferingUpdate percent : " + percent);
         if (mListener != null) {
             mListener.onBufferingUpdateMainThread(percent);
         }

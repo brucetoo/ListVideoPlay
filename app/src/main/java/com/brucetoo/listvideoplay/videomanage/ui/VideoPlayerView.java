@@ -419,7 +419,18 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onBufferingUpdateMainThread(int percent) {
+        notifyBufferingUpdate(percent);
+    }
 
+    private void notifyBufferingUpdate(int percent) {
+        if (SHOW_LOGS) Logger.v(TAG, "notifyBufferingUpdate");
+        List<MediaPlayerWrapper.MainThreadMediaPlayerListener> listCopy;
+        synchronized (mMediaPlayerMainThreadListeners){
+            listCopy = new ArrayList<>(mMediaPlayerMainThreadListeners);
+        }
+        for (MediaPlayerWrapper.MainThreadMediaPlayerListener listener : listCopy) {
+            listener.onBufferingUpdateMainThread(percent);
+        }
     }
 
     @Override

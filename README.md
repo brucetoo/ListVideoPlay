@@ -18,7 +18,7 @@
 
 - [x] Can control video volume,brightness,progress
 
-- [x] Support ListView,RecyclerView(Working on...)
+- [x] Support ListView,RecyclerView
 
 - [ ] More video play control by ITEM VISIBILITY
 

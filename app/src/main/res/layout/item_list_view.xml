@@ -16,19 +16,36 @@
 
     <!--This layout hold UI element show on
     the of cover image-->
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/layout_play_area"
         android:layout_width="match_parent"
         android:layout_height="@dimen/video_item_portrait_height">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="VIDEO TITLE"
+            />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:src="@drawable/ic_media_play"
             />
 
-    </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="#33000000"
+            android:padding="5dp"
+            android:text="10:10"
+            />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -4,9 +4,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.brucetoo.listvideoplay.demo.ListViewFragment;
+import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onRecyclerViewClick(View view) {
-        Toast.makeText(this, "Working on...", Toast.LENGTH_SHORT).show();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_container, new RecyclerViewFragment(), "RecyclerViewFragment")
+                .addToBackStack(null)
+                .commit();
     }
 
 

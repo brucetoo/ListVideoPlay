@@ -6,6 +6,8 @@
 
 [YOUTUBE Video](https://youtu.be/HEVXZVjTPBk)
 
+![list_video_play](./list_video_play.gif)
+
 ![Play-Item](./play-item.gif)
 
 ![Video-Control](./video-control.gif)

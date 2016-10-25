@@ -5,6 +5,8 @@ import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.brucetoo.listvideoplay.R;
@@ -45,11 +48,15 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
     private View mVideoPlayerBg;
     private ImageView mVideoCoverMask;
     private VideoPlayerView mVideoPlayerView;
-    private View mVideoProgressBar;
+    private View mVideoLoadingView;
+    private ProgressBar mVideoProgressBar;
 
     private View mCurrentPlayArea;
     private VideoControllerView mCurrentVideoControllerView;
     private int mCurrentActiveVideoItem = -1;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private int mCurrentBuffer;
 
     /**
      * Prevent {@link #stopPlaybackImmediately} be called too many times
@@ -116,7 +123,8 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
         mVideoPlayerBg = view.findViewById(R.id.video_player_bg);
         mVideoCoverMask = (ImageView) view.findViewById(R.id.video_player_mask);
         mVideoPlayerView = (VideoPlayerView) view.findViewById(R.id.video_player_view);
-        mVideoProgressBar = view.findViewById(R.id.video_progress_bar);
+        mVideoLoadingView = view.findViewById(R.id.video_progress_loading);
+        mVideoProgressBar = (ProgressBar) view.findViewById(R.id.video_progress_bar);
 
         mRecyclerView = (DisableRecyclerView) view.findViewById(R.id.recycler_view);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -136,7 +144,7 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
                 Log.e(MediaPlayerWrapper.VIDEO_TAG, "check play onVideoPreparedMainThread");
                 mVideoFloatContainer.setVisibility(View.VISIBLE);
                 mVideoPlayerView.setVisibility(View.VISIBLE);
-                mVideoProgressBar.setVisibility(View.VISIBLE);
+                mVideoLoadingView.setVisibility(View.VISIBLE);
                 //for cover the pre Video frame
                 mVideoCoverMask.setVisibility(View.VISIBLE);
             }
@@ -155,6 +163,10 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
                 ViewAnimator.putOn(mVideoFloatContainer).translationY(0);
+
+                //stop update progress
+                mVideoProgressBar.setVisibility(View.GONE);
+                mHandler.removeCallbacks(mProgressRunnable);
             }
 
             @Override
@@ -165,11 +177,16 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
                     mCurrentPlayArea.setVisibility(View.VISIBLE);
                 }
                 mVideoFloatContainer.setVisibility(View.INVISIBLE);
+
+                //stop update progress
+                mVideoProgressBar.setVisibility(View.GONE);
+                mHandler.removeCallbacks(mProgressRunnable);
             }
 
             @Override
             public void onBufferingUpdateMainThread(int percent) {
                 Log.e(MediaPlayerWrapper.VIDEO_TAG, "check play onBufferingUpdateMainThread");
+                mCurrentBuffer = percent;
             }
 
             @Override
@@ -179,23 +196,32 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
                     mCurrentPlayArea.setClickable(true);
                     mCurrentPlayArea.setVisibility(View.VISIBLE);
                 }
+
+                //stop update progress
+                mVideoProgressBar.setVisibility(View.GONE);
+                mHandler.removeCallbacks(mProgressRunnable);
             }
 
             @Override
             public void onInfoMainThread(int what) {
                 Log.e(MediaPlayerWrapper.VIDEO_TAG, "check play onInfoMainThread what:" + what);
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+
+                    //start update progress
+                    mVideoProgressBar.setVisibility(View.VISIBLE);
+                    mHandler.post(mProgressRunnable);
+
                     mVideoPlayerView.setVisibility(View.VISIBLE);
-                    mVideoProgressBar.setVisibility(View.GONE);
+                    mVideoLoadingView.setVisibility(View.GONE);
                     mVideoCoverMask.setVisibility(View.GONE);
                     mVideoPlayerBg.setVisibility(View.VISIBLE);
                     createVideoControllerView();
 
                     mCurrentVideoControllerView.showWithTitle("VIDEO TEST - " + mCurrentActiveVideoItem);
                 } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
-                    mVideoProgressBar.setVisibility(View.VISIBLE);
+                    mVideoLoadingView.setVisibility(View.VISIBLE);
                 } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
-                    mVideoProgressBar.setVisibility(View.GONE);
+                    mVideoLoadingView.setVisibility(View.GONE);
                 }
             }
         });
@@ -273,7 +299,7 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
 
         @Override
         public int getBufferPercentage() {
-            return 0;
+            return mCurrentBuffer;
         }
 
         @Override
@@ -435,7 +461,7 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
             //move container view
             startMoveFloatContainer(true);
 
-            mVideoProgressBar.setVisibility(View.VISIBLE);
+            mVideoLoadingView.setVisibility(View.VISIBLE);
             mVideoPlayerView.setVisibility(View.INVISIBLE);
 
             //play video
@@ -489,5 +515,36 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
             }
         }
     }
+
+    /**
+     * Runnable for update current video progress
+     * 1.start this runnable in {@link MediaPlayerWrapper.MainThreadMediaPlayerListener#onInfoMainThread(int)}
+     * 2.stop(remove) this runnable in {@link MediaPlayerWrapper.MainThreadMediaPlayerListener#onVideoStoppedMainThread()}
+     * {@link MediaPlayerWrapper.MainThreadMediaPlayerListener#onVideoCompletionMainThread()}
+     * {@link MediaPlayerWrapper.MainThreadMediaPlayerListener#onErrorMainThread(int, int)} ()}
+     */
+    private Runnable mProgressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(mPlayerControlListener != null){
+
+                if(mCurrentVideoControllerView.isShowing()){
+                    mVideoProgressBar.setVisibility(View.GONE);
+                }else {
+                    mVideoProgressBar.setVisibility(View.VISIBLE);
+                }
+
+                int position = mPlayerControlListener.getCurrentPosition();
+                int duration = mPlayerControlListener.getDuration();
+                if(duration != 0) {
+                    long pos = 1000L * position / duration;
+                    int percent = mPlayerControlListener.getBufferPercentage() * 10;
+                    mVideoProgressBar.setProgress((int) pos);
+                    mVideoProgressBar.setSecondaryProgress(percent);
+                    mHandler.post(this);
+                }
+            }
+        }
+    };
 
 }

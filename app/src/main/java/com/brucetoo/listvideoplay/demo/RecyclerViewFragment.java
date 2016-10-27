@@ -541,7 +541,7 @@ public class RecyclerViewFragment extends Fragment implements View.OnClickListen
                     int percent = mPlayerControlListener.getBufferPercentage() * 10;
                     mVideoProgressBar.setProgress((int) pos);
                     mVideoProgressBar.setSecondaryProgress(percent);
-                    mHandler.post(this);
+                    mHandler.postDelayed(this,1000);
                 }
             }
         }

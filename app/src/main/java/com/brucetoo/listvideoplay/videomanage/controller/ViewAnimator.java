@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 
-import java.lang.ref.WeakReference;
-
 /**
  * Created by Bruce Too
  * On 7/12/16.
@@ -185,56 +183,54 @@ public class ViewAnimator {
 
     static class AnimatorListener implements ViewPropertyAnimatorListener {
 
-        WeakReference<AnimatorExecutor> reference;
+        AnimatorExecutor animatorExecutor;
 
         public AnimatorListener(AnimatorExecutor animatorExecutor) {
-            this.reference = new WeakReference<>(animatorExecutor);
+            this.animatorExecutor = animatorExecutor;
         }
 
         @Override
         public void onAnimationStart(View view) {
-            AnimatorExecutor animatorExecutor = reference.get();
+            AnimatorExecutor animatorExecutor = this.animatorExecutor;
             if (animatorExecutor != null && animatorExecutor.startListener != null) {
-                Listeners.Start startListener = animatorExecutor.startListener.get();
-                if (startListener != null) {
-                    startListener.onStart();
-                }
+                Listeners.Start startListener = animatorExecutor.startListener;
+                startListener.onStart();
             }
         }
 
         @Override
         public void onAnimationEnd(View view) {
-            AnimatorExecutor animatorExecutor = reference.get();
+            AnimatorExecutor animatorExecutor = this.animatorExecutor;
             if (animatorExecutor != null && animatorExecutor.endListener != null) {
-                Listeners.End endListener = animatorExecutor.endListener.get();
-                if (endListener != null) {
-                    endListener.onEnd();
-                }
+                Listeners.End endListener = animatorExecutor.endListener;
+                endListener.onEnd();
             }
         }
 
         @Override
         public void onAnimationCancel(View view) {
-
+            AnimatorExecutor animatorExecutor = this.animatorExecutor;
+            if (animatorExecutor != null && animatorExecutor.cancelListener != null) {
+                Listeners.Cancel cancelListener = animatorExecutor.cancelListener;
+                cancelListener.onCancel();
+            }
         }
     }
 
-    static class DurXAnimatorUpdate implements ViewPropertyAnimatorUpdateListener {
+    static class AnimatorUpdate implements ViewPropertyAnimatorUpdateListener {
 
-        WeakReference<AnimatorExecutor> reference;
+        AnimatorExecutor animatorExecutor;
 
-        public DurXAnimatorUpdate(AnimatorExecutor animatorExecutor) {
-            this.reference = new WeakReference<>(animatorExecutor);
+        public AnimatorUpdate(AnimatorExecutor animatorExecutor) {
+            this.animatorExecutor = animatorExecutor;
         }
 
         @Override
         public void onAnimationUpdate(View view) {
-            AnimatorExecutor animatorExecutor = reference.get();
+
             if (animatorExecutor != null && animatorExecutor.updateListener != null) {
-                Listeners.Update updateListener = animatorExecutor.updateListener.get();
-                if (updateListener != null) {
-                    updateListener.update();
-                }
+                Listeners.Update updateListener = animatorExecutor.updateListener;
+                updateListener.update();
             }
         }
     }
@@ -248,9 +244,10 @@ public class ViewAnimator {
         final ViewPropertyAnimatorCompat animator;
         final ViewAnimator viewAnimator;
 
-        WeakReference<Listeners.Start> startListener;
-        WeakReference<Listeners.End> endListener;
-        WeakReference<Listeners.Update> updateListener;
+        Listeners.Start startListener;
+        Listeners.End endListener;
+        Listeners.Update updateListener;
+        Listeners.Cancel cancelListener;
 
         /**
          * Constructor of AnimatorExecutor with {@link ViewAnimator}
@@ -352,18 +349,23 @@ public class ViewAnimator {
         }
 
         public AnimatorExecutor end(Listeners.End listener) {
-            endListener = new WeakReference<>(listener);
+            endListener = listener;
             return this;
         }
 
         public AnimatorExecutor update(Listeners.Update listener) {
-            updateListener = new WeakReference<>(listener);
-            animator.setUpdateListener(new DurXAnimatorUpdate(this));
+            updateListener = listener;
+            animator.setUpdateListener(new AnimatorUpdate(this));
             return this;
         }
 
         public AnimatorExecutor start(Listeners.Start listener) {
-            startListener = new WeakReference<>(listener);
+            startListener = listener;
+            return this;
+        }
+
+        public AnimatorExecutor cancel(Listeners.Cancel listener){
+            cancelListener = listener;
             return this;
         }
 
@@ -404,20 +406,24 @@ public class ViewAnimator {
     }
 
     public static class Listeners {
-        interface End {
+        public interface End {
             void onEnd();
         }
 
-        interface Start {
+        public interface Start {
             void onStart();
         }
 
-        interface Size {
+        public interface Size {
             void onSize(ViewAnimator viewAnimator);
         }
 
-        interface Update {
+        public interface Update {
             void update();
+        }
+
+        public interface Cancel{
+            void onCancel();
         }
     }
 

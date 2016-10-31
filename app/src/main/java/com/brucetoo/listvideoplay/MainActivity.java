@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.brucetoo.listvideoplay.demo.ListViewFragment;
+import com.brucetoo.listvideoplay.demo.ListViewSmallScreenFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewSmallScreenFragment;
 
@@ -37,7 +38,15 @@ public class MainActivity extends AppCompatActivity {
     public void onSmallScreenClick(View view) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.layout_container, new RecyclerViewSmallScreenFragment(), "SmallScreenFragment")
+                .replace(R.id.layout_container, new RecyclerViewSmallScreenFragment(), "RecyclerViewSmallScreenFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onSmallScreenClick1(View view) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_container, new ListViewSmallScreenFragment(), "ListViewSmallScreenFragment")
                 .addToBackStack(null)
                 .commit();
     }

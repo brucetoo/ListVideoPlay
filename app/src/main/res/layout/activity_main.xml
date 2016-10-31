@@ -34,7 +34,14 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:onClick="onSmallScreenClick"
-            android:text="SMALL SCREEN DEMO"
+            android:text="RECYCLER SMALL SCREEN DEMO"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:onClick="onSmallScreenClick1"
+            android:text="LISTVIEW SMALL SCREEN DEMO"
             />
     </LinearLayout>
 

@@ -6,25 +6,24 @@
 
 [YOUTUBE Video](https://youtu.be/HEVXZVjTPBk)
 
-![list_video_play](./list_video_play.gif)
-
-![small-screen](./small-sreen.gif)
-
-![Play-Item](./play-item.gif)
-
-![Video-Control](./video-control.gif)
-
 ##Feature
 
 - [x] Scroll to stop playing video when item is gone
+
+      ![list_video_play](./list_video_play.gif)
 
 - [x] Support portrait and landscape to play video
 
 - [x] Can control video volume,brightness,progress
 
+     ![Video-Control](./video-control.gif)
+     ![Play-Item](./play-item.gif)
+
 - [x] Support ListView,RecyclerView
 
 - [x] Support Small-Screen play video
+
+      ![small-screen](./small-sreen.gif)
 
 
 ### How to use

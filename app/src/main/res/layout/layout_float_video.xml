@@ -55,4 +55,13 @@
         android:visibility="gone"
         />
 
+    <ImageView
+        android:id="@+id/video_close_btn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_media_close"
+        android:visibility="gone"
+        />
+
 </FrameLayout>

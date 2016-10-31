@@ -14,7 +14,7 @@ import com.brucetoo.listvideoplay.videomanage.utils.Logger;
  */
 public abstract class ScalableTextureView extends TextureView {
 
-    private static final boolean SHOW_LOGS = false;
+    private static final boolean SHOW_LOGS = true;
     private static final String TAG = ScalableTextureView.class.getSimpleName();
 
     private Integer mContentWidth;
@@ -67,8 +67,18 @@ public abstract class ScalableTextureView extends TextureView {
         if (SHOW_LOGS) Logger.v(TAG, "onMeasure, mContentoWidth " + mContentWidth + ", mContentHeight " + mContentHeight);
 
         if (mContentWidth != null && mContentHeight != null) {
+            Log.v(TAG, "video= onMeasure");
             updateTextureViewSize();
+            if(mIsSmallScreen){
+                adjustAspectRatio(getMeasuredWidth(),getMeasuredHeight());
+            }
         }
+    }
+
+    private boolean mIsSmallScreen;
+
+    public void setIsSmallScreen(boolean isSmallScreen){
+        mIsSmallScreen = isSmallScreen;
     }
 
     public void updateTextureViewSize() {
@@ -326,11 +336,11 @@ public abstract class ScalableTextureView extends TextureView {
     /**
      * Sets the TextureView transform to preserve the aspect ratio of the video.
      */
-    public void adjustAspectRatio(int videoWidth, int videoHeight) {
+    public void adjustAspectRatio(int viewWidth,int viewHeight) {
 
-        int viewWidth = getWidth();
-        int viewHeight = getHeight();
-        double aspectRatio = (double) videoHeight / videoWidth;
+        if(mContentHeight == null || mContentWidth == null) return;
+
+        double aspectRatio = (double) mContentHeight / mContentWidth;
 
         int newWidth, newHeight;
         if (viewHeight > (int) (viewWidth * aspectRatio)) {
@@ -344,17 +354,15 @@ public abstract class ScalableTextureView extends TextureView {
         }
         int xoff = (viewWidth - newWidth) / 2;
         int yoff = (viewHeight - newHeight) / 2;
-        Log.v(TAG, "video=" + videoWidth + "x" + videoHeight +
+        Log.v(TAG, "video=" + mContentWidth + "x" + mContentHeight +
                 " view=" + viewWidth + "x" + viewHeight +
                 " newView=" + newWidth + "x" + newHeight +
                 " off=" + xoff + "," + yoff);
 
-        Matrix txform = new Matrix();
-        getTransform(txform);
-        txform.setScale((float) newWidth / viewWidth, (float) newHeight / viewHeight);
-        //txform.postRotate(10);          // just for fun
-        txform.postTranslate(xoff, yoff);
-        setTransform(txform);
+        mTransformMatrix.reset();
+        mTransformMatrix.setScale((float) newWidth / viewWidth, (float) newHeight / viewHeight);
+        mTransformMatrix.postTranslate(xoff, yoff);
+        setTransform(mTransformMatrix);
     }
 
     /**

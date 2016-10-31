@@ -29,6 +29,13 @@
             android:onClick="onRecyclerViewClick"
             android:text="RECYCLERVIEW DEMO"
             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:onClick="onSmallScreenClick"
+            android:text="SMALL SCREEN DEMO"
+            />
     </LinearLayout>
 
     <FrameLayout

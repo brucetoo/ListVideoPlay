@@ -114,7 +114,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 toggleControllerView();
-                return false;
+                return !mCanShowControllerView;
             }
         });
     }
@@ -400,6 +400,8 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
      * this can be called when {@link View#onTouchEvent(MotionEvent)} happened
      */
     public void toggleControllerView() {
+        if(!mCanShowControllerView) return;
+
         if (!isShowing()) {
             show();
         } else {
@@ -850,6 +852,13 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
             hide();
         }
     };
+
+    private boolean mCanShowControllerView = true;
+
+    public void setCanShowControllerView(boolean can){
+        hide();
+        mCanShowControllerView = can;
+    }
 
 
     /**

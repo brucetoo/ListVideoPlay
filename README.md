@@ -8,6 +8,8 @@
 
 ![list_video_play](./list_video_play.gif)
 
+![small-screen](./small-sreen.gif)
+
 ![Play-Item](./play-item.gif)
 
 ![Video-Control](./video-control.gif)
@@ -22,7 +24,7 @@
 
 - [x] Support ListView,RecyclerView
 
-- [ ] More video play control by ITEM VISIBILITY
+- [x] Support Small-Screen play video
 
 
 ### How to use

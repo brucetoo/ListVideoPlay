@@ -409,7 +409,6 @@ public class RecyclerViewSmallScreenFragment extends Fragment implements View.On
                     mCanTriggerVisible = false;
                     mCanTriggerGone = true;
                     relayoutContainer2NormalScreen();
-                    ;
                 }
             }
         }
@@ -453,14 +452,20 @@ public class RecyclerViewSmallScreenFragment extends Fragment implements View.On
             mCurrentVideoControllerView.setCanShowControllerView(true);
         recoverFloatContainer();
 
-        int[] playAreaPos = new int[2];
-        int[] floatContainerPos = new int[2];
-        mCurrentPlayArea.getLocationOnScreen(playAreaPos);
-        mVideoFloatContainer.getLocationOnScreen(floatContainerPos);
-        int delta = playAreaPos[1] - floatContainerPos[1];
-        Log.e(TAG, "onScroll1 > relayoutContainer2NormalScreen playAreaPos[1]:" + playAreaPos[1] + " floatContainerPos[1]:" + floatContainerPos[1]
-                + " translationY:" + mVideoFloatContainer.getTranslationY());
-        ViewAnimator.putOn(mVideoFloatContainer).translationX(0).translationY(delta);
+        //post this to ensure translationY be more smooth
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] playAreaPos = new int[2];
+                int[] floatContainerPos = new int[2];
+                mCurrentPlayArea.getLocationOnScreen(playAreaPos);
+                mVideoFloatContainer.getLocationOnScreen(floatContainerPos);
+                int delta = playAreaPos[1] - floatContainerPos[1];
+                Log.e(TAG, "onScroll1 > relayoutContainer2NormalScreen playAreaPos[1]:" + playAreaPos[1] + " floatContainerPos[1]:" + floatContainerPos[1]
+                        + " translationY:" + mVideoFloatContainer.getTranslationY());
+                ViewAnimator.putOn(mVideoFloatContainer).translationX(0).translationY(delta);
+            }
+        });
     }
 
     private void recoverFloatContainer() {

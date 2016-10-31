@@ -245,6 +245,9 @@ public class ListViewSmallScreenFragment extends Fragment implements AbsListView
                     createVideoControllerView();
 
                     mCurrentVideoControllerView.showWithTitle("VIDEO TEST - " + mCurrentActiveVideoItem);
+                    if (mCurrentVideoControllerView != null && !mCanMoveVideoContainer) {
+                        mCurrentVideoControllerView.setCanShowControllerView(false);
+                    }
                 } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
                     mVideoLoadingView.setVisibility(View.VISIBLE);
                 } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
@@ -344,7 +347,8 @@ public class ListViewSmallScreenFragment extends Fragment implements AbsListView
         if (mVideoFloatContainer.getVisibility() != View.VISIBLE && mCanMoveVideoContainer) return;
         Log.e(TAG, "onScroll1 relayoutContainer2SmallScreen");
 
-        mCurrentVideoControllerView.setCanShowControllerView(false);
+        if (mCurrentVideoControllerView != null)
+            mCurrentVideoControllerView.setCanShowControllerView(false);
         mCanMoveVideoContainer = false;
 
         int height = (int) getResources().getDimension(R.dimen.video_small_screen_height);

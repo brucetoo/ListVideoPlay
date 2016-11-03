@@ -43,6 +43,13 @@
             android:onClick="onSmallScreenClick1"
             android:text="LISTVIEW SMALL SCREEN DEMO"
             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:onClick="onHighLightClick"
+            android:text="LISTVIEW HIGH LIGHT DEMO"
+            />
     </LinearLayout>
 
     <FrameLayout

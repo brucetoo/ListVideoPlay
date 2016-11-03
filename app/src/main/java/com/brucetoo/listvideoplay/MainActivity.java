@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.brucetoo.listvideoplay.demo.ListViewFragment;
+import com.brucetoo.listvideoplay.demo.ListViewMaskFragment;
 import com.brucetoo.listvideoplay.demo.ListViewSmallScreenFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewSmallScreenFragment;
@@ -47,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.layout_container, new ListViewSmallScreenFragment(), "ListViewSmallScreenFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onHighLightClick(View view) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_container, new ListViewMaskFragment(), "ListViewMaskFragment")
                 .addToBackStack(null)
                 .commit();
     }

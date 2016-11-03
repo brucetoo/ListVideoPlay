@@ -52,6 +52,11 @@ public class ListScrollDistanceCalculator implements AbsListView.OnScrollListene
         return mTotalScrollDistance;
     }
 
+    public int getDeltaScrollDistance(){
+        return mDeltaScrollDistance;
+    }
+
+
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         if (totalItemCount == 0 || !mListScrollStarted) return;

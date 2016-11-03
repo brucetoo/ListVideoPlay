@@ -2,7 +2,9 @@ package com.brucetoo.listvideoplay.demo;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ListView;
 
 /**
  * Created by Bruce Too
@@ -47,5 +49,23 @@ public class Utils {
             e.printStackTrace();
         }
         return statusBarHeight;
+    }
+
+    /**
+     * Get view at position of ListView
+     * @param pos position
+     * @param listView ListView
+     * @return item view
+     */
+    public static View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 }

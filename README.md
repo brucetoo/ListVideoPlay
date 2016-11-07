@@ -11,6 +11,15 @@
 - [x] Scroll to stop playing video when item is gone
 
       ![list_video_play](./list_video_play.gif)
+      
+- [x] Support Small-Screen play video
+
+      ![small-screen](./small-sreen.gif)
+      
+- [x] Support High-Light playing video
+
+      ![high-light](./high-light.gif)
+            
 
 - [x] Support portrait and landscape to play video
 
@@ -21,9 +30,6 @@
 
 - [x] Support ListView,RecyclerView
 
-- [x] Support Small-Screen play video
-
-      ![small-screen](./small-sreen.gif)
 
 
 ### How to use

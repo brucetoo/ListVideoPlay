@@ -90,6 +90,8 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
 
     private boolean mIsVideoPrepared;
 
+    private ViewGroup mRootContentView;
+
     private void startMoveFloatContainer(boolean click) {
 
         if (mVideoFloatContainer.getVisibility() != View.VISIBLE) return;
@@ -145,6 +147,7 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
         mVideoProgressBar = (ProgressBar) view.findViewById(R.id.video_progress_bar);
 
         mHighLightView = new HighLightMaskView(getContext());
+        mRootContentView = (ViewGroup) getActivity().getWindow().findViewById(android.R.id.content);
 
         mListView.setAdapter(new ListViewAdapter(this));
         mListView.setOnScrollListener(this);
@@ -256,13 +259,13 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
     }
 
     private void startHighLight() {
-        ViewGroup contentView = (ViewGroup) getActivity().getWindow().findViewById(android.R.id.content);
-        View currentItemView = Utils.getViewByPosition(mCurrentActiveVideoItem, mListView);
-        mHighLightView.setStartAndEndY(contentView,currentItemView);
 
-        //TODO handle bug fix
-//        contentView.removeView(mHighLightView);
-        contentView.addView(mHighLightView);
+        View currentItemView = Utils.getViewByPosition(mCurrentActiveVideoItem, mListView);
+        mHighLightView.setStartAndEndY(currentItemView);
+
+        if(mHighLightView.getParent() == null) {
+            mRootContentView.addView(mHighLightView);
+        }
     }
 
     private void createVideoControllerView() {
@@ -293,6 +296,13 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
             case SCROLL_STATE_FLING:
             case SCROLL_STATE_TOUCH_SCROLL:
                 mUserTouchHappened = true;
+                Log.i(TAG, "onScrollStateChanged state:" + scrollState);
+
+                if(scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                    if (mIsVideoPrepared) {
+                        mHighLightView.startAlphaBack();
+                    }
+                }
                 break;
             case SCROLL_STATE_IDLE:
                 mUserTouchHappened = false;
@@ -302,7 +312,7 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
                 if(mIsVideoPrepared){
                     startHighLight();
                 }
-                Log.i(TAG, "startMoveFloatContainer --- onScrollStateChanged originHeight:" + mOriginalHeight);
+                Log.i(TAG, "onScrollStateChanged state:" + scrollState);
                 break;
             default:
                 break;
@@ -349,6 +359,10 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
     public void stopPlaybackImmediately() {
 
         mIsClickToStop = false;
+        mIsVideoPrepared = false;
+        if(mHighLightView.getParent() != null){
+            mRootContentView.removeView(mHighLightView);
+        }
 
         if (mCurrentPlayArea != null) {
             mCurrentPlayArea.setClickable(true);
@@ -392,6 +406,10 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
             VideoModel model = (VideoModel) v.getTag();
             mCurrentActiveVideoItem = model.position;
             mCanTriggerStop = true;
+            mIsVideoPrepared = false;
+            if(mHighLightView.getParent() != null){
+                mRootContentView.removeView(mHighLightView);
+            }
 
             //move container view
             startMoveFloatContainer(true);

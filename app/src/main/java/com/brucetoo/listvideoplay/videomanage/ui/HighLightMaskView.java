@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.brucetoo.listvideoplay.demo.Utils;
 
@@ -28,7 +27,6 @@ public class HighLightMaskView extends View {
     private int mCurrentMaskColor = mMaskColor;
     private Paint mColorPaint;
     private ValueAnimator mAnim;
-    private ViewGroup mContentView;
 
     public HighLightMaskView(Context context) {
         this(context, null);
@@ -77,18 +75,19 @@ public class HighLightMaskView extends View {
         this.mMaskColor = maskColor;
     }
 
-    public void updateStartAndEndY(int scrollDelta) {
-
+    public void startAlphaBack() {
         startAnimator(mMaskColor, 0x00000000, true);
+    }
+
+    public void updateStartAndEndY(int scrollDelta) {
         this.mStartY += scrollDelta;
         this.mEndY += scrollDelta;
         Log.e("setStartAndEndY", "update startY:" + mStartY + " endY:" + mEndY);
         invalidate();
     }
 
-    public void setStartAndEndY(ViewGroup contentView, View currentItemView) {
+    public void setStartAndEndY(View currentItemView) {
 
-        this.mContentView = contentView;
         int[] loc = new int[2];
         currentItemView.getLocationOnScreen(loc);
         //must minus status bar height
@@ -103,8 +102,14 @@ public class HighLightMaskView extends View {
 
     private void startAnimator(int from, int to, final boolean handleEnd) {
 
+        if(mAnim != null){
+            mAnim.cancel();
+            mAnim.removeAllUpdateListeners();
+            mAnim.removeAllListeners();
+            mAnim = null;
+        }
         mAnim = ValueAnimator.ofArgb(from, to);
-        mAnim.setDuration(1200);
+        mAnim.setDuration(1500);
         mAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -117,7 +122,6 @@ public class HighLightMaskView extends View {
             public void onAnimationEnd(Animator animation) {
                 if (handleEnd) {
                     mCurrentMaskColor = mMaskColor;
-                    mContentView.removeView(HighLightMaskView.this);
                 }
             }
         });

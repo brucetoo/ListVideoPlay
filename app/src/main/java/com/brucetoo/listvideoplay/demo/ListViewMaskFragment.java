@@ -232,6 +232,9 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
             @Override
             public void onInfoMainThread(int what) {
                 Log.e(MediaPlayerWrapper.VIDEO_TAG, "check play onInfoMainThread what:" + what);
+              //MEDIA_INFO_VIDEO_RENDERING_START was added in API Level 17 so here has
+              //a bug,to fix it, replace MediaPlayer to some else or distinguish 17 up/down
+              // < 17 handle this info in onVideoPreparedMainThread
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
 
                     //start update progress

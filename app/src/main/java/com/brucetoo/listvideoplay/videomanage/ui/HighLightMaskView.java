@@ -75,8 +75,14 @@ public class HighLightMaskView extends View {
         this.mMaskColor = maskColor;
     }
 
-    public void startAlphaBack() {
-        startAnimator(mMaskColor, 0x00000000, true);
+    public void startAlpha2NormalLight() {
+        Log.e("HighLightMaskView","startAlpha2NormalLight");
+        startAnimator(mCurrentMaskColor, mMaskColor);
+    }
+
+    public void startAlpha2HighLight(){
+         Log.e("HighLightMaskView","startAlpha2HighLight");
+         startAnimator(mCurrentMaskColor, 0x00000000);
     }
 
     public void updateStartAndEndY(int scrollDelta) {
@@ -96,14 +102,13 @@ public class HighLightMaskView extends View {
         this.mEndY = loc[1] + currentItemView.getHeight();
         Log.e("setStartAndEndY", "startY:" + mStartY + " endY:" + mEndY);
 
-        startAnimator(0x00000000, mMaskColor, false);
+        startAnimator(0x00000000, mMaskColor);
 
     }
 
-    private void startAnimator(int from, int to, final boolean handleEnd) {
+    private void startAnimator(int from, int to) {
 
         if(mAnim != null){
-            mAnim.cancel();
             mAnim.removeAllUpdateListeners();
             mAnim.removeAllListeners();
             mAnim = null;
@@ -120,9 +125,7 @@ public class HighLightMaskView extends View {
         mAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (handleEnd) {
-                    mCurrentMaskColor = mMaskColor;
-                }
+                Log.e("HighLightMaskView","onAnimationEnd");
             }
         });
         mAnim.start();

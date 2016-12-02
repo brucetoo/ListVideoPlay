@@ -190,6 +190,9 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
                 mHandler.removeCallbacks(mProgressRunnable);
 
                 mIsVideoPrepared = false;
+                if(mHighLightView != null) {
+                  mRootContentView.removeView(mHighLightView);
+                }
             }
 
             @Override
@@ -303,7 +306,7 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
 
                 if(scrollState == SCROLL_STATE_TOUCH_SCROLL) {
                     if (mIsVideoPrepared) {
-                        mHighLightView.startAlphaBack();
+                        mHighLightView.startAlpha2HighLight();
                     }
                 }
                 break;
@@ -313,7 +316,7 @@ public class ListViewMaskFragment extends Fragment implements AbsListView.OnScro
                 mOriginalHeight = mVideoFloatContainer.getTranslationY();
 
                 if(mIsVideoPrepared){
-                    startHighLight();
+                    mHighLightView.startAlpha2NormalLight();
                 }
                 Log.i(TAG, "onScrollStateChanged state:" + scrollState);
                 break;

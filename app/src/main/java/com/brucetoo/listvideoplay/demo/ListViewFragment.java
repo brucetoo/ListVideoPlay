@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -524,8 +526,13 @@ public class ListViewFragment extends Fragment implements AbsListView.OnScrollLi
             holder.getView(R.id.layout_play_area).setTag(tag);
             holder.getView(R.id.layout_play_area).setOnClickListener(listener);
             holder.setText(R.id.tv_video_name, "Just Video " + i);
+            Animation animation = AnimationUtils.loadAnimation(getContext(), (i > mLastPosition) ? R.anim.left_from_right : R.anim.down_from_top);
+            holder.getView().startAnimation(animation);
+            mLastPosition = i;
             return holder.getView();
         }
+
+        private int mLastPosition = -1;
     }
 
 

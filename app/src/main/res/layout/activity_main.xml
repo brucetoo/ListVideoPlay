@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@android:color/white"
     tools:context="com.brucetoo.listvideoplay.MainActivity">
 
 
@@ -49,6 +50,13 @@
             android:layout_height="50dp"
             android:onClick="onHighLightClick"
             android:text="LISTVIEW HIGH LIGHT DEMO"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:onClick="onSpringAnimation"
+            android:text="Spring animation"
             />
     </LinearLayout>
 

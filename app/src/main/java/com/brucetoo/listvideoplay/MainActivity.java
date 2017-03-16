@@ -10,8 +10,9 @@ import com.brucetoo.listvideoplay.demo.ListViewMaskFragment;
 import com.brucetoo.listvideoplay.demo.ListViewSmallScreenFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewSmallScreenFragment;
+import com.brucetoo.listvideoplay.demo.SpringAnimationFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onListViewClick(View view) {
+
+  public void onListViewClick(View view) {
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.layout_container, new ListViewFragment(), "ListViewFragment")
@@ -56,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.layout_container, new ListViewMaskFragment(), "ListViewMaskFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onSpringAnimation(View view) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_container, new SpringAnimationFragment(), "SpringAnimationFragment")
                 .addToBackStack(null)
                 .commit();
     }

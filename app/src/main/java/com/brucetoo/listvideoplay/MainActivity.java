@@ -8,6 +8,7 @@ import android.view.View;
 import com.brucetoo.listvideoplay.demo.ListViewFragment;
 import com.brucetoo.listvideoplay.demo.ListViewMaskFragment;
 import com.brucetoo.listvideoplay.demo.ListViewSmallScreenFragment;
+import com.brucetoo.listvideoplay.demo.PagerSupportFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewSmallScreenFragment;
 import com.brucetoo.listvideoplay.demo.SpringAnimationFragment;
@@ -69,6 +70,14 @@ public class MainActivity extends AppCompatActivity{
                 .replace(R.id.layout_container, new SpringAnimationFragment(), "SpringAnimationFragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void onVideoSupport(View view){
+        getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.layout_container, new PagerSupportFragment(), "PagerSupportFragment")
+            .addToBackStack(null)
+            .commit();
     }
 
 

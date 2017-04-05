@@ -58,6 +58,13 @@
             android:onClick="onSpringAnimation"
             android:text="Spring animation"
             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:onClick="onVideoSupport"
+            android:text="Video Surpport"
+            />
     </LinearLayout>
 
     <FrameLayout

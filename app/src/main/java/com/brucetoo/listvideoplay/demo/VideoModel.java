@@ -10,6 +10,7 @@ public class VideoModel {
 
     public String coverImage;
     public String videoUrl;
+    public boolean mNeedAnimate;
 
     public int position;
 }

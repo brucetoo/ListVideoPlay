@@ -2,6 +2,7 @@ package com.brucetoo.listvideoplay.demo;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -517,7 +519,7 @@ public class ListViewFragment extends Fragment implements AbsListView.OnScrollLi
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            ViewHolder holder = ViewHolder.newInstance(getContext(), view, viewGroup, R.layout.item_list_view);
+            final ViewHolder holder = ViewHolder.newInstance(getContext(), view, viewGroup, R.layout.item_list_view);
             VideoModel tag = ListDataGenerater.datas.get(i);
             Picasso.with(getActivity()).load(tag.coverImage)
                     .placeholder(R.drawable.shape_place_holder)
@@ -529,6 +531,16 @@ public class ListViewFragment extends Fragment implements AbsListView.OnScrollLi
             Animation animation = AnimationUtils.loadAnimation(getContext(), (i > mLastPosition) ? R.anim.left_from_right : R.anim.down_from_top);
             holder.getView().startAnimation(animation);
             mLastPosition = i;
+            if(i == 1){
+                holder.getView().getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+                        Rect rect = new Rect();
+                        holder.getView().getGlobalVisibleRect(rect);
+                        Log.e(TAG, "onScrollChanged rect.top -> " + rect.top + "  rect.bottom -> " + rect.bottom);
+                    }
+                });
+            }
             return holder.getView();
         }
 

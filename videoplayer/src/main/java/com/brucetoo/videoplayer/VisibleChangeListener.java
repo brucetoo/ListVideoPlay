@@ -8,13 +8,6 @@ package com.brucetoo.videoplayer;
 
 public interface VisibleChangeListener {
 
-    void onVisibleChange(float visibleRatio,IViewTracker tracker);
+    void onVisibleChange(float visibleRatio, IViewTracker tracker);
 
-    void onTopOut(IViewTracker tracker);
-
-    void onBottomOut(IViewTracker tracker);
-
-    void onLeftOut(IViewTracker tracker);
-
-    void onRightOut(IViewTracker tracker);
 }

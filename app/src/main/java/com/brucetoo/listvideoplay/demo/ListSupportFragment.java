@@ -3,6 +3,7 @@ package com.brucetoo.listvideoplay.demo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.brucetoo.listvideoplay.R;
 import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.VisibleChangeListener;
+import com.brucetoo.videoplayer.scrolldetector.ListScrollDetector;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
 import com.squareup.picasso.Picasso;
@@ -57,36 +59,20 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        Tracker.attach(getActivity()).trackView(v).into(mListView).visibleListener(this);
+        Tracker.attach(getActivity()).trackView(v).into(new ListScrollDetector(mListView)).visibleListener(this);
     }
 
 
     @Override
     public void onVisibleChange(float visibleRatio, IViewTracker tracker) {
-        if (visibleRatio <= 0.8) {
-            tracker.getFollowerView().setVisibility(View.INVISIBLE);
-        } else {
-            tracker.getFollowerView().setVisibility(View.VISIBLE);
+        Log.e(TAG, "onVisibleChange : edge -> " + tracker.getEdgeString());
+        //only care about vertical scroll
+        if(tracker.getEdge() != IViewTracker.LEFT_EDGE || tracker.getEdge() != IViewTracker.RIGHT_EDGE) {
+            if (visibleRatio <= 0.8) {
+                tracker.getVideoLayerView().setVisibility(View.INVISIBLE);
+            } else {
+                tracker.getVideoLayerView().setVisibility(View.VISIBLE);
+            }
         }
-    }
-
-    @Override
-    public void onTopOut(IViewTracker tracker) {
-        Tracker.detach(getActivity());
-    }
-
-    @Override
-    public void onBottomOut(IViewTracker tracker) {
-        Tracker.detach(getActivity());
-    }
-
-    @Override
-    public void onLeftOut(IViewTracker tracker) {
-        Tracker.detach(getActivity());
-    }
-
-    @Override
-    public void onRightOut(IViewTracker tracker) {
-        Tracker.detach(getActivity());
     }
 }

@@ -9,6 +9,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
+import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
+import com.brucetoo.videoplayer.utils.ViewAnimator;
+
+import static android.view.View.NO_ID;
+
 /**
  * Created by Bruce Too
  * On 05/04/2017.
@@ -45,6 +50,15 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
      */
     private VideoLayerView mVideoLayerView;
 
+    /**
+     * {@link #mTrackView}'s current edge triggered
+     */
+    private int mCurrentEdge = NONE_EDGE;
+
+    private boolean mIsAttach;
+
+    private int mTrackViewId = View.NO_ID;
+
     public ViewTracker(Activity context) {
         if (context == null) {
             throw new IllegalArgumentException("Context must not be null in ViewTracker!");
@@ -53,14 +67,15 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
-    public IViewTracker attach(Activity context) {
+    public IViewTracker attach() {
         if (mVideoLayerView == null) {
-            mVideoLayerView = new VideoLayerView(context);
+            mVideoLayerView = new VideoLayerView(mContext);
             if (mVideoLayerView.getParent() == null) {
                 getDecorView().addView(mVideoLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                 mFollowerView = mVideoLayerView.cover;
             }
         }
+        mIsAttach = true;
         return this;
     }
 
@@ -74,6 +89,13 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             getDecorView().removeView(mVideoLayerView);
             mVideoLayerView = null;
         }
+        mIsAttach = false;
+        return this;
+    }
+
+    @Override
+    public IViewTracker destroy() {
+        detach();
         mVisibleChangeListener = null;
         mContext = null;//prevent memory leak
         return this;
@@ -90,6 +112,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
+    public int getTrackerViewId() {
+        return mTrackViewId;
+    }
+
+    @Override
     public View getFollowerView() {
         return mFollowerView;
     }
@@ -101,15 +128,25 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public IViewTracker trackView(@NonNull View trackView) {
+        if(mTrackView != null) {//not first
+            detach();
+            attach();
+        }
         this.mTrackView = trackView;
+        int id = mTrackView.getId();
+        if (id == NO_ID) {
+            throw new IllegalStateException("Tracked view must set ID before use !");
+        }
+        mTrackViewId = id;
         rebindViewToTracker(mFollowerView, mTrackView);
         trackView.getViewTreeObserver().addOnScrollChangedListener(this);
         return this;
     }
 
     @Override
-    public IViewTracker into(@NonNull View verticalScrollView) {
-        this.mVerticalScrollView = verticalScrollView;
+    public IViewTracker into(@NonNull IScrollDetector scrollDetector) {
+        this.mVerticalScrollView = scrollDetector.getView();
+        scrollDetector.setTracker(this);
         return this;
     }
 
@@ -117,6 +154,39 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     public IViewTracker visibleListener(VisibleChangeListener listener) {
         this.mVisibleChangeListener = listener;
         return this;
+    }
+
+    @Override
+    public boolean isAttach() {
+        return mIsAttach;
+    }
+
+    @Override
+    public int getEdge() {
+        return mCurrentEdge;
+    }
+
+    @Override
+    public String getEdgeString() {
+        String edge = "";
+        switch (mCurrentEdge) {
+            case TOP_EDGE:
+                edge = "TOP_EDGE";
+                break;
+            case BOTTOM_EDGE:
+                edge = "BOTTOM_EDGE";
+                break;
+            case LEFT_EDGE:
+                edge = "LEFT_EDGE";
+                break;
+            case RIGHT_EDGE:
+                edge = "RIGHT_EDGE";
+                break;
+            case NONE_EDGE:
+                edge = "NONE_EDGE";
+                break;
+        }
+        return edge;
     }
 
     @Override
@@ -136,7 +206,9 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         int[] locTo = new int[2];
         toView.getLocationOnScreen(locTo);
         View parent = (View) fromView.getParent();
-        ViewAnimator.putOn(parent).translation(locTo[0], locTo[1]);
+        Log.e(TAG, "rebindViewToTracker locTo[0] -> " + locTo[0] + " locTo[1] -> " + locTo[1]);
+        ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
+            .andPutOn(fromView).translation(0, 0);
         fromView.getLayoutParams().width = toView.getWidth();
         fromView.getLayoutParams().height = toView.getHeight();
         fromView.requestLayout();
@@ -151,6 +223,9 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         int[] locTo = new int[2];
         toView.getLocationOnScreen(locTo);
 
+        int[] locFrom = new int[2];
+        fromView.getLocationOnScreen(locFrom);
+
         Rect rect = new Rect();
         toView.getLocalVisibleRect(rect);
 
@@ -158,7 +233,10 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             + " rect.bottom -> " + rect.bottom
             + " rect.left -> " + rect.left
             + " rect.right -> " + rect.right
-            + " height ->" + toView.getHeight());
+            + " locTo[0] -> " + locTo[0]
+            + " locTo[1] -> " + locTo[1]
+            + " locFrom[0] -> " + locFrom[0]
+            + " locFrom[1] -> " + locFrom[1]);
 
         if (rect.top != 0 || rect.bottom != toView.getHeight()
             || rect.left != 0 || rect.right != toView.getWidth()) { //reach top,bottom,left,right
@@ -168,56 +246,61 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             float moveY = 0;
 
             //top
-            if (rect.top != 0) {
+            if (rect.top > 0 && rect.top != 0) {
                 moveX = -rect.left;
                 moveY = -rect.top;
                 //let the parent sticky to top
-                ViewAnimator.putOn(parent).translation(0, locScroll[1]);
-                if (mVisibleChangeListener != null && rect.bottom < 0) {
-                    mVisibleChangeListener.onTopOut(this);
-                }
+                ViewAnimator.putOn(parent).translation(getVerticalScrollView().getPaddingLeft() + getVerticalScrollView().getLeft(),
+                    locScroll[1] + getVerticalScrollView().getPaddingTop());
+                mCurrentEdge = TOP_EDGE;
             }
 
             //bottom
-            if (rect.bottom != toView.getHeight()) {
+            if (rect.bottom > 0 && rect.bottom != toView.getHeight()) {
                 moveY = toView.getHeight() - rect.bottom;
                 moveX = toView.getWidth() - rect.right;
                 //let the parent sticky to bottom
-                ViewAnimator.putOn(parent).translation(0, locScroll[1] + scrollParent.getHeight() - toView.getHeight());
-                if (mVisibleChangeListener != null && rect.top != 0) {
-                    mVisibleChangeListener.onBottomOut(this);
-                }
+                ViewAnimator.putOn(parent).translation(getVerticalScrollView().getPaddingLeft() + getVerticalScrollView().getLeft(),
+                    locScroll[1] + scrollParent.getHeight() - toView.getHeight() - getVerticalScrollView().getPaddingBottom());
+                mCurrentEdge = BOTTOM_EDGE;
             }
 
             //left
-            if (rect.left != 0) {
+            if (rect.left > 0 && rect.left != 0) {
                 moveX = -rect.left;
-                if (mVisibleChangeListener != null && rect.right != toView.getWidth()) {
-                    mVisibleChangeListener.onLeftOut(this);
-                }
+                //let the parent sticky to left
+                ViewAnimator.putOn(parent).translationX(0);
+                mCurrentEdge = LEFT_EDGE;
             }
 
             //right
-            if (rect.right != toView.getWidth()) {
+            if (rect.right > 0 && rect.right != toView.getWidth()) {
                 moveX = toView.getWidth() - rect.right;
-                if (mVisibleChangeListener != null && rect.left != 0) {
-                    mVisibleChangeListener.onRightOut(this);
-                }
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getVerticalScrollView().getLayoutParams();
+                //let the parent sticky to right
+                ViewAnimator.putOn(parent).translationX(getVerticalScrollView().getPaddingRight() + getVerticalScrollView().getPaddingLeft()
+                    + layoutParams.leftMargin + layoutParams.rightMargin);
+                mCurrentEdge = RIGHT_EDGE;
             }
 
             ViewAnimator.putOn(fromView).translation(moveX, moveY);
 
+            float v1 = (rect.bottom - rect.top) * 1.0f / toView.getHeight();
+            float v2 = (rect.right - rect.left) * 1.0f / toView.getWidth();
+            if (mVisibleChangeListener != null) {
+                mVisibleChangeListener.onVisibleChange(v1 == 1 ? v2 : v1, this);
+            }
         } else {
-            Log.e(TAG, "moveCurrentView: move parent");
-            //move parent
-            ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
-                .andPutOn(fromView).translation(0, 0);
-        }
 
-        float v1 = (rect.bottom - rect.top) * 1.0f / toView.getHeight();
-        float v2 = (rect.right - rect.left) * 1.0f / toView.getWidth();
-        if (mVisibleChangeListener != null) {
-            mVisibleChangeListener.onVisibleChange(v1 == 1 ? v2 : v1, this);
+            if (locTo[0] != 0 || locTo[1] != 0) {
+                Log.e(TAG, "moveCurrentView: move parent");
+                //move parent
+                ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
+                    .andPutOn(fromView).translation(0, 0);
+                mCurrentEdge = NONE_EDGE;
+            }else {
+                mCurrentEdge = TOP_EDGE;
+            }
         }
     }
 

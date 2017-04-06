@@ -1,7 +1,8 @@
 package com.brucetoo.videoplayer;
 
-import android.app.Activity;
 import android.view.View;
+
+import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 
 /**
  * Created by Bruce Too
@@ -13,19 +14,35 @@ import android.view.View;
 
 public interface IViewTracker {
 
-    IViewTracker attach(Activity context);
+    public static final int NONE_EDGE = 0;
+    public static final int TOP_EDGE = 1;
+    public static final int BOTTOM_EDGE = 2;
+    public static final int LEFT_EDGE = 3;
+    public static final int RIGHT_EDGE = 4;
+
+    IViewTracker attach();
 
     IViewTracker detach();
 
+    IViewTracker destroy();
+
     IViewTracker trackView(View trackView);
 
-    IViewTracker into(View verticalScrollView);
+    IViewTracker into(IScrollDetector scrollDetector);
 
     IViewTracker visibleListener(VisibleChangeListener listener);
+
+    boolean isAttach();
+
+    int getEdge();
+
+    String getEdgeString();
 
     View getVerticalScrollView();
 
     View getTrackerView();
+
+    int getTrackerViewId();
 
     View getFollowerView();
 

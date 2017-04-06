@@ -16,9 +16,9 @@ public class Tracker {
     public static IViewTracker attach(Activity context) {
         IViewTracker iViewTracker = mViewTrackers.get(context);
         if (iViewTracker != null) {
-            return iViewTracker.attach(context);
+            return iViewTracker.attach();
         }
-        IViewTracker tracker = new ViewTracker(context).attach(context);
+        IViewTracker tracker = new ViewTracker(context).attach();
         mViewTrackers.put(context, tracker);
         return tracker;
     }

@@ -1,4 +1,4 @@
-package com.brucetoo.videoplayer;
+package com.brucetoo.videoplayer.utils;
 
 import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;

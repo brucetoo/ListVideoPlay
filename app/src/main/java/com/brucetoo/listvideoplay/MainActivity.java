@@ -2,9 +2,12 @@ package com.brucetoo.listvideoplay;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.brucetoo.listvideoplay.demo.DetailFragment;
 import com.brucetoo.listvideoplay.demo.ListViewFragment;
 import com.brucetoo.listvideoplay.demo.ListViewMaskFragment;
 import com.brucetoo.listvideoplay.demo.ListViewSmallScreenFragment;
@@ -80,14 +83,58 @@ public class MainActivity extends AppCompatActivity{
             .commit();
     }
 
+    public void addDetailFragment(){
+        getSupportFragmentManager()
+            .beginTransaction()
+            .add(R.id.layout_container,new DetailFragment(),"DetailFragment")
+            .addToBackStack("DetailFragment")
+            .commitAllowingStateLoss();
+    }
+
+    public void removeDetailFragment(DetailFragment fragment){
+        getSupportFragmentManager()
+            .beginTransaction()
+            .remove(fragment)
+            .commitAllowingStateLoss();
+    }
+
 
     @Override
     public void onBackPressed() {
         if(getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 && getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+            // Get the current fragment using the method from the second step above...
+            Fragment currentFragment = getCurrentFragment();
+
+            // Determine whether or not this fragment implements Backable
+            // Do a null check just to be safe
+            if (currentFragment != null && currentFragment instanceof Backable) {
+
+                if (((Backable) currentFragment).onBackPressed()) {
+                    // If the onBackPressed override in your fragment
+                    // did absorb the back event (returned true), return
+                    return;
+                } else {
+                    // Otherwise, call the super method for the default behavior
+                    super.onBackPressed();
+                }
+            }
+
+            // Any other logic needed...
+            // call super method to be sure the back button does its thing...
             super.onBackPressed();
         }else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+    }
+
+    public Fragment getCurrentFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            String lastFragmentName = fragmentManager.getBackStackEntryAt(
+                fragmentManager.getBackStackEntryCount() - 1).getName();
+            return fragmentManager.findFragmentByTag(lastFragmentName);
+        }
+        return null;
     }
 }

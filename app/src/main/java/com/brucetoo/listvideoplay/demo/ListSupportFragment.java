@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.brucetoo.listvideoplay.MainActivity;
 import com.brucetoo.listvideoplay.R;
 import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.Tracker;
@@ -60,6 +61,7 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         Tracker.attach(getActivity()).trackView(v).into(new ListScrollDetector(mListView)).visibleListener(this);
+        ((MainActivity) getActivity()).addDetailFragment();
     }
 
 

@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
+import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.utils.ViewAnimator;
 
 import static android.view.View.NO_ID;
@@ -238,6 +239,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             + " locFrom[0] -> " + locFrom[0]
             + " locFrom[1] -> " + locFrom[1]);
 
+        //TODO 此判断有问题,不够严谨
         if (rect.top != 0 || rect.bottom != toView.getHeight()
             || rect.left != 0 || rect.right != toView.getWidth()) { //reach top,bottom,left,right
             //move self
@@ -282,6 +284,15 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                     + layoutParams.leftMargin + layoutParams.rightMargin);
                 mCurrentEdge = RIGHT_EDGE;
             }
+
+            if(rect.left < 0 && rect.right < 0){
+                mCurrentEdge = LEFT_EDGE;
+            }
+
+            if(rect.right >= Utils.getDeviceWidth(mContext)){
+                mCurrentEdge = RIGHT_EDGE;
+            }
+
 
             ViewAnimator.putOn(fromView).translation(moveX, moveY);
 

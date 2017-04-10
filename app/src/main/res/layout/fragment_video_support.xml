@@ -4,7 +4,8 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/colorPrimary"
-             android:orientation="vertical">
+             android:orientation="vertical"
+             xmlns:tools="http://schemas.android.com/tools">
 
     <ListView
         android:id="@+id/list_view"
@@ -13,4 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout
+        android:id="@+id/layout_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@color/colorAccent"/>
 </FrameLayout>

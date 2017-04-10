@@ -31,6 +31,10 @@ public class Tracker {
         return null;
     }
 
+    public static IViewTracker getViewTracker(Activity context){
+        return mViewTrackers.get(context);
+    }
+
 
 }
 

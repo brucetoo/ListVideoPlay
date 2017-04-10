@@ -31,6 +31,22 @@ public class Tracker {
         return null;
     }
 
+    public static IViewTracker destroy(Activity context){
+        IViewTracker iViewTracker = mViewTrackers.remove(context);
+        if (iViewTracker != null) {
+            return iViewTracker.destroy();
+        }
+        return null;
+    }
+
+    public static boolean isAttach(Activity context){
+        IViewTracker iViewTracker = mViewTrackers.get(context);
+        if (iViewTracker != null) {
+            return iViewTracker.isAttach();
+        }
+        return false;
+    }
+
     public static IViewTracker getViewTracker(Activity context){
         return mViewTrackers.get(context);
     }

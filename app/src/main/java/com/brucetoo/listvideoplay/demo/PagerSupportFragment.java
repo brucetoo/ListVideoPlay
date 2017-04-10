@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.brucetoo.listvideoplay.Backable;
 import com.brucetoo.listvideoplay.R;
+import com.brucetoo.videoplayer.Tracker;
 
 /**
  * Created by Bruce Too
@@ -17,9 +19,10 @@ import com.brucetoo.listvideoplay.R;
  * At 14:37
  */
 
-public class PagerSupportFragment extends Fragment {
+public class PagerSupportFragment extends Fragment implements Backable{
 
     ViewPager mViewPager;
+    private int mCurrentIndex;
 
     @Nullable
     @Override
@@ -43,5 +46,35 @@ public class PagerSupportFragment extends Fragment {
             }
         });
 
+        mCurrentIndex = mViewPager.getCurrentItem();
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                 if(mCurrentIndex != position){
+                     Tracker.destroy(getActivity());
+                 }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        boolean attach = Tracker.isAttach(getActivity());
+        if(attach){
+            Tracker.detach(getActivity());
+            return true;
+        }else {
+            return false;
+        }
     }
 }

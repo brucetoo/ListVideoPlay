@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity{
         getSupportFragmentManager()
             .beginTransaction()
             .replace(R.id.layout_container, new PagerSupportFragment(), "PagerSupportFragment")
-            .addToBackStack(null)
+            .addToBackStack("PagerSupportFragment")
             .commit();
     }
 
@@ -90,14 +90,6 @@ public class MainActivity extends AppCompatActivity{
             .addToBackStack("DetailFragment")
             .commitAllowingStateLoss();
     }
-
-    public void removeDetailFragment(DetailFragment fragment){
-        getSupportFragmentManager()
-            .beginTransaction()
-            .remove(fragment)
-            .commitAllowingStateLoss();
-    }
-
 
     @Override
     public void onBackPressed() {

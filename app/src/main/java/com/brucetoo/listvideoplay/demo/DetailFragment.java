@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brucetoo.listvideoplay.Backable;
-import com.brucetoo.listvideoplay.MainActivity;
 import com.brucetoo.listvideoplay.R;
 import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.VideoLayerView;
@@ -122,7 +121,7 @@ public class DetailFragment extends Fragment implements Backable {
         startMoveOutside(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                ((MainActivity) getActivity()).removeDetailFragment(DetailFragment.this);
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         return true;

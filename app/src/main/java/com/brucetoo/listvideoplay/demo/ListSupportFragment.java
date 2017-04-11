@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,10 +57,25 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
             }
         };
         mListView.setAdapter(adapter);
+        mListView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                //the tracker view is moved to scrap,and be re-used,so we need detach view in decor
+                Log.e(TAG, "onMovedToScrapHeap -> " + view.findViewById(R.id.img_cover));
+                IViewTracker tracker = Tracker.getViewTracker(getActivity());
+                if(tracker != null) {
+                    View trackerView = tracker.getTrackerView();
+                    if (trackerView != null && trackerView.equals(view.findViewById(tracker.getTrackerViewId()))) {
+                        Tracker.detach(getActivity());
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
+        Log.e(TAG, "onMovedToScrapHeap onClick -> " + v);
         Tracker.attach(getActivity()).trackView(v).into(new ListScrollDetector(mListView)).visibleListener(this);
         ((MainActivity) getActivity()).addDetailFragment();
     }

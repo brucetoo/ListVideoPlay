@@ -58,6 +58,7 @@ public class PagerSupportFragment extends Fragment implements Backable{
                  if(mCurrentIndex != position){
                      Tracker.destroy(getActivity());
                  }
+                mCurrentIndex = position;
             }
 
             @Override

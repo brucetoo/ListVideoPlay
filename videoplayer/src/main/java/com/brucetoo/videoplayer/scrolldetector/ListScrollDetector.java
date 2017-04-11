@@ -31,6 +31,10 @@ public class ListScrollDetector implements IScrollDetector, AbsListView.OnScroll
     }
 
     @Override
+    public void detach(){
+        Reflecter.on(mListView).set("mOnScrollListener", mOriginListener);
+    }
+    @Override
     public View getView() {
         return mListView;
     }

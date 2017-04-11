@@ -56,6 +56,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
      */
     private int mCurrentEdge = NONE_EDGE;
 
+    /**
+     * {@link #getTrackerView()} scroll state change detector
+     */
+    private IScrollDetector mScrollDetector;
+
     private boolean mIsAttach;
 
     private int mTrackViewId = View.NO_ID;
@@ -99,6 +104,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         detach();
         mVisibleChangeListener = null;
         mContext = null;//prevent memory leak
+        mScrollDetector.detach();
+        mScrollDetector = null;
         return this;
     }
 
@@ -129,7 +136,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public IViewTracker trackView(@NonNull View trackView) {
-        if(mTrackView != null) {//not first
+        if (mTrackView != null) {//not first
             detach();
             attach();
         }
@@ -146,6 +153,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public IViewTracker into(@NonNull IScrollDetector scrollDetector) {
+        this.mScrollDetector = scrollDetector;
         this.mVerticalScrollView = scrollDetector.getView();
         scrollDetector.setTracker(this);
         return this;
@@ -285,11 +293,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                 mCurrentEdge = RIGHT_EDGE;
             }
 
-            if(rect.left < 0 && rect.right < 0){
+            if (rect.left < 0 && rect.right < 0) {
                 mCurrentEdge = LEFT_EDGE;
             }
 
-            if(rect.right >= Utils.getDeviceWidth(mContext)){
+            if (rect.right >= Utils.getDeviceWidth(mContext)) {
                 mCurrentEdge = RIGHT_EDGE;
             }
 
@@ -309,7 +317,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                 ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
                     .andPutOn(fromView).translation(0, 0);
                 mCurrentEdge = NONE_EDGE;
-            }else {
+            } else {
                 mCurrentEdge = TOP_EDGE;
             }
         }

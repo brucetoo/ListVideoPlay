@@ -23,4 +23,6 @@ public interface IScrollDetector {
     void setTracker(IViewTracker tracker);
 
     void onScrollStateChanged(int scrollState);
+
+    void detach();
 }

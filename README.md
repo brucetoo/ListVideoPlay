@@ -1,7 +1,8 @@
+# Maybe this is a better user interaction of play video in List.
+
+ ![list_video_play](./track.gif)
+
 # Play video in ListView,RecyclerView,and support full-screen,and more feature about video play control
-
-## The same as "今日头条" "UC头条" "腾讯视频" video model. 
-
 # EFFECT
 
 [YOUTUBE Video](https://youtu.be/HEVXZVjTPBk)

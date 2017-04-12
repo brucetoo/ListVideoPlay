@@ -1,5 +1,6 @@
 package com.brucetoo.videoplayer;
 
+import android.content.Context;
 import android.view.View;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
@@ -103,4 +104,6 @@ public interface IViewTracker {
      * DecorView {@link android.view.Window#ID_ANDROID_CONTENT}
      */
     View getVideoLayerView();
+
+    Context getContext();
 }

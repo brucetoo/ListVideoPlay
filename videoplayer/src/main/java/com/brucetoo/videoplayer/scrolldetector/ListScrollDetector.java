@@ -46,7 +46,7 @@ public class ListScrollDetector implements IScrollDetector, AbsListView.OnScroll
 
     @Override
     public void onScrollStateChanged(int scrollState) {
-        if (scrollState == IScrollDetector.SCROLL_STATE_IDLE) {
+        if (scrollState == IScrollDetector.SCROLL_STATE_IDLE && mViewTracker.getContext() != null) {
             View itemView = ItemChecker.getNextTrackerView(mListView, mViewTracker);
             Log.e(TAG, "onScrollStateChanged: itemView -> " + itemView + " edge -> " + mViewTracker.getEdgeString());
             if (itemView != null) {

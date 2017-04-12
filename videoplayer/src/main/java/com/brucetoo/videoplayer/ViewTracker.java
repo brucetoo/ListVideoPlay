@@ -1,6 +1,7 @@
 package com.brucetoo.videoplayer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -75,7 +76,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public IViewTracker attach() {
         if (mVideoLayerView == null) {
-            mVideoLayerView = new VideoLayerView(getDecorView().getContext());
+            mVideoLayerView = new VideoLayerView(mContext);
             if (mVideoLayerView.getParent() == null) {
                 getDecorView().addView(mVideoLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                 mFollowerView = mVideoLayerView.cover;
@@ -132,6 +133,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public View getVideoLayerView() {
         return mVideoLayerView;
+    }
+
+    @Override
+    public Context getContext() {
+        return mContext;
     }
 
     @Override

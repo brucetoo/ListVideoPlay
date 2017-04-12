@@ -13,6 +13,9 @@ import android.widget.FrameLayout;
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.utils.ViewAnimator;
+import com.brucetoo.videoplayer.videomanage.manager.SingleVideoPlayerManager;
+import com.brucetoo.videoplayer.videomanage.manager.VideoPlayerManager;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 
 import static android.view.View.NO_ID;
 
@@ -66,6 +69,9 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     private int mTrackViewId = View.NO_ID;
 
+    //TODO this is just for test
+    private VideoPlayerManager<MetaData> mVideoPlayerManager = new SingleVideoPlayerManager(null);
+
     public ViewTracker(Activity context) {
         if (context == null) {
             throw new IllegalArgumentException("Context must not be null in ViewTracker!");
@@ -79,7 +85,10 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             mVideoLayerView = new VideoLayerView(mContext);
             if (mVideoLayerView.getParent() == null) {
                 getDecorView().addView(mVideoLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                mFollowerView = mVideoLayerView.cover;
+                mFollowerView = mVideoLayerView.getVideoRootView();
+                //TODO this is just demo to play,need reconstruct
+                // FIXME: 12/04/2017  need reconstruct
+                mVideoPlayerManager.playNewVideo(null, mVideoLayerView.getVideoPlayerView(),"http://wvideo.spriteapp.cn/video/2016/1016/e2b1aa68-93a0-11e6-bd25-90b11c479401_wpc.mp4");
             }
         }
         mIsAttach = true;
@@ -96,6 +105,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             getDecorView().removeView(mVideoLayerView);
             mVideoLayerView = null;
         }
+        mVideoPlayerManager.stopAnyPlayback();
         mIsAttach = false;
         return this;
     }

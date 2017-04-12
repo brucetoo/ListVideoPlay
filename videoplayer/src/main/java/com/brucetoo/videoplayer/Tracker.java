@@ -2,6 +2,7 @@ package com.brucetoo.videoplayer;
 
 import android.app.Activity;
 import android.support.v4.util.ArrayMap;
+import android.view.View;
 
 /**
  * Created by Bruce Too
@@ -70,9 +71,27 @@ public class Tracker {
         return false;
     }
 
+    /**
+     * Get current {@link IViewTracker} attach to Activity
+     * @param context current activity
+     */
     public static IViewTracker getViewTracker(Activity context){
         return mViewTrackers.get(context);
     }
+
+    /**
+     * Check if current tracker view is the same as newTracker
+     * @param context current activity
+     * @param newTracker new tracker view
+     */
+    public static boolean isSameTrackerView(Activity context, View newTracker){
+        IViewTracker iViewTracker = mViewTrackers.get(context);
+        if(iViewTracker != null && iViewTracker.getTrackerView() != null){
+            return iViewTracker.getTrackerView().equals(newTracker);
+        }
+        return false;
+    }
+
 
 
 }

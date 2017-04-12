@@ -52,19 +52,19 @@ public class DetailFragment extends Fragment implements Backable {
     private float transY;
     private float deltaW;
     private float deltaH;
-    private View cover;
+    private View videoRoot;
     private View coverParent;
 
     private void startMoveInside() {
-        cover = ((VideoLayerView) Tracker.getViewTracker(getActivity()).getVideoLayerView()).cover;
+        videoRoot = ((VideoLayerView) Tracker.getViewTracker(getActivity()).getVideoLayerView()).getVideoRootView();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
         int[] loc = new int[2];
         mImageCover.getLocationOnScreen(loc);
-        coverParent = (View) cover.getParent();
+        coverParent = (View) videoRoot.getParent();
         final float originX = coverParent.getTranslationX();
         final float originY = coverParent.getTranslationY();
-        final int originW = cover.getWidth();
-        final int originH = cover.getHeight();
+        final int originW = videoRoot.getWidth();
+        final int originH = videoRoot.getHeight();
         transX = originX - loc[0];
         transY = originY - loc[1];
         deltaW = originW - mImageCover.getMeasuredWidth();
@@ -74,10 +74,10 @@ public class DetailFragment extends Fragment implements Backable {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 ViewAnimator.putOn(coverParent).translation(originX - transX * value, originY - transY * value);
-                ViewGroup.LayoutParams params = cover.getLayoutParams();
+                ViewGroup.LayoutParams params = videoRoot.getLayoutParams();
                 params.width = (int) (originW - deltaW * value);
                 params.height = (int) (originH - deltaH * value);
-                cover.requestLayout();
+                videoRoot.requestLayout();
             }
         });
         animator.setDuration(500);
@@ -96,10 +96,10 @@ public class DetailFragment extends Fragment implements Backable {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 ViewAnimator.putOn(coverParent).translation(loc[0] + transX * value, loc[1] + transY * value);
-                ViewGroup.LayoutParams params = cover.getLayoutParams();
+                ViewGroup.LayoutParams params = videoRoot.getLayoutParams();
                 params.width = (int) (mImageCover.getWidth() + deltaW * value);
                 params.height = (int) (mImageCover.getHeight() + deltaH * value);
-                cover.requestLayout();
+                videoRoot.requestLayout();
             }
         });
         animator.setDuration(500);

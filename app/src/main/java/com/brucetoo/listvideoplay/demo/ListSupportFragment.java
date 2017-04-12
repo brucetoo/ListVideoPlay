@@ -76,7 +76,9 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         Log.e(TAG, "onMovedToScrapHeap onClick -> " + v);
-        Tracker.attach(getActivity()).trackView(v).into(new ListScrollDetector(mListView)).visibleListener(this);
+        if(!Tracker.isSameTrackerView(getActivity(),v)) {
+            Tracker.attach(getActivity()).trackView(v).into(new ListScrollDetector(mListView)).visibleListener(this);
+        }
         ((MainActivity) getActivity()).addDetailFragment();
     }
 

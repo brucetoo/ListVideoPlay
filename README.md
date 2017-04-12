@@ -2,6 +2,8 @@
 
  ![list_video_play](./track.gif)
 
+ ![list_video_play](./scale.gif)
+
 # Play video in ListView,RecyclerView,and support full-screen,and more feature about video play control
 # EFFECT
 

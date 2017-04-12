@@ -13,9 +13,6 @@ import android.widget.FrameLayout;
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.utils.ViewAnimator;
-import com.brucetoo.videoplayer.videomanage.manager.SingleVideoPlayerManager;
-import com.brucetoo.videoplayer.videomanage.manager.VideoPlayerManager;
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 
 import static android.view.View.NO_ID;
 
@@ -53,7 +50,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     /**
      * The whole root view that be added in decor,we can add View inside if needed
      */
-    private VideoLayerView mVideoLayerView;
+    private FloatLayerView mFloatLayerView;
 
     /**
      * {@link #mTrackView}'s current edge triggered
@@ -69,9 +66,6 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     private int mTrackViewId = View.NO_ID;
 
-    //TODO this is just for test
-    private VideoPlayerManager<MetaData> mVideoPlayerManager = new SingleVideoPlayerManager(null);
-
     public ViewTracker(Activity context) {
         if (context == null) {
             throw new IllegalArgumentException("Context must not be null in ViewTracker!");
@@ -81,14 +75,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public IViewTracker attach() {
-        if (mVideoLayerView == null) {
-            mVideoLayerView = new VideoLayerView(mContext);
-            if (mVideoLayerView.getParent() == null) {
-                getDecorView().addView(mVideoLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                mFollowerView = mVideoLayerView.getVideoRootView();
-                //TODO this is just demo to play,need reconstruct
-                // FIXME: 12/04/2017  need reconstruct
-                mVideoPlayerManager.playNewVideo(null, mVideoLayerView.getVideoPlayerView(),"http://wvideo.spriteapp.cn/video/2016/1016/e2b1aa68-93a0-11e6-bd25-90b11c479401_wpc.mp4");
+        if (mFloatLayerView == null) {
+            mFloatLayerView = new FloatLayerView(mContext);
+            if (mFloatLayerView.getParent() == null) {
+                getDecorView().addView(mFloatLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                mFollowerView = mFloatLayerView.getVideoRootView();
             }
         }
         mIsAttach = true;
@@ -101,11 +92,10 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             mTrackView.getViewTreeObserver().removeOnScrollChangedListener(this);
         }
 
-        if (mVideoLayerView != null && mVideoLayerView.getParent() != null) {
-            getDecorView().removeView(mVideoLayerView);
-            mVideoLayerView = null;
+        if (mFloatLayerView != null && mFloatLayerView.getParent() != null) {
+            getDecorView().removeView(mFloatLayerView);
+            mFloatLayerView = null;
         }
-        mVideoPlayerManager.stopAnyPlayback();
         mIsAttach = false;
         return this;
     }
@@ -141,8 +131,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
-    public View getVideoLayerView() {
-        return mVideoLayerView;
+    public FloatLayerView getFloatLayerView() {
+        return mFloatLayerView;
     }
 
     @Override
@@ -217,8 +207,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public void onScrollChanged() {
         //bind to tracker and move..
-        if (mVideoLayerView != null) {// for test
-            mVideoLayerView.show.setText(getCalculateValueByString(mTrackView));
+        if (mFloatLayerView != null) {// for test
+            mFloatLayerView.show.setText(getCalculateValueByString(mTrackView));
         }
         moveCurrentView(mVerticalScrollView, mFollowerView, mTrackView);
     }

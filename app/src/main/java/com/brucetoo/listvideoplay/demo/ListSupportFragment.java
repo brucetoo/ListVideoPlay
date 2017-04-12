@@ -43,7 +43,7 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.list_view);
         QuickAdapter<VideoModel> adapter = new QuickAdapter<VideoModel>(getActivity(), R.layout.item_list_view, ListDataGenerater.datas) {
@@ -53,6 +53,7 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
                 Picasso.with(getActivity())
                     .load(item.coverImage)
                     .into(imageCover);
+                imageCover.setTag(R.id.tag_tracker_view,item.videoUrl);
                 imageCover.setOnClickListener(ListSupportFragment.this);
             }
         };
@@ -89,9 +90,9 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
         //only care about vertical scroll
         if(tracker.getEdge() != IViewTracker.LEFT_EDGE || tracker.getEdge() != IViewTracker.RIGHT_EDGE) {
 //            if (visibleRatio <= 0.8) {
-//                tracker.getVideoLayerView().setVisibility(View.INVISIBLE);
+//                tracker.getFloatLayerView().setVisibility(View.INVISIBLE);
 //            } else {
-//                tracker.getVideoLayerView().setVisibility(View.VISIBLE);
+//                tracker.getFloatLayerView().setVisibility(View.VISIBLE);
 //            }
         }
     }

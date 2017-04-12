@@ -25,7 +25,7 @@ public class Tracker {
         if (iViewTracker != null) {
             return iViewTracker.attach();
         }
-        IViewTracker tracker = new ViewTracker(context).attach();
+        IViewTracker tracker = new VideoTracker(context).attach();
         mViewTrackers.put(context, tracker);
         return tracker;
     }

@@ -72,7 +72,7 @@ public class PagerSupportFragment extends Fragment implements Backable{
     public boolean onBackPressed() {
         boolean attach = Tracker.isAttach(getActivity());
         if(attach){
-            Tracker.detach(getActivity());
+            Tracker.destroy(getActivity());
             return true;
         }else {
             return false;

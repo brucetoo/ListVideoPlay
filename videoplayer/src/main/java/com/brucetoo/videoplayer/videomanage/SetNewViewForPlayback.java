@@ -1,10 +1,10 @@
 package com.brucetoo.videoplayer.videomanage;
 
 
-import com.brucetoo.videoplayer.videomanage.manager.VideoPlayerManagerCallback;
+import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerManagerCallback;
 import com.brucetoo.videoplayer.videomanage.meta.MetaData;
-import com.brucetoo.videoplayer.videomanage.playermessages.PlayerMessage;
-import com.brucetoo.videoplayer.videomanage.ui.VideoPlayerView;
+import com.brucetoo.videoplayer.videomanage.messages.PlayerMessage;
+import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 public class SetNewViewForPlayback extends PlayerMessage {
 

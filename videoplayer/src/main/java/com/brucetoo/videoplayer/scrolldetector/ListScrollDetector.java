@@ -51,7 +51,7 @@ public class ListScrollDetector implements IScrollDetector, AbsListView.OnScroll
             Log.e(TAG, "onScrollStateChanged: itemView -> " + itemView + " edge -> " + mViewTracker.getEdgeString());
             if (itemView != null) {
                 mViewTracker.trackView(itemView).into(this);
-                mViewTracker.getVideoLayerView().setVisibility(View.VISIBLE);
+                mViewTracker.getFloatLayerView().setVisibility(View.VISIBLE);
             }
         }
     }

@@ -103,7 +103,7 @@ public interface IViewTracker {
      * The root view of {@link #getFollowerView()}, need add into
      * DecorView {@link android.view.Window#ID_ANDROID_CONTENT}
      */
-    View getVideoLayerView();
+    FloatLayerView getFloatLayerView();
 
     Context getContext();
 }

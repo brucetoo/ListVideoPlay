@@ -1,8 +1,9 @@
 package com.brucetoo.videoplayer.videomanage;
 
 
-import com.brucetoo.videoplayer.videomanage.playermessages.Message;
-import com.brucetoo.videoplayer.videomanage.utils.Logger;
+import com.brucetoo.videoplayer.Config;
+import com.brucetoo.videoplayer.videomanage.messages.Message;
+import com.brucetoo.videoplayer.utils.Logger;
 
 import java.util.List;
 import java.util.Queue;

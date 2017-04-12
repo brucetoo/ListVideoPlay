@@ -1,7 +1,7 @@
 package com.brucetoo.videoplayer.videomanage;
 
 
-import com.brucetoo.videoplayer.videomanage.utils.Logger;
+import com.brucetoo.videoplayer.utils.Logger;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;

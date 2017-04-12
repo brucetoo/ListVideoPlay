@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.brucetoo.listvideoplay.Backable;
 import com.brucetoo.listvideoplay.R;
 import com.brucetoo.videoplayer.Tracker;
-import com.brucetoo.videoplayer.VideoLayerView;
+import com.brucetoo.videoplayer.FloatLayerView;
 
 /**
  * Created by Bruce Too
@@ -56,7 +56,7 @@ public class DetailFragment extends Fragment implements Backable {
     private View coverParent;
 
     private void startMoveInside() {
-        videoRoot = ((VideoLayerView) Tracker.getViewTracker(getActivity()).getVideoLayerView()).getVideoRootView();
+        videoRoot = ((FloatLayerView) Tracker.getViewTracker(getActivity()).getFloatLayerView()).getVideoRootView();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
         int[] loc = new int[2];
         mImageCover.getLocationOnScreen(loc);

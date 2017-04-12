@@ -75,7 +75,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public IViewTracker attach() {
         if (mVideoLayerView == null) {
-            mVideoLayerView = new VideoLayerView(mContext);
+            mVideoLayerView = new VideoLayerView(getDecorView().getContext());
             if (mVideoLayerView.getParent() == null) {
                 getDecorView().addView(mVideoLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                 mFollowerView = mVideoLayerView.cover;

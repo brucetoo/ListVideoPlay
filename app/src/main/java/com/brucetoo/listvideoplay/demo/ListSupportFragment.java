@@ -18,6 +18,7 @@ import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.VisibleChangeListener;
 import com.brucetoo.videoplayer.scrolldetector.ListScrollDetector;
+import com.brucetoo.videoplayer.videomanage.player.RatioImageView;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
 import com.squareup.picasso.Picasso;
@@ -46,13 +47,14 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.list_view);
-        QuickAdapter<VideoModel> adapter = new QuickAdapter<VideoModel>(getActivity(), R.layout.item_list_view, ListDataGenerater.datas) {
+        QuickAdapter<VideoModel> adapter = new QuickAdapter<VideoModel>(getActivity(), R.layout.item_list_view_new, ListDataGenerater.datas) {
             @Override
             protected void convert(BaseAdapterHelper helper, VideoModel item) {
-                ImageView imageCover = (ImageView) helper.getView(R.id.img_cover);
+                RatioImageView imageCover = (RatioImageView) helper.getView(R.id.img_cover);
                 Picasso.with(getActivity())
                     .load(item.coverImage)
                     .into(imageCover);
+                imageCover.setOriginalSize(16,9);
                 imageCover.setTag(R.id.tag_tracker_view,item.videoUrl);
                 imageCover.setOnClickListener(ListSupportFragment.this);
             }

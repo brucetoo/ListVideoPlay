@@ -3,7 +3,6 @@ package com.brucetoo.videoplayer.videomanage.player;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.TextureView;
 
 import com.brucetoo.videoplayer.utils.Logger;
@@ -17,8 +16,8 @@ public abstract class ScalableTextureView extends TextureView {
     private static final boolean SHOW_LOGS = true;
     private static final String TAG = ScalableTextureView.class.getSimpleName();
 
-    private Integer mContentWidth;
-    private Integer mContentHeight;
+    private int mContentWidth;
+    private int mContentHeight;
 
     private float mPivotPointX = 0f;
     private float mPivotPointY = 0f;
@@ -28,14 +27,13 @@ public abstract class ScalableTextureView extends TextureView {
 
     private float mContentRotation = 0f;
 
-    private float mContentScaleMultiplier = 1f;
-
+    //content move x,y
     private int mContentX = 0;
     private int mContentY = 0;
 
     private final Matrix mTransformMatrix = new Matrix();
 
-    private ScaleType mScaleType;
+    private ScaleType mScaleType = ScaleType.FILL;
 
     public enum ScaleType {
         CENTER_CROP, TOP, BOTTOM, FILL
@@ -64,18 +62,18 @@ public abstract class ScalableTextureView extends TextureView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (SHOW_LOGS) Logger.v(TAG, "onMeasure, mContentoWidth " + mContentWidth + ", mContentHeight " + mContentHeight);
+        if (SHOW_LOGS)
+            Logger.v(TAG, "onMeasure, mContentWidth " + mContentWidth + ", mContentHeight " + mContentHeight);
 
-        if (mContentWidth != null && mContentHeight != null) {
-            Log.v(TAG, "video= onMeasure");
+        if (mContentWidth > 0 && mContentHeight > 0) {
             updateTextureViewSize();
         }
     }
 
     public void updateTextureViewSize() {
         if (SHOW_LOGS) Logger.d(TAG, ">> updateTextureViewSize");
-        if (mContentWidth == null || mContentHeight == null) {
-            throw new RuntimeException("null content size");
+        if (mContentWidth < 0 || mContentHeight < 0) {
+            return;
         }
 
         float viewWidth = getMeasuredWidth();
@@ -94,10 +92,14 @@ public abstract class ScalableTextureView extends TextureView {
 
         switch (mScaleType) {
             case FILL:
-                if (viewWidth > viewHeight) {   // device in landscape
-                    scaleX = (viewHeight * contentWidth) / (viewWidth * contentHeight);
+                if (viewWidth / viewHeight > contentWidth / contentHeight) {
+                    //video is higher than view
+                    if (contentWidth / contentHeight >= 1.5) { // 12:7 16:9,ignore some weired ratio like 720/564
+                        scaleY = (contentHeight * viewWidth) / (viewHeight * contentWidth);
+                    }
                 } else {
-                    scaleY = (viewWidth * contentHeight) / (viewHeight * contentWidth);
+                    //video is wider than view
+                    scaleX = (viewHeight * contentWidth) / (viewWidth * contentHeight);
                 }
                 break;
             case BOTTOM:
@@ -175,13 +177,15 @@ public abstract class ScalableTextureView extends TextureView {
     }
 
     private void updateMatrixScaleRotate() {
-        if (SHOW_LOGS) Logger.d(TAG, ">> updateMatrixScaleRotate, mContentRotation " + mContentRotation + ", mContentScaleMultiplier " + mContentScaleMultiplier + ", mPivotPointX " + mPivotPointX + ", mPivotPointY " + mPivotPointY);
+        if (SHOW_LOGS)
+            Logger.d(TAG, ">> updateMatrixScaleRotate, mContentRotation " + mContentRotation + ", mPivotPointX " + mPivotPointX + ", mPivotPointY " + mPivotPointY);
 
         mTransformMatrix.reset();
-        mTransformMatrix.setScale(mContentScaleX * mContentScaleMultiplier, mContentScaleY * mContentScaleMultiplier, mPivotPointX, mPivotPointY);
+        mTransformMatrix.setScale(mContentScaleX, mContentScaleY, mPivotPointX, mPivotPointY);
         mTransformMatrix.postRotate(mContentRotation, mPivotPointX, mPivotPointY);
         setTransform(mTransformMatrix);
-        if (SHOW_LOGS) Logger.d(TAG, "<< updateMatrixScaleRotate, mContentRotation " + mContentRotation + ", mContentScaleMultiplier " + mContentScaleMultiplier + ", mPivotPointX " + mPivotPointX + ", mPivotPointY " + mPivotPointY);
+        if (SHOW_LOGS)
+            Logger.d(TAG, "<< updateMatrixScaleRotate, mContentRotation " + mContentRotation + ", mPivotPointX " + mPivotPointX + ", mPivotPointY " + mPivotPointY);
     }
 
     private void updateMatrixTranslate() {
@@ -189,8 +193,8 @@ public abstract class ScalableTextureView extends TextureView {
             Logger.d(TAG, "updateMatrixTranslate, mContentX " + mContentX + ", mContentY " + mContentY);
         }
 
-        float scaleX = mContentScaleX * mContentScaleMultiplier;
-        float scaleY = mContentScaleY * mContentScaleMultiplier;
+        float scaleX = mContentScaleX;
+        float scaleY = mContentScaleY;
 
         mTransformMatrix.reset();
         mTransformMatrix.setScale(scaleX, scaleY, mPivotPointX, mPivotPointY);
@@ -237,14 +241,10 @@ public abstract class ScalableTextureView extends TextureView {
         return mPivotPointY;
     }
 
-    public float getContentAspectRatio() {
-        return mContentWidth != null && mContentHeight != null
-                ? (float) mContentWidth / (float) mContentHeight
-                : 0;
-    }
 
     /**
      * Use it to animate TextureView content x position
+     *
      * @param x
      */
     public final void setContentX(float x) {
@@ -254,6 +254,7 @@ public abstract class ScalableTextureView extends TextureView {
 
     /**
      * Use it to animate TextureView content x position
+     *
      * @param y
      */
     public final void setContentY(float y) {
@@ -278,92 +279,30 @@ public abstract class ScalableTextureView extends TextureView {
         int scaledContentWidth = getScaledContentWidth();
         int scaledContentHeight = getScaledContentHeight();
 
-        if (SHOW_LOGS) Logger.d(TAG, "centralizeContent, measuredWidth " + measuredWidth + ", measuredHeight " + measuredHeight + ", scaledContentWidth " + scaledContentWidth + ", scaledContentHeight " + scaledContentHeight);
+        if (SHOW_LOGS)
+            Logger.d(TAG, "centralizeContent, measuredWidth " + measuredWidth + ", measuredHeight " + measuredHeight + ", scaledContentWidth " + scaledContentWidth + ", scaledContentHeight " + scaledContentHeight);
 
         mContentX = 0;
         mContentY = 0;
 
-        if (SHOW_LOGS) Logger.d(TAG, "centerVideo, mContentX " + mContentX + ", mContentY " + mContentY);
+        if (SHOW_LOGS)
+            Logger.d(TAG, "centerVideo, mContentX " + mContentX + ", mContentY " + mContentY);
 
         updateMatrixScaleRotate();
     }
 
     public Integer getScaledContentWidth() {
-        return (int) (mContentScaleX * mContentScaleMultiplier * getMeasuredWidth());
+        return (int) (mContentScaleX * getMeasuredWidth());
     }
 
     public Integer getScaledContentHeight() {
-        return (int) (mContentScaleY * mContentScaleMultiplier * getMeasuredHeight());
+        return (int) (mContentScaleY * getMeasuredHeight());
     }
 
-    public float getContentScale() {
-        return mContentScaleMultiplier;
-    }
-
-    public void setContentScale(float contentScale) {
-        if (SHOW_LOGS) Logger.d(TAG, "setContentScale, contentScale " + contentScale);
-
-        mContentScaleMultiplier = contentScale;
-        updateMatrixScaleRotate();
-    }
-
-    protected final void setContentHeight(int height) {
-        mContentHeight = height;
-    }
-
-    protected final Integer getContentHeight() {
-        return mContentHeight;
-    }
-
-    protected final void setContentWidth(int width) {
-        mContentWidth = width;
-    }
-
-    protected final Integer getContentWidth() {
-        return mContentWidth;
-    }
-
-
-    /**
-     * Sets the TextureView transform to preserve the aspect ratio of the video.
-     */
-    public void adjustAspectRatio(int viewWidth,int viewHeight) {
-
-        if(mContentHeight == null || mContentWidth == null) return;
-
-        double aspectRatio = (double) mContentHeight / mContentWidth;
-
-        int newWidth, newHeight;
-        if (viewHeight > (int) (viewWidth * aspectRatio)) {
-            // limited by narrow width; restrict height
-            newWidth = viewWidth;
-            newHeight = (int) (viewWidth * aspectRatio);
-        } else {
-            // limited by short height; restrict width
-            newWidth = (int) (viewHeight / aspectRatio);
-            newHeight = viewHeight;
-        }
-        int xoff = (viewWidth - newWidth) / 2;
-        int yoff = (viewHeight - newHeight) / 2;
-        Log.v(TAG, "video=" + mContentWidth + "x" + mContentHeight +
-                " view=" + viewWidth + "x" + viewHeight +
-                " newView=" + newWidth + "x" + newHeight +
-                " off=" + xoff + "," + yoff);
-
-        mTransformMatrix.reset();
-        mTransformMatrix.setScale((float) newWidth / viewWidth, (float) newHeight / viewHeight);
-        mTransformMatrix.postTranslate(xoff, yoff);
-        setTransform(mTransformMatrix);
-    }
-
-    /**
-     * Force adjust video to fit TextureView's width and height
-     */
-    public void adjustVideoFitTextureView(){
-        Matrix matrix = new Matrix();
-        getTransform(matrix);
-        matrix.setScale(1, 1);
-        setTransform(matrix);
+    protected void refreshSurfaceTexture(int contentWidth, int contentHeight) {
+        this.mContentWidth = contentWidth;
+        this.mContentHeight = contentHeight;
+        updateTextureViewSize();
     }
 
 

@@ -178,7 +178,7 @@ public class VideoPlayerView extends ScalableTextureView
     private void initView() {
         if (!isInEditMode()) {
             if (SHOW_LOGS) Logger.v(TAG, "initView");
-            setScaleType(ScalableTextureView.ScaleType.FILL);
+            setScaleType(ScaleType.FILL);
             super.setSurfaceTextureListener(this);
         }
     }
@@ -228,9 +228,7 @@ public class VideoPlayerView extends ScalableTextureView
             Logger.v(TAG, ">> onVideoSizeChangedMainThread, width " + width + ", height " + height);
 
         if (width != 0 && height != 0) {
-            setContentWidth(width);
-            setContentHeight(height);
-            updateTextureViewSize();
+            refreshSurfaceTexture(width,height);
         }
 
         notifyOnVideoSizeChangedMainThread(width, height);

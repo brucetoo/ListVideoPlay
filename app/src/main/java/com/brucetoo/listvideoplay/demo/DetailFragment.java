@@ -3,6 +3,7 @@ package com.brucetoo.listvideoplay.demo;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,8 +15,8 @@ import android.widget.TextView;
 
 import com.brucetoo.listvideoplay.Backable;
 import com.brucetoo.listvideoplay.R;
-import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.FloatLayerView;
+import com.brucetoo.videoplayer.Tracker;
 
 /**
  * Created by Bruce Too
@@ -53,31 +54,54 @@ public class DetailFragment extends Fragment implements Backable {
     private float deltaW;
     private float deltaH;
     private View videoRoot;
-    private View coverParent;
+    private View videoRootParent;
+    private float videoRootTransY;
+    private float videoRootTransX;
 
     private void startMoveInside() {
         videoRoot = ((FloatLayerView) Tracker.getViewTracker(getActivity()).getFloatLayerView()).getVideoRootView();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-        int[] loc = new int[2];
+        final int[] loc = new int[2];
         mImageCover.getLocationOnScreen(loc);
-        coverParent = (View) videoRoot.getParent();
-        final float originX = coverParent.getTranslationX();
-        final float originY = coverParent.getTranslationY();
+        videoRootParent = (View) videoRoot.getParent();
+        final Rect rect = new Rect();
+        mImageCover.getLocalVisibleRect(rect);
+        final float originX = videoRootParent.getTranslationX();
+        final float originY = videoRootParent.getTranslationY();
         final int originW = videoRoot.getWidth();
         final int originH = videoRoot.getHeight();
         transX = originX - loc[0];
         transY = originY - loc[1];
         deltaW = originW - mImageCover.getMeasuredWidth();
         deltaH = originH - mImageCover.getMeasuredHeight();
+        videoRootTransY = videoRoot.getTranslationY();
+        videoRootTransX = videoRoot.getTranslationX();
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                ViewAnimator.putOn(coverParent).translation(originX - transX * value, originY - transY * value);
+                ViewAnimator.putOn(videoRootParent).translation(originX - transX * value, originY - transY * value)
+                .andPutOn(videoRoot).translation(videoRootTransX * (1 - value) ,videoRootTransY * (1 - value));
                 ViewGroup.LayoutParams params = videoRoot.getLayoutParams();
                 params.width = (int) (originW - deltaW * value);
                 params.height = (int) (originH - deltaH * value);
                 videoRoot.requestLayout();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+//                int deltaY = rect.bottom - rect.top;
+//                int deltaX = rect.right - rect.left;
+//                if(deltaY != mImageCover.getHeight() || deltaX != mImageCover.getWidth()){
+//                    ViewAnimator.putOn(videoRoot).translation(deltaX - mImageCover.getWidth(),deltaY - mImageCover.getHeight());
+//                    ViewGroup.LayoutParams params = videoRoot.getLayoutParams();
+//                    params.width = deltaX;
+//                    params.height = deltaY;
+//                    videoRoot.requestLayout();
+//                }
+//                videoRootTransY = videoRoot.getTranslationY();
+//                videoRootTransX = videoRoot.getTranslationX();
             }
         });
         animator.setDuration(500);
@@ -95,7 +119,8 @@ public class DetailFragment extends Fragment implements Backable {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                ViewAnimator.putOn(coverParent).translation(loc[0] + transX * value, loc[1] + transY * value);
+                ViewAnimator.putOn(videoRootParent).translation(loc[0] + transX * value, loc[1] + transY * value)
+                .andPutOn(videoRoot).translation(videoRootTransX * value,videoRootTransY * value);
                 ViewGroup.LayoutParams params = videoRoot.getLayoutParams();
                 params.width = (int) (mImageCover.getWidth() + deltaW * value);
                 params.height = (int) (mImageCover.getHeight() + deltaH * value);

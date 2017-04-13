@@ -207,7 +207,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public void onScrollChanged() {
         //bind to tracker and move..
-        if (mFloatLayerView != null) {// for test
+        if (mFloatLayerView != null && Config.SHOW_DEBUG_RECT) {// for test
             mFloatLayerView.show.setText(getCalculateValueByString(mTrackView));
         }
         moveCurrentView(mVerticalScrollView, mFollowerView, mTrackView);

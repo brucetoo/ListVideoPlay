@@ -94,26 +94,27 @@ public class VideoPlayerView extends ScalableTextureView
     }
 
     public void clearPlayerInstance() {
-        if (SHOW_LOGS) Logger.v(TAG, ">> clearPlayerInstance");
+        if (SHOW_LOGS) Logger.v(TAG, ">> clearPlayerInstance mMediaPlayer " + mMediaPlayer);
 
         checkThread();
 
-        if (mMediaPlayer != null)
+        if (mMediaPlayer != null) {
             mMediaPlayer.clearAll();
+        }
         mMediaPlayer = null;
 
-        if (SHOW_LOGS) Logger.v(TAG, "<< clearPlayerInstance");
+        if (SHOW_LOGS) Logger.v(TAG, "<< clearPlayerInstance ");
     }
 
     public void createNewPlayerInstance() {
         if (SHOW_LOGS) Logger.v(TAG, ">> createNewPlayerInstance");
 
-        if (SHOW_LOGS)
-            Logger.v(TAG, "createNewPlayerInstance main Looper " + Looper.getMainLooper());
-        if (SHOW_LOGS) Logger.v(TAG, "createNewPlayerInstance my Looper " + Looper.myLooper());
-
         checkThread();
-        mMediaPlayer = new DefaultMediaPlayer(getContext(), this);
+
+        if (SHOW_LOGS) Logger.v(TAG, "createNewPlayerInstance mMediaPlayer " + mMediaPlayer);
+        if(mMediaPlayer == null) {
+            mMediaPlayer = new DefaultMediaPlayer(getContext(), this);
+        }
 
         SurfaceTexture texture = getSurfaceTexture();
         if (SHOW_LOGS) Logger.v(TAG, "texture " + texture);

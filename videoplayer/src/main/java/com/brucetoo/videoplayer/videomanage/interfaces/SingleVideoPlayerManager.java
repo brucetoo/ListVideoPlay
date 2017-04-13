@@ -1,6 +1,7 @@
 package com.brucetoo.videoplayer.videomanage.interfaces;
 
 import com.brucetoo.videoplayer.Config;
+import com.brucetoo.videoplayer.utils.Logger;
 import com.brucetoo.videoplayer.videomanage.MessagesHandlerThread;
 import com.brucetoo.videoplayer.videomanage.PlayerMessageState;
 import com.brucetoo.videoplayer.videomanage.SetNewViewForPlayback;
@@ -13,7 +14,6 @@ import com.brucetoo.videoplayer.videomanage.messages.SetUrlDataSourceMessage;
 import com.brucetoo.videoplayer.videomanage.messages.Stop;
 import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
-import com.brucetoo.videoplayer.utils.Logger;
 
 import java.util.Arrays;
 
@@ -80,17 +80,17 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<MetaData>, V
      */
     private void startNewPlayback(MetaData currentItemMetaData, VideoPlayerView videoPlayerView, String videoUrl) {
 
-        this.mCurrentPlayer = videoPlayerView;
-
         // set listener for new player
         videoPlayerView.addMediaPlayerListener(this);
-        if (SHOW_LOGS) Logger.v(TAG, "startNewPlayback, mCurrentPlayerState " + mCurrentPlayerState);
 
+        //clear all pre pending message
         mPlayerHandler.clearAllPendingMessages(TAG);
 
+        //clear current player
         stopResetReleaseClearCurrentPlayer();
-        setNewViewForPlayback(currentItemMetaData, videoPlayerView);
-        startPlayback(videoPlayerView, videoUrl);
+
+        //start play in new player
+        setNewViewForPlaybackAndPlay(currentItemMetaData, videoPlayerView,videoUrl);
     }
 
     /**
@@ -146,31 +146,21 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<MetaData>, V
         }
     }
 
-    /**
-     * This method posts a set of messages to {@link MessagesHandlerThread} in order
-     * to start new playback
-     *
-     * @param videoPlayerView - video player view which should start playing
-     * @param videoUrl - a source path
-     */
-    private void startPlayback(VideoPlayerView videoPlayerView, String videoUrl) {
-        if(SHOW_LOGS) Logger.v(TAG, "startPlayback");
-
-        mPlayerHandler.addMessages(Arrays.asList(
-                new CreateNewPlayerInstance(videoPlayerView, this),
-                new SetUrlDataSourceMessage(videoPlayerView, videoUrl, this),
-                new Prepare(videoPlayerView, this)
-        ));
-    }
-
 
     /**
      * This method posts a message that will eventually call {@link PlayerItemChangeListener#onPlayerItemChanged(MetaData)}
      * When current player is stopped and new player is about to be active this message sets new player
      */
-    private void setNewViewForPlayback(MetaData currentItemMetaData, VideoPlayerView videoPlayerView) {
-        if(SHOW_LOGS) Logger.v(TAG, "setNewViewForPlayback, currentItemMetaData " + currentItemMetaData + ", videoPlayer " + videoPlayerView);
-        mPlayerHandler.addMessage(new SetNewViewForPlayback(currentItemMetaData, videoPlayerView, this));
+    private void setNewViewForPlaybackAndPlay(MetaData currentItemMetaData, VideoPlayerView videoPlayerView,String videoUrl) {
+        if(SHOW_LOGS) Logger.v(TAG, "setNewViewForPlaybackAndPlay, currentItemMetaData " + currentItemMetaData + ", videoPlayer " + videoPlayerView);
+        mPlayerHandler.addMessages(Arrays.asList(
+            //trigger {@link PlayerItemChangeListener#onPlayerItemChanged(MetaData)}
+            new SetNewViewForPlayback(currentItemMetaData, videoPlayerView, this),
+            //create new one and start prepare video play
+            new CreateNewPlayerInstance(videoPlayerView, this),
+            new SetUrlDataSourceMessage(videoPlayerView, videoUrl, this),
+            new Prepare(videoPlayerView, this)
+        ));
     }
 
     /**

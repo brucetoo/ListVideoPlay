@@ -4,6 +4,8 @@ import android.graphics.SurfaceTexture;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 
+import com.brucetoo.videoplayer.IViewTracker;
+
 import java.io.IOException;
 
 /**
@@ -62,6 +64,8 @@ public interface IMediaPlayer {
     boolean isPlaying();
 
     void clearAll();
+
+    void setViewTracker(IViewTracker viewTracker);
 
     State getCurrentState();
 

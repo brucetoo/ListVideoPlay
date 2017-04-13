@@ -270,6 +270,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
         if (SHOW_LOGS) Logger.v(TAG, ">> onPlayerItemChanged");
 
         mCurrentPlayer = videoPlayerView;
+        mCurrentPlayer.setViewTracker(viewTracker);
 
         for (VideoPlayerListener listener : mPendingAddListeners) {
             mCurrentPlayer.addMediaPlayerListener(listener);
@@ -301,20 +302,20 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     }
 
     @Override
-    public void onVideoSizeChangedMainThread(int width, int height) {
+    public void onVideoSizeChangedMainThread(IViewTracker viewTracker,int width, int height) {
     }
 
     @Override
-    public void onVideoPreparedMainThread() {
+    public void onVideoPreparedMainThread(IViewTracker viewTracker) {
     }
 
     @Override
-    public void onVideoCompletionMainThread() {
+    public void onVideoCompletionMainThread(IViewTracker viewTracker) {
         mCurrentPlayerState = PlayerMessageState.PLAYBACK_COMPLETED;
     }
 
     @Override
-    public void onErrorMainThread(int what, int extra) {
+    public void onErrorMainThread(IViewTracker viewTracker,int what, int extra) {
         if (SHOW_LOGS) Logger.v(TAG, "onErrorMainThread, what " + what + ", extra " + extra);
 
         /** if error happen during playback, we need to set error state.
@@ -324,16 +325,16 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     }
 
     @Override
-    public void onBufferingUpdateMainThread(int percent) {
+    public void onBufferingUpdateMainThread(IViewTracker viewTracker,int percent) {
     }
 
     @Override
-    public void onVideoStoppedMainThread() {
+    public void onVideoStoppedMainThread(IViewTracker viewTracker) {
 
     }
 
     @Override
-    public void onInfoMainThread(int what) {
+    public void onInfoMainThread(IViewTracker viewTracker,int what) {
 
     }
 

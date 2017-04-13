@@ -116,37 +116,37 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public void onVideoSizeChangedMainThread(int width, int height) {
+    public void onVideoSizeChangedMainThread(IViewTracker viewTracker,int width, int height) {
         Log.e(TAG, "onVideoSizeChangedMainThread");
     }
 
     @Override
-    public void onVideoPreparedMainThread() {
+    public void onVideoPreparedMainThread(IViewTracker viewTracker) {
         Log.e(TAG, "onVideoPreparedMainThread");
     }
 
     @Override
-    public void onVideoCompletionMainThread() {
+    public void onVideoCompletionMainThread(IViewTracker viewTracker) {
         Log.e(TAG, "onVideoCompletionMainThread");
     }
 
     @Override
-    public void onErrorMainThread(int what, int extra) {
+    public void onErrorMainThread(IViewTracker viewTracker,int what, int extra) {
         Log.e(TAG, "onErrorMainThread");
     }
 
     @Override
-    public void onBufferingUpdateMainThread(int percent) {
+    public void onBufferingUpdateMainThread(IViewTracker viewTracker,int percent) {
         Log.e(TAG, "onBufferingUpdateMainThread");
     }
 
     @Override
-    public void onVideoStoppedMainThread() {
+    public void onVideoStoppedMainThread(IViewTracker viewTracker) {
         Log.e(TAG, "onVideoStoppedMainThread");
     }
 
     @Override
-    public void onInfoMainThread(int what) {
+    public void onInfoMainThread(IViewTracker viewTracker,int what) {
         Log.e(TAG, "onInfoMainThread");
     }
 }

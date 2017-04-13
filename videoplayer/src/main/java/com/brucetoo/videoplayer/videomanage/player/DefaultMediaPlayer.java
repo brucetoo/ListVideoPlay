@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.view.Surface;
 
 import com.brucetoo.videoplayer.Config;
+import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.videomanage.interfaces.IMediaPlayer;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
 import com.brucetoo.videoplayer.utils.Logger;
@@ -40,6 +41,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
 
     private VideoPlayerListener mListener;
     private Context mContext;
+    private IViewTracker mViewTracker;
 
     public DefaultMediaPlayer(Context context, VideoPlayerListener listener) {
         this.mContext = context;
@@ -69,7 +71,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         @Override
         public void run() {
             if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoPreparedMainThread");
-            mListener.onVideoPreparedMainThread();
+            mListener.onVideoPreparedMainThread(mViewTracker);
             if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoPreparedMainThread");
         }
     };
@@ -134,7 +136,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
             throw new RuntimeException("this should be called in Main Thread");
         }
         if (mListener != null) {
-            mListener.onVideoSizeChangedMainThread(width, height);
+            mListener.onVideoSizeChangedMainThread(mViewTracker,width, height);
         }
     }
 
@@ -147,7 +149,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         }
 
         if (mListener != null) {
-            mListener.onVideoCompletionMainThread();
+            mListener.onVideoCompletionMainThread(mViewTracker);
         }
     }
 
@@ -162,7 +164,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         //weird error code what = -38 ? What the hell?
         if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN || what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
             if (mListener != null) {
-                mListener.onErrorMainThread(what, extra);
+                mListener.onErrorMainThread(mViewTracker,what, extra);
             }
         }
         // We always return true, because after Error player stays in this state.
@@ -174,7 +176,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         if (SHOW_LOGS) Logger.v(TAG, "onBufferingUpdate percent : " + percent);
         if (mListener != null) {
-            mListener.onBufferingUpdateMainThread(percent);
+            mListener.onBufferingUpdateMainThread(mViewTracker,percent);
         }
     }
 
@@ -183,7 +185,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         if (SHOW_LOGS) Logger.v(TAG, "onInfoMainThread");
         printInfo(what);
         if (mListener != null) {
-            mListener.onInfoMainThread(what);
+            mListener.onInfoMainThread(mViewTracker,what);
         }
         return false;
     }
@@ -253,7 +255,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         @Override
         public void run() {
             if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoStoppedMainThread");
-            mListener.onVideoStoppedMainThread();
+            mListener.onVideoStoppedMainThread(mViewTracker);
             if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoStoppedMainThread");
         }
     };
@@ -388,6 +390,11 @@ public class DefaultMediaPlayer implements IMediaPlayer,
                 Logger.v(TAG, "seekToPosition, position " + mis + ", mState " + state);
             mMediaPlayer.seekTo(mis);
         }
+    }
+
+    @Override
+    public void setViewTracker(IViewTracker viewTracker) {
+       this.mViewTracker = viewTracker;
     }
 
     @Override

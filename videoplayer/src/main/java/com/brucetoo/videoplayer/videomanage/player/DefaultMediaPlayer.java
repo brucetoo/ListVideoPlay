@@ -17,6 +17,11 @@ import com.brucetoo.videoplayer.utils.Logger;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Default Media Player implement by system {@link MediaPlayer}
+ * All lifecycle method must be called in sub thread,and post callback
+ * to main thread,handle them in {@link VideoPlayerView}.
+ */
 public class DefaultMediaPlayer implements IMediaPlayer,
     MediaPlayer.OnErrorListener,
     MediaPlayer.OnBufferingUpdateListener,

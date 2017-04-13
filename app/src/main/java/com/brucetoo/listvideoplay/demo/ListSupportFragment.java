@@ -18,6 +18,9 @@ import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.VisibleChangeListener;
 import com.brucetoo.videoplayer.scrolldetector.ListScrollDetector;
+import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
+import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
+import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
 import com.brucetoo.videoplayer.videomanage.player.RatioImageView;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
@@ -29,7 +32,7 @@ import com.squareup.picasso.Picasso;
  * At 09:28
  */
 
-public class ListSupportFragment extends Fragment implements View.OnClickListener, VisibleChangeListener {
+public class ListSupportFragment extends Fragment implements View.OnClickListener, VisibleChangeListener, PlayerItemChangeListener, VideoPlayerListener {
 
     public static final String TAG = "ListSupportFragment";
     private ListView mListView;
@@ -74,6 +77,14 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
                 }
             }
         });
+        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
+        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
     }
 
     @Override
@@ -97,5 +108,45 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
 //                tracker.getFloatLayerView().setVisibility(View.VISIBLE);
 //            }
         }
+    }
+
+    @Override
+    public void onPlayerItemChanged(IViewTracker viewTracker) {
+        Log.i(TAG, "onPlayerItemChanged " + viewTracker.getFollowerView());
+    }
+
+    @Override
+    public void onVideoSizeChangedMainThread(int width, int height) {
+        Log.e(TAG, "onVideoSizeChangedMainThread");
+    }
+
+    @Override
+    public void onVideoPreparedMainThread() {
+        Log.e(TAG, "onVideoPreparedMainThread");
+    }
+
+    @Override
+    public void onVideoCompletionMainThread() {
+        Log.e(TAG, "onVideoCompletionMainThread");
+    }
+
+    @Override
+    public void onErrorMainThread(int what, int extra) {
+        Log.e(TAG, "onErrorMainThread");
+    }
+
+    @Override
+    public void onBufferingUpdateMainThread(int percent) {
+        Log.e(TAG, "onBufferingUpdateMainThread");
+    }
+
+    @Override
+    public void onVideoStoppedMainThread() {
+        Log.e(TAG, "onVideoStoppedMainThread");
+    }
+
+    @Override
+    public void onInfoMainThread(int what) {
+        Log.e(TAG, "onInfoMainThread");
     }
 }

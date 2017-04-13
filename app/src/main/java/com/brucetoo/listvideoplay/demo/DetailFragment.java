@@ -146,7 +146,8 @@ public class DetailFragment extends Fragment implements Backable {
         startMoveOutside(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                if(getActivity() != null)
+                    getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         return true;

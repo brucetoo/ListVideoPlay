@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
-import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
-import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerManager;
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 
 /**
  * Created by Bruce Too
@@ -15,9 +12,8 @@ import com.brucetoo.videoplayer.videomanage.meta.MetaData;
  * At 15:08
  */
 
-public class VideoTracker extends ViewTracker implements VideoPlayerListener {
+public class VideoTracker extends ViewTracker {
 
-    private VideoPlayerManager<MetaData> mVideoPlayerManager = new SingleVideoPlayerManager(null);
     public VideoTracker(Activity context) {
         super(context);
     }
@@ -25,14 +21,14 @@ public class VideoTracker extends ViewTracker implements VideoPlayerListener {
     @Override
     public IViewTracker detach() {
         IViewTracker tracker = super.detach();
-        mVideoPlayerManager.stopAnyPlayback();
+        SingleVideoPlayerManager.getInstance().stopAnyPlayback();
         return tracker;
     }
 
     @Override
     public IViewTracker destroy() {
         IViewTracker tracker = super.destroy();
-        mVideoPlayerManager.resetMediaPlayer();
+        SingleVideoPlayerManager.getInstance().resetMediaPlayer();
         return tracker;
     }
 
@@ -44,43 +40,8 @@ public class VideoTracker extends ViewTracker implements VideoPlayerListener {
             throw new IllegalArgumentException("Tracker view need set tag by id:tag_tracker_view !");
         }
 
-        mVideoPlayerManager.playNewVideo(null,getFloatLayerView().getVideoPlayerView(),(String)tag);
-        mVideoPlayerManager.addVideoPlayerListener(this);
+        SingleVideoPlayerManager.getInstance().playNewVideo(this,getFloatLayerView().getVideoPlayerView(),(String)tag);
+
         return tracker;
-    }
-
-    @Override
-    public void onVideoSizeChangedMainThread(int width, int height) {
-
-    }
-
-    @Override
-    public void onVideoPreparedMainThread() {
-
-    }
-
-    @Override
-    public void onVideoCompletionMainThread() {
-
-    }
-
-    @Override
-    public void onErrorMainThread(int what, int extra) {
-
-    }
-
-    @Override
-    public void onBufferingUpdateMainThread(int percent) {
-
-    }
-
-    @Override
-    public void onVideoStoppedMainThread() {
-
-    }
-
-    @Override
-    public void onInfoMainThread(int what) {
-
     }
 }

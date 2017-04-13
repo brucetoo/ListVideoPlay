@@ -1,20 +1,20 @@
 package com.brucetoo.videoplayer.videomanage;
 
 
+import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerManagerCallback;
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.messages.PlayerMessage;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 public class SetNewViewForPlayback extends PlayerMessage {
 
-    private final MetaData mCurrentItemMetaData;
+    private final IViewTracker mViewTracker;
     private final VideoPlayerView mCurrentPlayer;
     private final VideoPlayerManagerCallback mCallback;
 
-    public SetNewViewForPlayback(MetaData currentItemMetaData, VideoPlayerView videoPlayerView, VideoPlayerManagerCallback callback) {
+    public SetNewViewForPlayback(IViewTracker viewTracker, VideoPlayerView videoPlayerView, VideoPlayerManagerCallback callback) {
         super(videoPlayerView, callback);
-        mCurrentItemMetaData = currentItemMetaData;
+        mViewTracker = viewTracker;
         mCurrentPlayer = videoPlayerView;
         mCallback = callback;
     }
@@ -26,7 +26,7 @@ public class SetNewViewForPlayback extends PlayerMessage {
 
     @Override
     protected void performAction(VideoPlayerView currentPlayer) {
-        mCallback.setCurrentItem(mCurrentItemMetaData, mCurrentPlayer);
+        mCallback.setCurrentItem(mViewTracker, mCurrentPlayer);
     }
 
     @Override

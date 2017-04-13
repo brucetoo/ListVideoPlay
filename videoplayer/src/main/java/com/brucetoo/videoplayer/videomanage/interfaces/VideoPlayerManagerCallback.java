@@ -1,8 +1,8 @@
 package com.brucetoo.videoplayer.videomanage.interfaces;
 
 
+import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.videomanage.PlayerMessageState;
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 /**
@@ -11,7 +11,7 @@ import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
  */
 public interface VideoPlayerManagerCallback {
 
-    void setCurrentItem(MetaData currentItemMetaData, VideoPlayerView newPlayerView);
+    void setCurrentItem(IViewTracker viewTracker, VideoPlayerView newPlayerView);
 
     void setVideoPlayerState(VideoPlayerView videoPlayerView, PlayerMessageState playerMessageState);
 

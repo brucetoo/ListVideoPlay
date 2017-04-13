@@ -1,8 +1,8 @@
 package com.brucetoo.videoplayer.videomanage.interfaces;
 
 
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
+import com.brucetoo.videoplayer.IViewTracker;
 
 public interface PlayerItemChangeListener {
-    void onPlayerItemChanged(MetaData currentItemMetaData);
+    void onPlayerItemChanged(IViewTracker viewTracker);
 }

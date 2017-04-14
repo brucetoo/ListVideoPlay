@@ -1,0 +1,14 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="video_bottom_landscape">45dp</dimen>
+    <dimen name="video_bottom_portrait">35dp</dimen>
+    <dimen name="video_top_landscape">15dp</dimen>
+    <dimen name="video_top_portrait">8dp</dimen>
+    <dimen name="video_item_portrait_height">200dp</dimen>
+
+    <dimen name="video_small_screen_height">150dp</dimen>
+    <dimen name="video_small_screen_width">200dp</dimen>
+    <dimen name="video_small_screen_margin">5dp</dimen>
+</resources>

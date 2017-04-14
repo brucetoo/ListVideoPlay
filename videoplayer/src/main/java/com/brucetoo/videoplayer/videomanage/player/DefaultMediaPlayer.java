@@ -11,6 +11,7 @@ import android.view.Surface;
 
 import com.brucetoo.videoplayer.Config;
 import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.VideoTracker;
 import com.brucetoo.videoplayer.videomanage.interfaces.IMediaPlayer;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
 import com.brucetoo.videoplayer.utils.Logger;
@@ -343,11 +344,11 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     }
 
     @Override
-    public int getCurrentPosition() {
+    public int getCurrentPosition() throws IOException{
         int currentPos;
         try {
             currentPos = mMediaPlayer.getCurrentPosition();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             return 0;
         }
         return currentPos;
@@ -374,15 +375,6 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     }
 
     @Override
-    public int getCurrentDuration() throws IOException {
-        int duration = 0;
-        synchronized (mState) {
-            duration = mMediaPlayer.getCurrentPosition();
-        }
-        return duration;
-    }
-
-    @Override
     public void seekTo(int mis) throws IOException {
         synchronized (mState) {
             State state = mState.get();
@@ -395,6 +387,9 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     @Override
     public void setViewTracker(IViewTracker viewTracker) {
        this.mViewTracker = viewTracker;
+        if(viewTracker instanceof VideoTracker){
+            ((VideoTracker) viewTracker).setMediaPlayer(this);
+        }
     }
 
     @Override

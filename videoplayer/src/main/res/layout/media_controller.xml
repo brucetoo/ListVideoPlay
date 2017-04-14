@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent">
+
+
+    <ImageButton
+        android:id="@+id/bottom_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="4dp"
+        android:background="@null"
+        android:src="@drawable/ic_media_play"/>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="#4D000000"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/bottom_time_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"/>
+
+        <SeekBar
+            android:id="@+id/bottom_seekbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:secondaryProgress="40"
+            android:progressDrawable="@drawable/video_seek_bar_bg"
+            android:thumb="@drawable/video_seek_bar_thumb"
+            android:thumbOffset="0dp"
+            android:progress="0"/>
+
+        <TextView
+            android:id="@+id/bottom_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"/>
+
+        <ImageButton
+            android:id="@+id/bottom_fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="25dp"
+            android:paddingLeft="25dp"
+            android:background="@null"
+            android:src="@drawable/ic_media_fullscreen_stretch"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/image_center_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/video_volume_bg"/>
+
+        <ProgressBar
+            android:id="@+id/progress_center"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="80dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="35dp"
+            android:max="100"
+            android:progress="20"
+            android:progressDrawable="@drawable/video_layer_progress"
+            android:visibility="visible"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:minHeight="50dp"
+        android:background="@drawable/video_top_bg">
+
+        <TextView
+            android:id="@+id/top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/top_back"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            tools:text="一个直播直播直播一直播直播"/>
+
+        <ImageButton
+            android:id="@+id/top_back"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:src="@drawable/video_top_back"
+            android:background="@null"/>
+    </RelativeLayout>
+
+</RelativeLayout>

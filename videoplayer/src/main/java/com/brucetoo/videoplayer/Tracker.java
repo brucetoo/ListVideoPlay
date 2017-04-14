@@ -1,6 +1,7 @@
 package com.brucetoo.videoplayer;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.support.v4.util.ArrayMap;
 import android.view.View;
 
@@ -93,6 +94,11 @@ public class Tracker {
     }
 
 
+    public static void onConfigurationChanged(Activity context,Configuration newConfig){
+        if(getViewTracker(context) != null){
+            getViewTracker(context).onConfigurationChanged(newConfig);
+        }
+    }
 
 }
 

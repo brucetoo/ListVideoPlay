@@ -1,6 +1,7 @@
 package com.brucetoo.listvideoplay;
 
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import com.brucetoo.listvideoplay.demo.PagerSupportFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewSmallScreenFragment;
 import com.brucetoo.listvideoplay.demo.SpringAnimationFragment;
+import com.brucetoo.videoplayer.Tracker;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -89,6 +91,12 @@ public class MainActivity extends AppCompatActivity{
             .add(R.id.layout_container,new DetailFragment(),"DetailFragment")
             .addToBackStack("DetailFragment")
             .commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Tracker.onConfigurationChanged(this,newConfig);
     }
 
     @Override

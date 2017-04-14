@@ -72,19 +72,15 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
                 if(tracker != null) {
                     View trackerView = tracker.getTrackerView();
                     if (trackerView != null && trackerView.equals(view.findViewById(tracker.getTrackerViewId()))) {
-                        Tracker.detach(getActivity());
+                        //TODO Configuration Changed may cause problem
+//                        Tracker.detach(getActivity());
+
                     }
                 }
             }
         });
         SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
         SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -112,7 +108,7 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onPlayerItemChanged(IViewTracker viewTracker) {
-        Log.i(TAG, "onPlayerItemChanged " + viewTracker.getFollowerView());
+        Log.i(TAG, "onPlayerItemChanged ");
     }
 
     @Override

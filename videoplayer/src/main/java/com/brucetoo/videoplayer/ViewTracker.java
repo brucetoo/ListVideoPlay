@@ -2,12 +2,17 @@ package com.brucetoo.videoplayer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
@@ -28,43 +33,74 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     /**
      * A activity only has a single {@link ViewTracker} instance,for find decor view
      */
-    private Activity mContext;
+    protected Activity mContext;
 
     /**
      * {@link #mTrackView} visible changed listener
      */
-    private VisibleChangeListener mVisibleChangeListener;
+    protected VisibleChangeListener mVisibleChangeListener;
 
     /**
      * View that need be tracked scroll changed,Normally inside ListView or RecyclerView
      */
-    private View mTrackView;
+    protected View mTrackView;
+
     /**
-     * Float top view in decor view,Normally indicate video root view
+     * The root layer of video container,Normally contains video view
      */
-    private View mFollowerView;
+    protected View mFollowerView;
+
+    /**
+     * The top layer of {@link #mFollowerView},we can add video controller view...
+     */
+    protected FrameLayout mVideoTopView;
+
+    /**
+     * The bottom layer of {@link #mFollowerView},we can add mask view...
+     */
+    protected FrameLayout mVideoBottomView;
+
     /**
      * A view that can scroll vertical,Normally indicate ListView or RecyclerView
      */
-    private View mVerticalScrollView;
+    protected View mVerticalScrollView;
+
     /**
      * The whole root view that be added in decor,we can add View inside if needed
      */
-    private FloatLayerView mFloatLayerView;
+    protected FloatLayerView mFloatLayerView;
 
     /**
      * {@link #mTrackView}'s current edge triggered
      */
-    private int mCurrentEdge = NONE_EDGE;
+    protected int mCurrentEdge = NONE_EDGE;
 
     /**
      * {@link #getTrackerView()} scroll state change detector
      */
-    private IScrollDetector mScrollDetector;
+    protected IScrollDetector mScrollDetector;
 
-    private boolean mIsAttach;
+    protected boolean mIsAttach;
 
-    private int mTrackViewId = View.NO_ID;
+    protected int mTrackViewId = NO_ID;
+
+    /**
+     * Origin activity flag and system ui visibility
+     */
+    protected int mActivityFlag;
+
+    protected int mActivitySystemUIVisibility;
+
+    /**
+     * Origin location and width/height params about {@link #mFollowerView}
+     */
+    protected int mOriginX;
+
+    protected int mOriginY;
+
+    protected int mOriginWidth;
+
+    protected int mOriginHeight;
 
     public ViewTracker(Activity context) {
         if (context == null) {
@@ -78,9 +114,14 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         if (mFloatLayerView == null) {
             mFloatLayerView = new FloatLayerView(mContext);
             if (mFloatLayerView.getParent() == null) {
-                getDecorView().addView(mFloatLayerView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                getDecorView().addView(mFloatLayerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                 mFollowerView = mFloatLayerView.getVideoRootView();
+                mVideoTopView = mFloatLayerView.getVideoTopView();
+                mVideoBottomView = mFloatLayerView.getVideoBottomView();
             }
+
+            restoreActivityFlag();
+            keepScreenOn(true);
         }
         mIsAttach = true;
         return this;
@@ -96,6 +137,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             getDecorView().removeView(mFloatLayerView);
             mFloatLayerView = null;
         }
+        keepScreenOn(false);
         mIsAttach = false;
         return this;
     }
@@ -141,6 +183,46 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+//        if (newConfig.getLayoutDirection() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+        if (isFullScreen()) {
+            Window window = mContext.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            }
+
+            rebindTrackerView(0, 0, Utils.getDeviceWidth(mContext), Utils.getDeviceHeight(mContext));
+        } else {
+            Window window = mContext.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.addFlags(mActivityFlag);
+            window.getDecorView().setSystemUiVisibility(mActivitySystemUIVisibility);
+
+            rebindTrackerView(mOriginX, mOriginY, mOriginWidth, mOriginHeight);
+        }
+    }
+
+    @Override
+    public boolean isFullScreen() {
+        int orientation = mContext.getRequestedOrientation();
+        return orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            || orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+            || orientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
+    }
+
+    @Override
+    public void toFullScreen() {
+        //TODO Auto Rotate
+        mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+    }
+
+    @Override
+    public void toNormalScreen() {
+        mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
     public IViewTracker trackView(@NonNull View trackView) {
         if (mTrackView != null) {//not first
             detach();
@@ -152,6 +234,20 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             throw new IllegalStateException("Tracked view must set ID before use !");
         }
         mTrackViewId = id;
+        rebindViewToTracker(mFollowerView, mTrackView);
+        trackView.getViewTreeObserver().addOnScrollChangedListener(this);
+        return this;
+    }
+
+    @Override
+    public IViewTracker changeTrackView(View trackView) {
+        //clear old track new
+        this.mTrackView.getViewTreeObserver().removeOnScrollChangedListener(this);
+        this.mTrackView = trackView;
+        int id = mTrackView.getId();
+        if (id == NO_ID) {
+            throw new IllegalStateException("Tracked view must set ID before use !");
+        }
         rebindViewToTracker(mFollowerView, mTrackView);
         trackView.getViewTreeObserver().addOnScrollChangedListener(this);
         return this;
@@ -208,13 +304,25 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     public void onScrollChanged() {
         //bind to tracker and move..
         if (mFloatLayerView != null && Config.SHOW_DEBUG_RECT) {// for test
-            mFloatLayerView.show.setText(getCalculateValueByString(mTrackView));
+            mFloatLayerView.testView.setText(getCalculateValueByString(mTrackView));
         }
-        moveCurrentView(mVerticalScrollView, mFollowerView, mTrackView);
+        //only move follower view in portrait screen
+        if (!isFullScreen()) {
+            moveCurrentView(mVerticalScrollView, mFollowerView, mTrackView);
+        }
     }
 
     private ViewGroup getDecorView() {
         return (ViewGroup) mContext.getWindow().getDecorView();
+    }
+
+    private void rebindTrackerView(int x, int y, int width, int height) {
+        View parent = (View) mFollowerView.getParent();
+        ViewAnimator.putOn(parent).translation(x, y)
+            .andPutOn(mFloatLayerView).translation(0, 0);
+        mFollowerView.getLayoutParams().width = width;
+        mFollowerView.getLayoutParams().height = height;
+        mFollowerView.requestLayout();
     }
 
     private void rebindViewToTracker(View fromView, View toView) {
@@ -224,8 +332,13 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         Log.e(TAG, "rebindViewToTracker locTo[0] -> " + locTo[0] + " locTo[1] -> " + locTo[1]);
         ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
             .andPutOn(fromView).translation(0, 0);
-        fromView.getLayoutParams().width = toView.getWidth();
-        fromView.getLayoutParams().height = toView.getHeight();
+        mOriginX = locTo[0];
+        mOriginY = locTo[1];
+        mOriginWidth = toView.getWidth();
+        mOriginHeight = toView.getHeight();
+        Log.e(TAG, "rebindViewToTracker mOriginX:" + mOriginX + " mOriginY:" + mOriginY + " mOriginWidth:" + mOriginWidth + " mOriginHeight:" + mOriginHeight);
+        fromView.getLayoutParams().width = mOriginWidth;
+        fromView.getLayoutParams().height = mOriginHeight;
         fromView.requestLayout();
     }
 
@@ -345,6 +458,20 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             .append(" \n ")
             .append("visible:").append(String.format("%.2f", v1 == 1 ? v2 : v1).toString());
         return buffer.toString();
+    }
+
+    protected void restoreActivityFlag() {
+        Window window = mContext.getWindow();
+        mActivityFlag = window.getAttributes().flags;
+        mActivitySystemUIVisibility = window.getDecorView().getSystemUiVisibility();
+    }
+
+    protected void keepScreenOn(boolean on) {
+        if (on) {
+            mContext.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            mContext.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 
 }

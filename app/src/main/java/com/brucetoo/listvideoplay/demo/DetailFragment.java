@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.brucetoo.listvideoplay.Backable;
 import com.brucetoo.listvideoplay.R;
-import com.brucetoo.videoplayer.FloatLayerView;
 import com.brucetoo.videoplayer.Tracker;
 
 /**
@@ -57,9 +56,16 @@ public class DetailFragment extends Fragment implements Backable {
     private View videoRootParent;
     private float videoRootTransY;
     private float videoRootTransX;
+    /**
+     * Keep the old tracker view in case we rollback when dismiss {@link DetailFragment}
+     * NOTE: if the {@link DetailFragment} contains a new {@link com.brucetoo.videoplayer.scrolldetector.IScrollDetector}
+     * we also need keep the old one, and rollback it when dismiss {@link DetailFragment}
+     */
+    private View oldTrackerView;
 
     private void startMoveInside() {
-        videoRoot = ((FloatLayerView) Tracker.getViewTracker(getActivity()).getFloatLayerView()).getVideoRootView();
+        videoRoot = (Tracker.getViewTracker(getActivity()).getFollowerView());
+        oldTrackerView = Tracker.getViewTracker(getActivity()).getTrackerView();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
         final int[] loc = new int[2];
         mImageCover.getLocationOnScreen(loc);
@@ -90,18 +96,9 @@ public class DetailFragment extends Fragment implements Backable {
         });
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
-//                int deltaY = rect.bottom - rect.top;
-//                int deltaX = rect.right - rect.left;
-//                if(deltaY != mImageCover.getHeight() || deltaX != mImageCover.getWidth()){
-//                    ViewAnimator.putOn(videoRoot).translation(deltaX - mImageCover.getWidth(),deltaY - mImageCover.getHeight());
-//                    ViewGroup.LayoutParams params = videoRoot.getLayoutParams();
-//                    params.width = deltaX;
-//                    params.height = deltaY;
-//                    videoRoot.requestLayout();
-//                }
-//                videoRootTransY = videoRoot.getTranslationY();
-//                videoRootTransX = videoRoot.getTranslationX();
+            public void onAnimationEnd(Animator animation) {
+                //we must simple change tracker view to new one when animation end
+                Tracker.getViewTracker(getActivity()).changeTrackView(mImageCover);
             }
         });
         animator.setDuration(500);
@@ -132,6 +129,8 @@ public class DetailFragment extends Fragment implements Backable {
             @Override
             public void onAnimationEnd(Animator animation) {
                 listener.onAnimationEnd(animation);
+                //rollback to old tracker view
+                Tracker.getViewTracker(getActivity()).changeTrackView(oldTrackerView);
             }
         });
         animator.start();

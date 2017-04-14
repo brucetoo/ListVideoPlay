@@ -1,6 +1,7 @@
 package com.brucetoo.videoplayer;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.View;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
@@ -43,9 +44,17 @@ public interface IViewTracker {
 
     /**
      * Offer a tracker view for follower view to track
+     * Need Detach the old one and attach new one
      * @param trackView the view that be tracked scroll
      */
     IViewTracker trackView(View trackView);
+
+    /**
+     * Just simple bind current {@link #getFollowerView()} to new trackerView
+     * Only {@link #getTrackerView()} changed. don't re-attach to screen
+     * @param trackView new tracker view
+     */
+    IViewTracker changeTrackView(View trackView);
 
     /**
      * Bind a {@link IScrollDetector} of tracker view,in case we
@@ -105,5 +114,29 @@ public interface IViewTracker {
      */
     FloatLayerView getFloatLayerView();
 
+    /**
+     * Get bound Activity instance
+     */
     Context getContext();
+
+    /**
+     * Call this when activity configuration changed
+     * @param newConfig new Configuration
+     */
+    void onConfigurationChanged(Configuration newConfig);
+
+    /**
+     * Check if current activity is landscape
+     */
+    boolean isFullScreen();
+
+    /**
+     * Switch current activity to landscape(full-screen)
+     */
+    void toFullScreen();
+
+    /**
+     * Switch current activity to portrait
+     */
+    void toNormalScreen();
 }

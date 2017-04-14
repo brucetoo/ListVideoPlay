@@ -19,6 +19,11 @@ import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
  * Created by Bruce Too
  * On 05/04/2017.
  * At 16:27
+ * This is used to added into {@link android.view.Window#ID_ANDROID_CONTENT} decor view
+ * It contains:
+ * 1. rootLayout which hold all views to be added in {@link FloatLayerView}
+ * 2. {@link #mVideoBottomView} in bottom layer of {@link #mVideoPlayerView}, which can be used to add some mask view...
+ * 3. {@link #mVideoTopView} in top layer of {@link #mVideoPlayerView},which can add some video controller view...
  */
 
 public class FloatLayerView extends FrameLayout {
@@ -38,36 +43,41 @@ public class FloatLayerView extends FrameLayout {
         init();
     }
 
-    public View videoBackView;
-    public TextView show;
+    //test view always lay in top
+    public TextView testView;
+    private FrameLayout mVideoBottomView;
     private VideoPlayerView mVideoPlayerView;
+    private FrameLayout mVideoTopView;
 
     private void init() {
-        FrameLayout videoLayout = new FrameLayout(getContext());
-
+        mVideoBottomView = new FrameLayout(getContext());
+        mVideoTopView = new FrameLayout(getContext());
         mVideoPlayerView = new VideoPlayerView(getContext());
 
         FrameLayout videoRoot = new FrameLayout(getContext());
-        videoBackView = new View(getContext());
-        videoBackView.setBackgroundColor(Color.parseColor("#000000"));
-        videoRoot.addView(videoBackView);
+        videoRoot.addView(mVideoBottomView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         videoRoot.addView(mVideoPlayerView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        videoRoot.addView(mVideoTopView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        videoLayout.addView(videoRoot);
-
-        show = new TextView(getContext());
-        show.setText("100%");
-        show.setTextColor(Color.parseColor("#00FF00"));
+        testView = new TextView(getContext());
+        testView.setTextColor(Color.parseColor("#00FF00"));
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
-        videoLayout.addView(show, layoutParams);
+        videoRoot.addView(testView, layoutParams);
 
-        //videoLayout height must be WRAP_CONTENT!!!!! for inner move of cover view
-        addView(videoLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        addView(videoRoot, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     public View getVideoRootView() {
         return (View) mVideoPlayerView.getParent();
+    }
+
+    public FrameLayout getVideoBottomView(){
+        return mVideoBottomView;
+    }
+
+    public FrameLayout getVideoTopView(){
+        return mVideoTopView;
     }
 
     public VideoPlayerView getVideoPlayerView(){

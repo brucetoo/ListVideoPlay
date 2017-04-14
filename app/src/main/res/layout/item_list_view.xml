@@ -14,7 +14,7 @@
         tools:background="@color/colorAccent"
         />
 
-    <!--This layout hold UI element show on
+    <!--This layout hold UI element testView on
     the of cover image-->
     <RelativeLayout
         android:id="@+id/layout_play_area"

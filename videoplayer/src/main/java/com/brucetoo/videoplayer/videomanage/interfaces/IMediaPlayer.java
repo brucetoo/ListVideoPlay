@@ -47,8 +47,6 @@ public interface IMediaPlayer {
 
     int getDuration() throws IOException;
 
-    int getCurrentDuration() throws IOException;
-
     void seekTo(int mis) throws IOException;
 
     void setVolume(@FloatRange(from = 0, to = 1) float left, @FloatRange(from = 0, to = 1) float right) throws IOException;
@@ -59,7 +57,7 @@ public interface IMediaPlayer {
 
     int getVideoHeight();
 
-    int getCurrentPosition();
+    int getCurrentPosition() throws IOException;
 
     boolean isPlaying();
 

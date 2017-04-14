@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:onClick="onVideoSupport"
-            android:text="Video Surpport"
+            android:text="List Video Play Surpport"
             />
     </LinearLayout>
 

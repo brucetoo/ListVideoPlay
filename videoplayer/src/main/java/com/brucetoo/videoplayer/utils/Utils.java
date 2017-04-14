@@ -23,14 +23,14 @@ public class Utils {
     public static int getDeviceWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        wm.getDefaultDisplay().getRealMetrics(mDisplayMetrics);
         return mDisplayMetrics.widthPixels;
     }
 
     public static int getDeviceHeight(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        wm.getDefaultDisplay().getRealMetrics(mDisplayMetrics);
         return mDisplayMetrics.heightPixels;
     }
 

@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.view.View;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
+import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 
 /**
  * Created by Bruce Too
@@ -39,6 +40,7 @@ public interface IViewTracker {
 
     /**
      * {@link #detach()} and release unnecessary resources
+     * Normally call in Activity or Fragment destroyed.
      */
     IViewTracker destroy();
 
@@ -69,6 +71,8 @@ public interface IViewTracker {
      * @param listener rect change listener
      */
     IViewTracker visibleListener(VisibleChangeListener listener);
+
+    IViewTracker controller(IControllerView controllerView);
 
     /**
      * Check if the follower view is attach into DecorView {@link android.view.Window#ID_ANDROID_CONTENT}

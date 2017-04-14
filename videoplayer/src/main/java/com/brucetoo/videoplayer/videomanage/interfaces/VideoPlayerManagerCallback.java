@@ -13,7 +13,7 @@ public interface VideoPlayerManagerCallback {
 
     void setCurrentItem(IViewTracker viewTracker, VideoPlayerView newPlayerView);
 
-    void setVideoPlayerState(VideoPlayerView videoPlayerView, PlayerMessageState playerMessageState);
+    void updateVideoPlayerState(VideoPlayerView videoPlayerView, PlayerMessageState playerMessageState);
 
     PlayerMessageState getCurrentPlayerState();
 }

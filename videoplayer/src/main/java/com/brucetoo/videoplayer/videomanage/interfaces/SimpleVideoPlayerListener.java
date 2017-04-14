@@ -11,37 +11,57 @@ import com.brucetoo.videoplayer.IViewTracker;
 public class SimpleVideoPlayerListener implements VideoPlayerListener {
 
     @Override
-    public void onVideoSizeChangedMainThread(IViewTracker viewTracker, int width, int height) {
+    public void onVideoSizeChanged(IViewTracker viewTracker, int width, int height) {
 
     }
 
     @Override
-    public void onVideoPreparedMainThread(IViewTracker viewTracker) {
+    public void onVideoPrepared(IViewTracker viewTracker) {
 
     }
 
     @Override
-    public void onVideoCompletionMainThread(IViewTracker viewTracker) {
+    public void onVideoCompletion(IViewTracker viewTracker) {
 
     }
 
     @Override
-    public void onErrorMainThread(IViewTracker viewTracker, int what, int extra) {
+    public void onError(IViewTracker viewTracker, int what, int extra) {
 
     }
 
     @Override
-    public void onBufferingUpdateMainThread(IViewTracker viewTracker, int percent) {
+    public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
 
     }
 
     @Override
-    public void onVideoStoppedMainThread(IViewTracker viewTracker) {
+    public void onVideoStopped(IViewTracker viewTracker) {
 
     }
 
     @Override
-    public void onInfoMainThread(IViewTracker viewTracker, int what) {
+    public void onVideoReset(IViewTracker viewTracker) {
+
+    }
+
+    @Override
+    public void onVideoReleased(IViewTracker viewTracker) {
+
+    }
+
+    @Override
+    public void onInfo(IViewTracker viewTracker, int what) {
+
+    }
+
+    @Override
+    public void onVideoStarted(IViewTracker viewTracker) {
+
+    }
+
+    @Override
+    public void onVideoPaused(IViewTracker viewTracker) {
 
     }
 }

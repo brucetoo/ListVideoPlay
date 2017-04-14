@@ -1,13 +1,16 @@
 package com.brucetoo.videoplayer;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.brucetoo.videoplayer.videomanage.controller.VideoControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.IMediaPlayer;
+import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
+import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 import java.io.IOException;
 
@@ -19,8 +22,10 @@ import java.io.IOException;
 
 public class VideoTracker extends ViewTracker {
 
+    private VideoPlayerView mVideoPlayView;
     private IMediaPlayer mMediaPlayer;
     private int mCurrentBuffer;
+    private boolean mIsComplete;
 
     public VideoTracker(Activity context) {
         super(context);
@@ -36,6 +41,11 @@ public class VideoTracker extends ViewTracker {
     @Override
     public IViewTracker attach() {
         IViewTracker tracker = super.attach();
+        mVideoPlayView = mFloatLayerView.getVideoPlayerView();
+//        View view = new View(getContext());
+//        view.setBackgroundColor(Color.parseColor("#dd000000"));
+//        //TODO Add immerse view here
+//        tracker.getFloatLayerView().addView(view,0);
         getVideoTopLayer();
         return tracker;
     }
@@ -55,15 +65,61 @@ public class VideoTracker extends ViewTracker {
             throw new IllegalArgumentException("Tracker view need set tag by id:tag_tracker_view !");
         }
 
-        SingleVideoPlayerManager.getInstance().playNewVideo(this, getFloatLayerView().getVideoPlayerView(), (String) tag);
+        SingleVideoPlayerManager.getInstance().playNewVideo(this, mVideoPlayView, (String) tag);
+        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(new PlayerItemChangeListener() {
+            @Override
+            public void onPlayerItemChanged(IViewTracker viewTracker) {
+                addOrRemoveLoadingView(true);
+                mVideoPlayView.setVisibility(View.INVISIBLE);
+            }
+        });
+
         SingleVideoPlayerManager.getInstance().addVideoPlayerListener(new SimpleVideoPlayerListener() {
             @Override
-            public void onBufferingUpdateMainThread(IViewTracker viewTracker, int percent) {
+            public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
                 mCurrentBuffer = percent;
+            }
+
+            @Override
+            public void onVideoCompletion(IViewTracker viewTracker) {
+                mIsComplete = true;
+            }
+
+            @Override
+            public void onVideoPrepared(IViewTracker viewTracker) {
+                mVideoPlayView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onInfo(IViewTracker viewTracker, int what) {
+                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                    //hide loading view
+                    mVideoPlayView.setVisibility(View.VISIBLE);
+                    addOrRemoveLoadingView(false);
+                } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
+                    //show loading view
+                    addOrRemoveLoadingView(true);
+                } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                    //hide loading view
+                    addOrRemoveLoadingView(false);
+                }
             }
         });
 
         return tracker;
+    }
+
+    private void addOrRemoveLoadingView(boolean add) {
+        if (mControllerView != null) {
+            View loading = mControllerView.loadingController(this);
+            if (add) {
+                if (loading.getParent() == null) {
+                    mVideoTopView.addView(loading);
+                }
+            } else {
+                mVideoTopView.removeView(loading);
+            }
+        }
     }
 
     public void setMediaPlayer(IMediaPlayer mediaPlayer) {
@@ -140,7 +196,7 @@ public class VideoTracker extends ViewTracker {
 
         @Override
         public boolean isComplete() {
-            return false;
+            return mIsComplete;
         }
 
         @Override

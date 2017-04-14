@@ -10,17 +10,25 @@ import com.brucetoo.videoplayer.IViewTracker;
 
 public interface VideoPlayerListener {
 
-    void onVideoSizeChangedMainThread(IViewTracker viewTracker,int width, int height);
+    void onVideoSizeChanged(IViewTracker viewTracker, int width, int height);
 
-    void onVideoPreparedMainThread(IViewTracker viewTracker);
+    void onVideoPrepared(IViewTracker viewTracker);
 
-    void onVideoCompletionMainThread(IViewTracker viewTracker);
+    void onVideoCompletion(IViewTracker viewTracker);
 
-    void onErrorMainThread(IViewTracker viewTracker,int what, int extra);
+    void onError(IViewTracker viewTracker, int what, int extra);
 
-    void onBufferingUpdateMainThread(IViewTracker viewTracker,int percent);
+    void onBufferingUpdate(IViewTracker viewTracker, int percent);
 
-    void onVideoStoppedMainThread(IViewTracker viewTracker);
+    void onInfo(IViewTracker viewTracker, int what);
 
-    void onInfoMainThread(IViewTracker viewTracker,int what);
+    void onVideoStarted(IViewTracker viewTracker);
+
+    void onVideoPaused(IViewTracker viewTracker);
+
+    void onVideoStopped(IViewTracker viewTracker);
+
+    void onVideoReset(IViewTracker viewTracker);
+
+    void onVideoReleased(IViewTracker viewTracker);
 }

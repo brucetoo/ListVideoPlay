@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/layout_float_video_container"
              xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="@dimen/video_item_portrait_height"
-             android:visibility="invisible">
+             android:visibility="invisible"
+             tools:visibility="visible">
 
 
     <!--Offer a background for not full-screen Video source-->

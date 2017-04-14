@@ -39,7 +39,7 @@ public class DetailFragment extends Fragment implements Backable {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTextDetail = (TextView) view.findViewById(R.id.txt_detail);
-        mImageCover = (ImageView) view.findViewById(R.id.img_cover);
+        mImageCover = (ImageView) view.findViewById(R.id.view_tracker);
         mImageCover.post(new Runnable() {
             @Override
             public void run() {

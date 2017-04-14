@@ -189,10 +189,10 @@ public class VideoPlayerView extends ScalableTextureView
     }
 
     @Override
-    public void onVideoSizeChangedMainThread(IViewTracker viewTracker, int width, int height) {
+    public void onVideoSizeChanged(IViewTracker viewTracker, int width, int height) {
 
         if (SHOW_LOGS)
-            Logger.v(TAG, ">> onVideoSizeChangedMainThread, width " + width + ", height " + height);
+            Logger.v(TAG, ">> onVideoSizeChanged, width " + width + ", height " + height);
 
         if (width != 0 && height != 0) {
             refreshSurfaceTexture(width, height);
@@ -204,65 +204,65 @@ public class VideoPlayerView extends ScalableTextureView
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onVideoSizeChangedMainThread(viewTracker, width, height);
+            listener.onVideoSizeChanged(viewTracker, width, height);
         }
 
         if (SHOW_LOGS)
-            Logger.v(TAG, "<< onVideoSizeChangedMainThread, width " + width + ", height " + height);
+            Logger.v(TAG, "<< onVideoSizeChanged, width " + width + ", height " + height);
     }
 
     @Override
-    public void onVideoCompletionMainThread(IViewTracker viewTracker) {
+    public void onVideoCompletion(IViewTracker viewTracker) {
 
-        if (SHOW_LOGS) Logger.v(TAG, "notifyVideoCompletionMainThread");
+        if (SHOW_LOGS) Logger.v(TAG, "notifyVideoCompletion");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onVideoCompletionMainThread(viewTracker);
+            listener.onVideoCompletion(viewTracker);
         }
     }
 
     @Override
-    public void onVideoPreparedMainThread(IViewTracker viewTracker) {
+    public void onVideoPrepared(IViewTracker viewTracker) {
 
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoPreparedMainThread");
+        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoPrepared");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onVideoPreparedMainThread(viewTracker);
+            listener.onVideoPrepared(viewTracker);
         }
     }
 
     @Override
-    public void onErrorMainThread(IViewTracker viewTracker,final int what, final int extra) {
-        if (SHOW_LOGS) Logger.v(TAG, "onErrorMainThread, this " + VideoPlayerView.this);
+    public void onError(IViewTracker viewTracker, final int what, final int extra) {
+        if (SHOW_LOGS) Logger.v(TAG, "onError, this " + VideoPlayerView.this);
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                if (SHOW_LOGS) Logger.v(TAG, "onErrorMainThread, what MEDIA_ERROR_SERVER_DIED");
+                if (SHOW_LOGS) Logger.v(TAG, "onError, what MEDIA_ERROR_SERVER_DIED");
                 printErrorExtra(extra);
                 break;
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-                if (SHOW_LOGS) Logger.v(TAG, "onErrorMainThread, what MEDIA_ERROR_UNKNOWN");
+                if (SHOW_LOGS) Logger.v(TAG, "onError, what MEDIA_ERROR_UNKNOWN");
                 printErrorExtra(extra);
                 break;
         }
 
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnErrorMainThread");
+        if (SHOW_LOGS) Logger.v(TAG, "notifyOnError");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onErrorMainThread(viewTracker,what, extra);
+            listener.onError(viewTracker,what, extra);
         }
     }
 
     @Override
-    public void onBufferingUpdateMainThread(IViewTracker viewTracker,int percent) {
+    public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
 
         if (SHOW_LOGS) Logger.v(TAG, "notifyBufferingUpdate");
         List<VideoPlayerListener> listCopy;
@@ -270,33 +270,79 @@ public class VideoPlayerView extends ScalableTextureView
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onBufferingUpdateMainThread(viewTracker,percent);
+            listener.onBufferingUpdate(viewTracker,percent);
         }
     }
 
     @Override
-    public void onVideoStoppedMainThread(IViewTracker viewTracker) {
-
+    public void onVideoStopped(IViewTracker viewTracker) {
         if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoStopped");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onVideoStoppedMainThread(viewTracker);
+            listener.onVideoStopped(viewTracker);
         }
     }
 
     @Override
-    public void onInfoMainThread(IViewTracker viewTracker,int what) {
+    public void onVideoReset(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoRest");
+        List<VideoPlayerListener> listCopy;
+        synchronized (mVideoPlayerListeners) {
+            listCopy = new ArrayList<>(mVideoPlayerListeners);
+        }
+        for (VideoPlayerListener listener : listCopy) {
+            listener.onVideoReset(viewTracker);
+        }
+    }
 
+    @Override
+    public void onVideoReleased(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoReleased");
+        List<VideoPlayerListener> listCopy;
+        synchronized (mVideoPlayerListeners) {
+            listCopy = new ArrayList<>(mVideoPlayerListeners);
+        }
+        for (VideoPlayerListener listener : listCopy) {
+            listener.onVideoReleased(viewTracker);
+        }
+    }
+
+    @Override
+    public void onInfo(IViewTracker viewTracker, int what) {
         if (SHOW_LOGS) Logger.v(TAG, "notifyOnInfo");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onInfoMainThread(viewTracker,what);
+            listener.onInfo(viewTracker,what);
+        }
+    }
+
+    @Override
+    public void onVideoStarted(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoStarted");
+        List<VideoPlayerListener> listCopy;
+        synchronized (mVideoPlayerListeners) {
+            listCopy = new ArrayList<>(mVideoPlayerListeners);
+        }
+        for (VideoPlayerListener listener : listCopy) {
+            listener.onVideoStarted(viewTracker);
+        }
+    }
+
+    @Override
+    public void onVideoPaused(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoPaused");
+        List<VideoPlayerListener> listCopy;
+        synchronized (mVideoPlayerListeners) {
+            listCopy = new ArrayList<>(mVideoPlayerListeners);
+        }
+        for (VideoPlayerListener listener : listCopy) {
+            listener.onVideoPaused(viewTracker);
         }
     }
 

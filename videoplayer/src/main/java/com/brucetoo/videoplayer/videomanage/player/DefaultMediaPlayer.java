@@ -68,12 +68,60 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         mMediaPlayer.setScreenOnWhilePlaying(true);
     }
 
+    /**
+     * Main thread message!!!
+     */
     private final Runnable mOnVideoPreparedMessage = new Runnable() {
         @Override
         public void run() {
-            if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoPreparedMainThread");
-            mListener.onVideoPreparedMainThread(mViewTracker);
-            if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoPreparedMainThread");
+            if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoPrepared");
+            mListener.onVideoPrepared(mViewTracker);
+            if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoPrepared");
+        }
+    };
+
+    private final Runnable mOnVideoStartMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoStarted");
+            mListener.onVideoStarted(mViewTracker);
+            if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoStarted");
+        }
+    };
+
+    private final Runnable mOnVideoPauseMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (SHOW_LOGS) Logger.v(TAG, ">> run, mOnVideoPauseMessage");
+            mListener.onVideoPaused(mViewTracker);
+            if (SHOW_LOGS) Logger.v(TAG, "<< run, mOnVideoPauseMessage");
+        }
+    };
+
+    private final Runnable mOnVideoStopMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoStopped");
+            mListener.onVideoStopped(mViewTracker);
+            if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoStopped");
+        }
+    };
+
+    private final Runnable mOnVideoResetMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoReset");
+            mListener.onVideoReset(mViewTracker);
+            if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoReset");
+        }
+    };
+
+    private final Runnable mOnVideoReleaseMessage = new Runnable() {
+        @Override
+        public void run() {
+            if (SHOW_LOGS) Logger.v(TAG, ">> run, OnVideoRelease");
+            mListener.onVideoReleased(mViewTracker);
+            if (SHOW_LOGS) Logger.v(TAG, "<< run, OnVideoRelease");
         }
     };
 
@@ -137,7 +185,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
             throw new RuntimeException("this should be called in Main Thread");
         }
         if (mListener != null) {
-            mListener.onVideoSizeChangedMainThread(mViewTracker,width, height);
+            mListener.onVideoSizeChanged(mViewTracker,width, height);
         }
     }
 
@@ -150,13 +198,13 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         }
 
         if (mListener != null) {
-            mListener.onVideoCompletionMainThread(mViewTracker);
+            mListener.onVideoCompletion(mViewTracker);
         }
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        if (SHOW_LOGS) Logger.v(TAG, "onErrorMainThread, what " + what + ", extra " + extra);
+        if (SHOW_LOGS) Logger.v(TAG, "onError, what " + what + ", extra " + extra);
 
         synchronized (mState) {
             mState.set(State.ERROR);
@@ -165,7 +213,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         //weird error code what = -38 ? What the hell?
         if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN || what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
             if (mListener != null) {
-                mListener.onErrorMainThread(mViewTracker,what, extra);
+                mListener.onError(mViewTracker,what, extra);
             }
         }
         // We always return true, because after Error player stays in this state.
@@ -177,16 +225,16 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         if (SHOW_LOGS) Logger.v(TAG, "onBufferingUpdate percent : " + percent);
         if (mListener != null) {
-            mListener.onBufferingUpdateMainThread(mViewTracker,percent);
+            mListener.onBufferingUpdate(mViewTracker,percent);
         }
     }
 
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
-        if (SHOW_LOGS) Logger.v(TAG, "onInfoMainThread");
+        if (SHOW_LOGS) Logger.v(TAG, "onInfo");
         printInfo(what);
         if (mListener != null) {
-            mListener.onInfoMainThread(mViewTracker,what);
+            mListener.onInfo(mViewTracker,what);
         }
         return false;
     }
@@ -194,35 +242,35 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     private void printInfo(int what) {
         switch (what) {
             case MediaPlayer.MEDIA_INFO_UNKNOWN:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_UNKNOWN");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_UNKNOWN");
                 break;
             case MediaPlayer.MEDIA_INFO_VIDEO_TRACK_LAGGING:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_VIDEO_TRACK_LAGGING");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_VIDEO_TRACK_LAGGING");
                 break;
             case MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                 if (SHOW_LOGS)
-                    Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_VIDEO_RENDERING_START");
+                    Logger.inf(TAG, "onInfo, MEDIA_INFO_VIDEO_RENDERING_START");
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_BUFFERING_START");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_BUFFERING_START");
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_BUFFERING_END");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_BUFFERING_END");
                 break;
             case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_BAD_INTERLEAVING");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_BAD_INTERLEAVING");
                 break;
             case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_NOT_SEEKABLE");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_NOT_SEEKABLE");
                 break;
             case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_METADATA_UPDATE");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_METADATA_UPDATE");
                 break;
             case MediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_UNSUPPORTED_SUBTITLE");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_UNSUPPORTED_SUBTITLE");
                 break;
             case MediaPlayer.MEDIA_INFO_SUBTITLE_TIMED_OUT:
-                if (SHOW_LOGS) Logger.inf(TAG, "onInfoMainThread, MEDIA_INFO_SUBTITLE_TIMED_OUT");
+                if (SHOW_LOGS) Logger.inf(TAG, "onInfo, MEDIA_INFO_SUBTITLE_TIMED_OUT");
                 break;
         }
     }
@@ -235,6 +283,10 @@ public class DefaultMediaPlayer implements IMediaPlayer,
             if (SHOW_LOGS) Logger.v(TAG, "start, mState " + mState);
             mMediaPlayer.start();
             mState.set(State.STARTED);
+
+            if (mListener != null) {
+                mMainThreadHandler.post(mOnVideoStartMessage);
+            }
         }
         if (SHOW_LOGS) Logger.v(TAG, "<< start");
     }
@@ -248,18 +300,13 @@ public class DefaultMediaPlayer implements IMediaPlayer,
                 Logger.v(TAG, "pause, mState " + mState);
             mMediaPlayer.pause();
             mState.set(State.PAUSED);
+
+            if (mListener != null) {
+                mMainThreadHandler.post(mOnVideoPauseMessage);
+            }
         }
         if (SHOW_LOGS) Logger.v(TAG, "<< pause");
     }
-
-    private final Runnable mOnVideoStopMessage = new Runnable() {
-        @Override
-        public void run() {
-            if (SHOW_LOGS) Logger.v(TAG, ">> run, onVideoStoppedMainThread");
-            mListener.onVideoStoppedMainThread(mViewTracker);
-            if (SHOW_LOGS) Logger.v(TAG, "<< run, onVideoStoppedMainThread");
-        }
-    };
 
     @Override
     public void stop() {
@@ -285,6 +332,10 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         synchronized (mState) {
             mMediaPlayer.reset();
             mState.set(State.IDLE);
+
+            if (mListener != null) {
+                mMainThreadHandler.post(mOnVideoResetMessage);
+            }
         }
         if (SHOW_LOGS) Logger.v(TAG, "<< reset , mState " + mState);
     }
@@ -295,6 +346,10 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         synchronized (mState) {
             mMediaPlayer.release();
             mState.set(State.END);
+
+            if (mListener != null) {
+                mMainThreadHandler.post(mOnVideoReleaseMessage);
+            }
         }
         if (SHOW_LOGS) Logger.v(TAG, "<< release, mState " + mState);
     }

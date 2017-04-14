@@ -1,5 +1,8 @@
 package com.brucetoo.videoplayer.videomanage.interfaces;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.brucetoo.videoplayer.Config;
 import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.utils.Logger;
@@ -33,6 +36,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
      * This is a handler thread that is used to process Player messages.
      */
     private final MessagesHandlerThread mPlayerHandler = new MessagesHandlerThread();
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     private VideoPlayerView mCurrentPlayer = null;
     private PlayerMessageState mCurrentPlayerState = PlayerMessageState.IDLE;
@@ -104,8 +108,6 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
         if (SHOW_LOGS)
             Logger.v(TAG, ">> stopAnyPlayback, mCurrentPlayerState " + mCurrentPlayerState);
 
-        mCurrentPlayer.removeAllPlayerListener();
-
         mPlayerHandler.pauseQueueProcessing(TAG);
         if (SHOW_LOGS) Logger.v(TAG, "stopAnyPlayback, mCurrentPlayerState " + mCurrentPlayerState);
 
@@ -127,8 +129,6 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     public void resetMediaPlayer() {
         if (SHOW_LOGS)
             Logger.v(TAG, ">> resetMediaPlayer, mCurrentPlayerState " + mCurrentPlayerState);
-
-        mCurrentPlayer.removeAllPlayerListener();
 
         mPlayerHandler.pauseQueueProcessing(TAG);
         if (SHOW_LOGS)
@@ -266,7 +266,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
      * Then it passes that knowledge to the {@link #mPlayerItemChangeListeners}
      */
     @Override
-    public void setCurrentItem(IViewTracker viewTracker, VideoPlayerView videoPlayerView) {
+    public void setCurrentItem(final IViewTracker viewTracker, VideoPlayerView videoPlayerView) {
         if (SHOW_LOGS) Logger.v(TAG, ">> onPlayerItemChanged");
 
         mCurrentPlayer = videoPlayerView;
@@ -276,22 +276,32 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
             mCurrentPlayer.addMediaPlayerListener(listener);
         }
 
-        for (PlayerItemChangeListener listener : mPlayerItemChangeListeners) {
-            listener.onPlayerItemChanged(viewTracker);
-        }
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (PlayerItemChangeListener listener : mPlayerItemChangeListeners) {
+                    listener.onPlayerItemChanged(viewTracker);
+                }
+            }
+        });
 
         if (SHOW_LOGS) Logger.v(TAG, "<< onPlayerItemChanged");
     }
 
     @Override
-    public void setVideoPlayerState(VideoPlayerView videoPlayerView, PlayerMessageState playerMessageState) {
+    public void updateVideoPlayerState(VideoPlayerView videoPlayerView, PlayerMessageState playerMessageState) {
         if (SHOW_LOGS)
-            Logger.v(TAG, ">> setVideoPlayerState, playerMessageState " + playerMessageState + ", videoPlayer " + videoPlayerView);
+            Logger.v(TAG, ">> updateVideoPlayerState, playerMessageState " + playerMessageState + ", videoPlayer " + videoPlayerView);
 
         mCurrentPlayerState = playerMessageState;
 
+        //clear listener when player instance cleared
+        if(playerMessageState == PlayerMessageState.PLAYER_INSTANCE_CLEARED) {
+            mCurrentPlayer.removeAllPlayerListener();
+        }
+
         if (SHOW_LOGS)
-            Logger.v(TAG, "<< setVideoPlayerState, playerMessageState " + playerMessageState + ", videoPlayer " + videoPlayerView);
+            Logger.v(TAG, "<< updateVideoPlayerState, playerMessageState " + playerMessageState + ", videoPlayer " + videoPlayerView);
     }
 
     @Override
@@ -302,21 +312,22 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     }
 
     @Override
-    public void onVideoSizeChangedMainThread(IViewTracker viewTracker,int width, int height) {
+    public void onVideoSizeChanged(IViewTracker viewTracker, int width, int height) {
     }
 
     @Override
-    public void onVideoPreparedMainThread(IViewTracker viewTracker) {
+    public void onVideoPrepared(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoPrepared tracker" + viewTracker);
     }
 
     @Override
-    public void onVideoCompletionMainThread(IViewTracker viewTracker) {
+    public void onVideoCompletion(IViewTracker viewTracker) {
         mCurrentPlayerState = PlayerMessageState.PLAYBACK_COMPLETED;
     }
 
     @Override
-    public void onErrorMainThread(IViewTracker viewTracker,int what, int extra) {
-        if (SHOW_LOGS) Logger.v(TAG, "onErrorMainThread, what " + what + ", extra " + extra);
+    public void onError(IViewTracker viewTracker, int what, int extra) {
+        if (SHOW_LOGS) Logger.v(TAG, "onError, what " + what + ", extra " + extra);
 
         /** if error happen during playback, we need to set error state.
          * Because we cannot run some messages in Error state
@@ -325,24 +336,48 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     }
 
     @Override
-    public void onBufferingUpdateMainThread(IViewTracker viewTracker,int percent) {
+    public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
     }
 
     @Override
-    public void onVideoStoppedMainThread(IViewTracker viewTracker) {
-
+    public void onVideoStopped(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoStopped tracker " + viewTracker);
     }
 
     @Override
-    public void onInfoMainThread(IViewTracker viewTracker,int what) {
+    public void onVideoReset(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoReset tracker " + viewTracker);
+    }
 
+    @Override
+    public void onVideoReleased(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoReleased tracker " + viewTracker);
+    }
+
+    @Override
+    public void onInfo(IViewTracker viewTracker, int what) {
+        if (SHOW_LOGS) Logger.v(TAG, "onInfo tracker " + viewTracker);
+    }
+
+    @Override
+    public void onVideoStarted(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoStarted tracker " + viewTracker);
+    }
+
+    @Override
+    public void onVideoPaused(IViewTracker viewTracker) {
+        if (SHOW_LOGS) Logger.v(TAG, "onVideoPaused tracker " + viewTracker);
     }
 
     public void addPlayerItemChangeListener(PlayerItemChangeListener playerItemChangeListener) {
         mPlayerItemChangeListeners.add(playerItemChangeListener);
     }
 
-    public void removePlayerItemChangeListener() {
+    public void removePlayerItemChangeListener(PlayerItemChangeListener playerItemChangeListener) {
+        mPlayerItemChangeListeners.remove(playerItemChangeListener);
+    }
+
+    public void removePlayerItemChangeListeners() {
         mPlayerItemChangeListeners.clear();
     }
 
@@ -350,7 +385,11 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
         mPendingAddListeners.add(videoPlayerListener);
     }
 
-    public void removeAllVideoPlayerListener() {
+    public void removeVideoPlayerListener(VideoPlayerListener videoPlayerListener) {
+        mPendingAddListeners.remove(videoPlayerListener);
+    }
+
+    public void removeAllVideoPlayerListeners() {
         mPendingAddListeners.clear();
     }
 }

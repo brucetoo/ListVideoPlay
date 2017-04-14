@@ -28,12 +28,12 @@ public abstract class PlayerMessage implements Message {
 
     @Override
     public final void polledFromQueue() {
-        mCallback.setVideoPlayerState(mCurrentPlayer, stateBefore());
+        mCallback.updateVideoPlayerState(mCurrentPlayer, stateBefore());
     }
 
     @Override
     public final void messageFinished() {
-        mCallback.setVideoPlayerState(mCurrentPlayer, stateAfter());
+        mCallback.updateVideoPlayerState(mCurrentPlayer, stateAfter());
     }
 
     public final void runMessage(){

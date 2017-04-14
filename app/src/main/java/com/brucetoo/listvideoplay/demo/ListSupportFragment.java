@@ -18,6 +18,7 @@ import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.VisibleChangeListener;
 import com.brucetoo.videoplayer.scrolldetector.ListScrollDetector;
+import com.brucetoo.videoplayer.videomanage.controller.DefaultControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
@@ -53,7 +54,7 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
         QuickAdapter<VideoModel> adapter = new QuickAdapter<VideoModel>(getActivity(), R.layout.item_list_view_new, ListDataGenerater.datas) {
             @Override
             protected void convert(BaseAdapterHelper helper, VideoModel item) {
-                RatioImageView imageCover = (RatioImageView) helper.getView(R.id.img_cover);
+                RatioImageView imageCover = (RatioImageView) helper.getView(R.id.view_tracker);
                 Picasso.with(getActivity())
                     .load(item.coverImage)
                     .into(imageCover);
@@ -67,14 +68,13 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
             @Override
             public void onMovedToScrapHeap(View view) {
                 //the tracker view is moved to scrap,and be re-used,so we need detach view in decor
-                Log.e(TAG, "onMovedToScrapHeap -> " + view.findViewById(R.id.img_cover));
                 IViewTracker tracker = Tracker.getViewTracker(getActivity());
                 if(tracker != null) {
                     View trackerView = tracker.getTrackerView();
                     if (trackerView != null && trackerView.equals(view.findViewById(tracker.getTrackerViewId()))) {
                         //TODO Configuration Changed may cause problem
+                        Log.e(TAG, "onMovedToScrapHeap -> " + view.findViewById(R.id.view_tracker));
 //                        Tracker.detach(getActivity());
-
                     }
                 }
             }
@@ -87,7 +87,11 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         Log.e(TAG, "onMovedToScrapHeap onClick -> " + v);
         if(!Tracker.isSameTrackerView(getActivity(),v)) {
-            Tracker.attach(getActivity()).trackView(v).into(new ListScrollDetector(mListView)).visibleListener(this);
+            Tracker.attach(getActivity())
+                .trackView(v)
+                .into(new ListScrollDetector(mListView))
+                .controller(new DefaultControllerView())
+                .visibleListener(this);
         }
         ((MainActivity) getActivity()).addDetailFragment();
     }
@@ -112,37 +116,57 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public void onVideoSizeChangedMainThread(IViewTracker viewTracker,int width, int height) {
-        Log.e(TAG, "onVideoSizeChangedMainThread");
+    public void onVideoSizeChanged(IViewTracker viewTracker, int width, int height) {
+        Log.e(TAG, "onVideoSizeChanged");
     }
 
     @Override
-    public void onVideoPreparedMainThread(IViewTracker viewTracker) {
-        Log.e(TAG, "onVideoPreparedMainThread");
+    public void onVideoPrepared(IViewTracker viewTracker) {
+        Log.e(TAG, "onVideoPrepared");
     }
 
     @Override
-    public void onVideoCompletionMainThread(IViewTracker viewTracker) {
-        Log.e(TAG, "onVideoCompletionMainThread");
+    public void onVideoCompletion(IViewTracker viewTracker) {
+        Log.e(TAG, "onVideoCompletion");
     }
 
     @Override
-    public void onErrorMainThread(IViewTracker viewTracker,int what, int extra) {
-        Log.e(TAG, "onErrorMainThread");
+    public void onError(IViewTracker viewTracker, int what, int extra) {
+        Log.e(TAG, "onError");
     }
 
     @Override
-    public void onBufferingUpdateMainThread(IViewTracker viewTracker,int percent) {
-        Log.e(TAG, "onBufferingUpdateMainThread");
+    public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
+        Log.e(TAG, "onBufferingUpdate");
     }
 
     @Override
-    public void onVideoStoppedMainThread(IViewTracker viewTracker) {
-        Log.e(TAG, "onVideoStoppedMainThread");
+    public void onVideoStopped(IViewTracker viewTracker) {
+        Log.e(TAG, "onVideoStopped");
     }
 
     @Override
-    public void onInfoMainThread(IViewTracker viewTracker,int what) {
-        Log.e(TAG, "onInfoMainThread");
+    public void onVideoReset(IViewTracker viewTracker) {
+
+    }
+
+    @Override
+    public void onVideoReleased(IViewTracker viewTracker) {
+
+    }
+
+    @Override
+    public void onInfo(IViewTracker viewTracker, int what) {
+        Log.e(TAG, "onInfo");
+    }
+
+    @Override
+    public void onVideoStarted(IViewTracker viewTracker) {
+        Log.e(TAG, "onVideoStarted");
+    }
+
+    @Override
+    public void onVideoPaused(IViewTracker viewTracker) {
+        Log.e(TAG, "onVideoPaused");
     }
 }

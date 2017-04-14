@@ -65,7 +65,9 @@ public class FloatLayerView extends FrameLayout {
         layoutParams.gravity = Gravity.CENTER;
         videoRoot.addView(testView, layoutParams);
 
-        addView(videoRoot, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        FrameLayout rootLayout = new FrameLayout(getContext());
+        rootLayout.addView(videoRoot,new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        addView(rootLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     public View getVideoRootView() {

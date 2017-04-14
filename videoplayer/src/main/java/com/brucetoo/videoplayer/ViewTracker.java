@@ -18,8 +18,7 @@ import android.widget.FrameLayout;
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.utils.ViewAnimator;
-
-import static android.view.View.NO_ID;
+import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 
 /**
  * Created by Bruce Too
@@ -80,9 +79,9 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
      */
     protected IScrollDetector mScrollDetector;
 
-    protected boolean mIsAttach;
+    protected IControllerView mControllerView;
 
-    protected int mTrackViewId = NO_ID;
+    protected boolean mIsAttach;
 
     /**
      * Origin activity flag and system ui visibility
@@ -146,7 +145,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     public IViewTracker destroy() {
         detach();
         mVisibleChangeListener = null;
-        mContext = null;//prevent memory leak
+//        mContext = null;//prevent memory leak
         mScrollDetector.detach();
         mScrollDetector = null;
         return this;
@@ -164,7 +163,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public int getTrackerViewId() {
-        return mTrackViewId;
+        return R.id.view_tracker;
     }
 
     @Override
@@ -233,10 +232,9 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         }
         this.mTrackView = trackView;
         int id = mTrackView.getId();
-        if (id == NO_ID) {
-            throw new IllegalStateException("Tracked view must set ID before use !");
+        if (id != R.id.view_tracker) {
+            throw new IllegalStateException("Tracker view id must be R.id.view_tracker !");
         }
-        mTrackViewId = id;
         rebindViewToTracker(mFollowerView, mTrackView);
         trackView.getViewTreeObserver().addOnScrollChangedListener(this);
         return this;
@@ -248,8 +246,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         this.mTrackView.getViewTreeObserver().removeOnScrollChangedListener(this);
         this.mTrackView = trackView;
         int id = mTrackView.getId();
-        if (id == NO_ID) {
-            throw new IllegalStateException("Tracked view must set ID before use !");
+        if (id != R.id.view_tracker) {
+            throw new IllegalStateException("Tracker view id must be R.id.view_tracker !");
         }
         rebindViewToTracker(mFollowerView, mTrackView);
         trackView.getViewTreeObserver().addOnScrollChangedListener(this);
@@ -267,6 +265,12 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public IViewTracker visibleListener(VisibleChangeListener listener) {
         this.mVisibleChangeListener = listener;
+        return this;
+    }
+
+    @Override
+    public IViewTracker controller(IControllerView controllerView) {
+        this.mControllerView = controllerView;
         return this;
     }
 

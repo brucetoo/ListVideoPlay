@@ -11,12 +11,13 @@
 
 ### Detail Implements
 
-[Android列表视频播放开发之路](!http://www.jianshu.com/p/4db96418f32b)
+[Android列表视频播放开发之路](http://www.jianshu.com/p/4db96418f32b)
 
 
-> * Define a [IViewTrakcer](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/IViewTracker.java) to track the view
+ * Define a [IViewTrakcer](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/IViewTracker.java) to track the view
 
-> * Define [FloatLayerView](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/FloatLayerView.java) added into {@link android.view.Window#ID_ANDROID_CONTENT} decor view
+ * Define [FloatLayerView](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/FloatLayerView.java) added into {@link android.view.Window#ID_ANDROID_CONTENT} decor view
+
     ```java
      * It contains:
      * 1. rootLayout which hold all views to be added in {@link FloatLayerView},height must be WRAP_CONTENT
@@ -25,9 +26,9 @@
      * 4. {@link #mVideoTopView} in top layer of {@link #mVideoPlayerView},which can add some video controller view...
     ```
 
-> * Define [IScrollDetector](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/scrolldetector/IScrollDetector.java) to observer scroll state
+ * Define [IScrollDetector](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/scrolldetector/IScrollDetector.java) to observer scroll state
 
-> * Define [IControllerView](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/videomanage/controller/IControllerView.java) added in [FloatLayerView](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/FloatLayerView.java)
+ * Define [IControllerView](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/videomanage/controller/IControllerView.java) added in [FloatLayerView](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/FloatLayerView.java)
   ```java
     /**
         * Normal video controller view added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
@@ -51,7 +52,7 @@
        View loadingController(IViewTracker tracker);
     ```
 
-More details see [VideoPlayer](!https://github.com/brucetoo/ListVideoPlay/tree/master/videoplayer/src/main/java/com/brucetoo/videoplayer)
+More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/master/videoplayer/src/main/java/com/brucetoo/videoplayer)
 
 
 #THANKS

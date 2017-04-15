@@ -66,7 +66,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
      * 3. Create a new {@link IMediaPlayer} for new {@link VideoPlayerView},add start prepare to play
      * 5. Resume stopped queue
      *
-     * @param viewTracker        current item bounded IViewTracker
+     * @param viewTracker     current item bounded IViewTracker
      * @param videoPlayerView - the actual video player
      * @param videoUrl        - the link to the video source
      */
@@ -142,10 +142,55 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
             Logger.v(TAG, "<< resetMediaPlayer, mCurrentPlayerState " + mCurrentPlayerState);
     }
 
-    @Override
-    public IMediaPlayer getMediaPlayer() {
-        return mCurrentPlayer.getMediaPlayer();
-    }
+//    @Override
+//    public void startVideo(IViewTracker viewTracker) {
+//        if (SHOW_LOGS)
+//            Logger.v(TAG, ">> startVideo, mCurrentPlayerState " + mCurrentPlayerState);
+//
+//        mPlayerHandler.pauseQueueProcessing(TAG);
+//        if (SHOW_LOGS)
+//            Logger.v(TAG, "startVideo, mCurrentPlayerState " + mCurrentPlayerState);
+//
+//        switch (mCurrentPlayerState) {
+//            case STARTING:
+//            case STARTED:
+//            case PAUSING:
+//            case PAUSED:
+//            case STOPPING:
+//            case STOPPED:
+//                mPlayerHandler.addMessage(new Start(mCurrentPlayer, this));
+//                break;
+//        }
+//
+//        mPlayerHandler.resumeQueueProcessing(TAG);
+//
+//        if (SHOW_LOGS)
+//            Logger.v(TAG, "<< startVideo, mCurrentPlayerState " + mCurrentPlayerState);
+//    }
+//
+//    @Override
+//    public void pauseVideo(IViewTracker viewTracker) {
+//        if (SHOW_LOGS)
+//            Logger.v(TAG, ">> pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
+//
+//        mPlayerHandler.pauseQueueProcessing(TAG);
+//        if (SHOW_LOGS)
+//            Logger.v(TAG, "pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
+//
+//        switch (mCurrentPlayerState) {
+//            case STARTING:
+//            case STARTED:
+//            case PAUSING:
+//            case PAUSED:
+//                mPlayerHandler.addMessage(new Pause(mCurrentPlayer, this));
+//                break;
+//        }
+//
+//        mPlayerHandler.resumeQueueProcessing(TAG);
+//
+//        if (SHOW_LOGS)
+//            Logger.v(TAG, "<< pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
+//    }
 
     /**
      * This method posts a message that will eventually call {@link PlayerItemChangeListener#onPlayerItemChanged(IViewTracker)}
@@ -296,7 +341,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
         mCurrentPlayerState = playerMessageState;
 
         //clear listener when player instance cleared
-        if(playerMessageState == PlayerMessageState.PLAYER_INSTANCE_CLEARED) {
+        if (playerMessageState == PlayerMessageState.PLAYER_INSTANCE_CLEARED) {
             mCurrentPlayer.removeAllPlayerListener();
         }
 

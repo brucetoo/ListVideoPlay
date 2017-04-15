@@ -11,7 +11,7 @@ import android.view.View;
  * At 17:38
  */
 
-public class Tracker {
+public class Tracker{
 
     private static ArrayMap<Activity, IViewTracker> mViewTrackers = new ArrayMap<>();
 
@@ -74,6 +74,7 @@ public class Tracker {
 
     /**
      * Get current {@link IViewTracker} attach to Activity
+     * NOTE: use this need check NPE
      * @param context current activity
      */
     public static IViewTracker getViewTracker(Activity context){
@@ -91,6 +92,12 @@ public class Tracker {
             return iViewTracker.getTrackerView().equals(newTracker);
         }
         return false;
+    }
+
+    public static void changeTrackView(Activity context,View trackView){
+        if(getViewTracker(context) != null){
+            getViewTracker(context).changeTrackView(trackView);
+        }
     }
 
 

@@ -16,11 +16,19 @@ public class DefaultControllerView implements IControllerView {
 
     @Override
     public View normalScreenController(IViewTracker tracker) {
+        tracker.muteVideo(true);
+        return null;
+    }
+
+    @Override
+    public View detailScreenController(IViewTracker tracker) {
+        tracker.muteVideo(false);
         return null;
     }
 
     @Override
     public View fullScreenController(IViewTracker tracker) {
+        tracker.muteVideo(false);
         return null;
     }
 

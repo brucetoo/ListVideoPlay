@@ -21,7 +21,7 @@ import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
  * At 16:27
  * This is used to added into {@link android.view.Window#ID_ANDROID_CONTENT} decor view
  * It contains:
- * 1. rootLayout which hold all views to be added in {@link FloatLayerView}
+ * 1. rootLayout which hold all views to be added in {@link FloatLayerView},height must be WRAP_CONTENT
  * 2. {@link #mVideoBottomView} in bottom layer of {@link #mVideoPlayerView}, which can be used to add some mask view...
  * 3. {@link #mVideoTopView} in top layer of {@link #mVideoPlayerView},which can add some video controller view...
  */
@@ -67,7 +67,8 @@ public class FloatLayerView extends FrameLayout {
 
         FrameLayout rootLayout = new FrameLayout(getContext());
         rootLayout.addView(videoRoot,new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        addView(rootLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        //NOTE: root layout'heihgt must be WRAP_CONTENT
+        addView(rootLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     public View getVideoRootView() {

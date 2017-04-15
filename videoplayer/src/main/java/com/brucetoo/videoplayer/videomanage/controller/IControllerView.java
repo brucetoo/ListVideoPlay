@@ -12,9 +12,27 @@ import com.brucetoo.videoplayer.IViewTracker;
 
 public interface IControllerView {
 
+    /**
+     * Normal video controller view added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
+     * when attach to portrait(normal) tracker view
+     */
     View normalScreenController(IViewTracker tracker);
 
+    /**
+     * Detail video controller view added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
+     * when attach to detail tracker view
+     */
+    View detailScreenController(IViewTracker tracker);
+
+    /**
+     * Full screen video controller view added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
+     * when attach to landscape screen
+     */
     View fullScreenController(IViewTracker tracker);
 
+    /**
+     * Loading state controller view added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
+     * when video is preparing
+     */
     View loadingController(IViewTracker tracker);
 }

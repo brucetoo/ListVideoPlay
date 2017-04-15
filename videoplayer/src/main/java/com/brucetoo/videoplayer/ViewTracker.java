@@ -55,7 +55,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     protected FrameLayout mVideoTopView;
 
     /**
-     * The bottom layer of {@link #mFollowerView},we can add mask view...
+     * The bottom layer of {@link #mFollowerView},we can add mask view or set drawable of {@link #getTrackerView()}
      */
     protected FrameLayout mVideoBottomView;
 
@@ -68,6 +68,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
      * The whole root view that be added in decor,we can add View inside if needed
      */
     protected FloatLayerView mFloatLayerView;
+
+    protected Object mBoundObject;
 
     /**
      * {@link #mTrackView}'s current edge triggered
@@ -162,6 +164,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
+    public Object getBoundObject() {
+        return mBoundObject;
+    }
+
+    @Override
     public int getTrackerViewId() {
         return R.id.view_tracker;
     }
@@ -222,6 +229,21 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public void toNormalScreen() {
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
+    public void muteVideo(boolean mute) {
+
+    }
+
+    @Override
+    public void startVideo() {
+
+    }
+
+    @Override
+    public void pauseVideo() {
+
     }
 
     @Override

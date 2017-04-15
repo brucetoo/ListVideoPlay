@@ -148,16 +148,90 @@ public class VideoPlayerView extends ScalableTextureView
         }
     }
 
+
+    /**
+     * Following Media api can called in main thread
+     */
     public void start() {
         if (SHOW_LOGS) Logger.v(TAG, ">> start");
         if (mMediaPlayer != null) {
             try {
                 mMediaPlayer.start();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         if (SHOW_LOGS) Logger.v(TAG, "<< start");
+    }
+
+    public void pause() {
+        if (SHOW_LOGS) Logger.d(TAG, ">> pause ");
+        try {
+            if (mMediaPlayer != null) {
+                mMediaPlayer.pause();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (SHOW_LOGS) Logger.d(TAG, "<< pause");
+    }
+
+
+    public void muteVideo(boolean mute) {
+        try {
+            if (mMediaPlayer != null) {
+                if (mute) {
+                    mMediaPlayer.setVolume(0, 0);
+                } else {
+                    mMediaPlayer.setVolume(1, 1);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getDuration() {
+        try {
+            if (mMediaPlayer != null) {
+                return mMediaPlayer.getDuration();
+            } else {
+                return 0;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getCurrentPosition() {
+        try {
+            if (mMediaPlayer != null) {
+                return mMediaPlayer.getCurrentPosition();
+            } else {
+                return 0;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void seekTo(int mis) {
+        try {
+            if (mMediaPlayer != null) {
+                mMediaPlayer.seekTo(mis);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isPlaying(){
+        if(mMediaPlayer != null) {
+            return mMediaPlayer.isPlaying();
+        }
+        return false;
     }
 
     private void initView() {
@@ -257,7 +331,7 @@ public class VideoPlayerView extends ScalableTextureView
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onError(viewTracker,what, extra);
+            listener.onError(viewTracker, what, extra);
         }
     }
 
@@ -270,7 +344,7 @@ public class VideoPlayerView extends ScalableTextureView
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onBufferingUpdate(viewTracker,percent);
+            listener.onBufferingUpdate(viewTracker, percent);
         }
     }
 
@@ -318,7 +392,7 @@ public class VideoPlayerView extends ScalableTextureView
             listCopy = new ArrayList<>(mVideoPlayerListeners);
         }
         for (VideoPlayerListener listener : listCopy) {
-            listener.onInfo(viewTracker,what);
+            listener.onInfo(viewTracker, what);
         }
     }
 
@@ -361,54 +435,6 @@ public class VideoPlayerView extends ScalableTextureView
                 if (SHOW_LOGS) Logger.v(TAG, "error extra MEDIA_ERROR_TIMED_OUT");
                 break;
         }
-    }
-
-    public void muteVideo() {
-        try {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.setVolume(0, 0);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void unMuteVideo() {
-        try {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.setVolume(1, 1);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void pause() {
-        if (SHOW_LOGS) Logger.d(TAG, ">> pause ");
-        try {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.pause();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (SHOW_LOGS) Logger.d(TAG, "<< pause");
-    }
-
-    /**
-     * @see MediaPlayer#getDuration()
-     */
-    public int getDuration() {
-        try {
-            if (mMediaPlayer != null) {
-                return mMediaPlayer.getDuration();
-            } else {
-                return 0;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     @Override
@@ -454,10 +480,6 @@ public class VideoPlayerView extends ScalableTextureView
         if (mLocalSurfaceTextureListener != null) {
             mLocalSurfaceTextureListener.onSurfaceTextureUpdated(surface);
         }
-    }
-
-    public IMediaPlayer getMediaPlayer() {
-        return mMediaPlayer;
     }
 
     public void setViewTracker(IViewTracker viewTracker) {

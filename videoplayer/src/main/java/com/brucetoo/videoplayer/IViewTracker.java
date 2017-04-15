@@ -101,6 +101,8 @@ public interface IViewTracker {
      */
     View getTrackerView();
 
+    Object getBoundObject();
+
     /**
      * The unique id of {@link #getTrackerView()}, use this to find next  {@link #getTrackerView()}
      * inside  {@link #getVerticalScrollView()}
@@ -143,4 +145,10 @@ public interface IViewTracker {
      * Switch current activity to portrait
      */
     void toNormalScreen();
+
+    void muteVideo(boolean mute);
+
+    void startVideo();
+
+    void pauseVideo();
 }

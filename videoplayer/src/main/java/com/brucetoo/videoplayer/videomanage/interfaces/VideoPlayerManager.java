@@ -31,10 +31,9 @@ public interface VideoPlayerManager<T extends IViewTracker> {
      * Call it if you no longer need the player
      */
     void resetMediaPlayer();
-
-    /**
-     * Get current {@link IMediaPlayer} to control video play
-     */
-    IMediaPlayer getMediaPlayer();
+//
+//    void startVideo(T viewTracker);
+//
+//    void pauseVideo(T viewTracker);
 
 }

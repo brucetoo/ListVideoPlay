@@ -1,18 +1,19 @@
 package com.brucetoo.videoplayer;
 
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 import android.view.View;
 
+import com.brucetoo.videoplayer.utils.DrawableTask;
 import com.brucetoo.videoplayer.videomanage.controller.VideoControllerView;
-import com.brucetoo.videoplayer.videomanage.interfaces.IMediaPlayer;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
-
-import java.io.IOException;
 
 /**
  * Created by Bruce Too
@@ -20,12 +21,14 @@ import java.io.IOException;
  * At 15:08
  */
 
-public class VideoTracker extends ViewTracker {
+public class VideoTracker extends ViewTracker implements PlayerItemChangeListener, DrawableTask.Callback {
 
+    private static final String TAG = VideoTracker.class.getSimpleName();
     private VideoPlayerView mVideoPlayView;
-    private IMediaPlayer mMediaPlayer;
     private int mCurrentBuffer;
     private boolean mIsComplete;
+    private DrawableTask mDrawableTask = new DrawableTask(this);
+    private SimpleArrayMap<Object, BitmapDrawable> mCachedDrawables = new SimpleArrayMap<>();
 
     public VideoTracker(Activity context) {
         super(context);
@@ -58,21 +61,32 @@ public class VideoTracker extends ViewTracker {
     }
 
     @Override
+    public void muteVideo(boolean mute) {
+        mVideoPlayView.muteVideo(mute);
+    }
+
+    @Override
+    public void pauseVideo() {
+        mVideoPlayView.pause();
+    }
+
+    @Override
+    public void startVideo() {
+        mVideoPlayView.start();
+    }
+
+    @Override
     public IViewTracker trackView(@NonNull View trackView) {
         IViewTracker tracker = super.trackView(trackView);
-        Object tag = tracker.getTrackerView().getTag(R.id.tag_tracker_view);
-        if (tag == null) {
+        mBoundObject = tracker.getTrackerView().getTag(R.id.tag_tracker_view);
+        if (mBoundObject == null) {
             throw new IllegalArgumentException("Tracker view need set tag by id:tag_tracker_view !");
         }
 
-        SingleVideoPlayerManager.getInstance().playNewVideo(this, mVideoPlayView, (String) tag);
-        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(new PlayerItemChangeListener() {
-            @Override
-            public void onPlayerItemChanged(IViewTracker viewTracker) {
-                addOrRemoveLoadingView(true);
-                mVideoPlayView.setVisibility(View.INVISIBLE);
-            }
-        });
+        addTrackerImageToVideoBottomView(trackView);
+        //TODO mBoundObject typedef
+        SingleVideoPlayerManager.getInstance().playNewVideo(this, mVideoPlayView, (String) mBoundObject);
+        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
 
         SingleVideoPlayerManager.getInstance().addVideoPlayerListener(new SimpleVideoPlayerListener() {
             @Override
@@ -83,11 +97,6 @@ public class VideoTracker extends ViewTracker {
             @Override
             public void onVideoCompletion(IViewTracker viewTracker) {
                 mIsComplete = true;
-            }
-
-            @Override
-            public void onVideoPrepared(IViewTracker viewTracker) {
-                mVideoPlayView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -109,6 +118,34 @@ public class VideoTracker extends ViewTracker {
         return tracker;
     }
 
+    @Override
+    public Object getBoundObject() {
+        return mBoundObject;
+    }
+
+    @Override
+    public void onPlayerItemChanged(IViewTracker viewTracker) {
+        addOrRemoveLoadingView(true);
+        mVideoPlayView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void done(Object key, BitmapDrawable drawable) {
+        Log.i(TAG, "mDrawableTask done, addKey : " + key);
+        mCachedDrawables.put(key, drawable);
+        mVideoBottomView.setBackground(drawable);
+    }
+
+    private void addTrackerImageToVideoBottomView(View trackView) {
+        boolean containsKey = mCachedDrawables.containsKey(mBoundObject);
+        Log.i(TAG, "addTrackerImageToVideoBottomView, containsKey : " + containsKey);
+        if (containsKey) {
+            mVideoBottomView.setBackground(mCachedDrawables.get(mBoundObject));
+        } else {
+            mDrawableTask.execute(mBoundObject, trackView);
+        }
+    }
+
     private void addOrRemoveLoadingView(boolean add) {
         if (mControllerView != null) {
             View loading = mControllerView.loadingController(this);
@@ -120,10 +157,6 @@ public class VideoTracker extends ViewTracker {
                 mVideoTopView.removeView(loading);
             }
         }
-    }
-
-    public void setMediaPlayer(IMediaPlayer mediaPlayer) {
-        this.mMediaPlayer = mediaPlayer;
     }
 
     private View getVideoTopLayer() {
@@ -144,54 +177,32 @@ public class VideoTracker extends ViewTracker {
     private VideoControllerView.MediaPlayerControlListener mPlayerControlListener = new VideoControllerView.MediaPlayerControlListener() {
         @Override
         public void start() {
-            try {
-                mMediaPlayer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mVideoPlayView.start();
         }
 
         @Override
         public void pause() {
-            try {
-                mMediaPlayer.pause();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mVideoPlayView.pause();
         }
 
         @Override
         public int getDuration() {
-            try {
-                return mMediaPlayer.getDuration();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return 0;
+            return mVideoPlayView.getDuration();
         }
 
         @Override
         public int getCurrentPosition() {
-            try {
-                return mMediaPlayer.getCurrentPosition();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return 0;
+            return mVideoPlayView.getCurrentPosition();
         }
 
         @Override
         public void seekTo(int position) {
-            try {
-                mMediaPlayer.seekTo(position);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mVideoPlayView.seekTo(position);
         }
 
         @Override
         public boolean isPlaying() {
-            return mMediaPlayer.isPlaying();
+            return mVideoPlayView.isPlaying();
         }
 
         @Override
@@ -225,5 +236,4 @@ public class VideoTracker extends ViewTracker {
             }
         }
     };
-
 }

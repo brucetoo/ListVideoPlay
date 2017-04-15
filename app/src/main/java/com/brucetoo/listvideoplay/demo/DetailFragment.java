@@ -64,6 +64,7 @@ public class DetailFragment extends Fragment implements Backable {
     private View oldTrackerView;
 
     private void startMoveInside() {
+        //TODO check NPE
         videoRoot = (Tracker.getViewTracker(getActivity()).getFollowerView());
         oldTrackerView = Tracker.getViewTracker(getActivity()).getTrackerView();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
@@ -98,7 +99,7 @@ public class DetailFragment extends Fragment implements Backable {
             @Override
             public void onAnimationEnd(Animator animation) {
                 //we must simple change tracker view to new one when animation end
-                Tracker.getViewTracker(getActivity()).changeTrackView(mImageCover);
+                Tracker.changeTrackView(getActivity(),mImageCover);
             }
         });
         animator.setDuration(500);
@@ -130,7 +131,7 @@ public class DetailFragment extends Fragment implements Backable {
             public void onAnimationEnd(Animator animation) {
                 listener.onAnimationEnd(animation);
                 //rollback to old tracker view
-                Tracker.getViewTracker(getActivity()).changeTrackView(oldTrackerView);
+                Tracker.changeTrackView(getActivity(),oldTrackerView);
             }
         });
         animator.start();

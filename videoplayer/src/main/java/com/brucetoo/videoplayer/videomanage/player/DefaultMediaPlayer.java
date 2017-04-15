@@ -11,10 +11,9 @@ import android.view.Surface;
 
 import com.brucetoo.videoplayer.Config;
 import com.brucetoo.videoplayer.IViewTracker;
-import com.brucetoo.videoplayer.VideoTracker;
+import com.brucetoo.videoplayer.utils.Logger;
 import com.brucetoo.videoplayer.videomanage.interfaces.IMediaPlayer;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
-import com.brucetoo.videoplayer.utils.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -132,14 +131,15 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         synchronized (mState) {
             try {
                 mMediaPlayer.prepare();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                prepareAsync();
             }
         }
     }
 
     @Override
-    public void prepareAsync() throws IOException {
+    public void prepareAsync() {
         mMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -442,9 +442,6 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     @Override
     public void setViewTracker(IViewTracker viewTracker) {
        this.mViewTracker = viewTracker;
-        if(viewTracker instanceof VideoTracker){
-            ((VideoTracker) viewTracker).setMediaPlayer(this);
-        }
     }
 
     @Override

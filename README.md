@@ -6,7 +6,7 @@
 
 # EFFECT
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/9oOBNQ-m2sA/0.jpg)](https://www.youtube.com/watch?v=9oOBNQ-m2sA)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/6-cE4g3wO5I/0.jpg)](https://www.youtube.com/watch?v=6-cE4g3wO5I)
 
 
 ### Detail Implements

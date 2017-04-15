@@ -50,12 +50,13 @@
         * when video is preparing
         */
        View loadingController(IViewTracker tracker);
-    ```
+
+  ```
 
 More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/master/videoplayer/src/main/java/com/brucetoo/videoplayer)
 
 
-#THANKS
+## THANKS
 
 [VideoPlayerManager](https://github.com/danylovolokh/VideoPlayerManager): Changes happened in many places,
 so there is no plan PR to origin lib.

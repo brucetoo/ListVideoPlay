@@ -6,7 +6,7 @@
 
 # EFFECT
 
-[YOUTUBE Demo](https://youtu.be/9oOBNQ-m2sA)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/9oOBNQ-m2sA/0.jpg)](https://www.youtube.com/watch?v=9oOBNQ-m2sA)
 
 
 ### Detail Implements

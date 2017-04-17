@@ -86,12 +86,14 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     @Override
     public void toFullScreen() {
         super.toFullScreen();
+        //TODO switch controller view to full-screen view
         mControllerView.fullScreenController(this);
     }
 
     @Override
     public void toNormalScreen() {
         super.toNormalScreen();
+        //TODO switch controller view to normal-screen view
         mControllerView.normalScreenController(this);
     }
 

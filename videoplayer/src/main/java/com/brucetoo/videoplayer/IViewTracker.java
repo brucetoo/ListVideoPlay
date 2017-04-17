@@ -157,4 +157,6 @@ public interface IViewTracker {
     void startVideo();
 
     void pauseVideo();
+
+    IControllerView getControllerView();
 }

@@ -39,4 +39,14 @@ public class DefaultControllerView implements IControllerView {
         }
         return mLoadingView;
     }
+
+    @Override
+    public boolean muteVideo() {
+        return true;
+    }
+
+    @Override
+    public boolean enableAutoRotation() {
+        return true;
+    }
 }

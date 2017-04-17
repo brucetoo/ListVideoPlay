@@ -35,4 +35,8 @@ public interface IControllerView {
      * when video is preparing
      */
     View loadingController(IViewTracker tracker);
+
+    boolean muteVideo();
+
+    boolean enableAutoRotation();
 }

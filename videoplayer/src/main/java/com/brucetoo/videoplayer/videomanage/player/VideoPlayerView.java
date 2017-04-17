@@ -309,6 +309,8 @@ public class VideoPlayerView extends ScalableTextureView
         for (VideoPlayerListener listener : listCopy) {
             listener.onVideoPrepared(viewTracker);
         }
+
+        muteVideo(viewTracker.getControllerView().muteVideo());
     }
 
     @Override

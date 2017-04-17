@@ -228,7 +228,6 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public void toFullScreen() {
-        //TODO Auto Rotate
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
 
@@ -250,6 +249,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     @Override
     public void pauseVideo() {
 
+    }
+
+    @Override
+    public IControllerView getControllerView() {
+        return mControllerView;
     }
 
     @Override

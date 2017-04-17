@@ -1,14 +1,18 @@
 package com.brucetoo.videoplayer;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 import android.view.View;
 
 import com.brucetoo.videoplayer.utils.DrawableTask;
+import com.brucetoo.videoplayer.utils.OrientationDetector;
+import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 import com.brucetoo.videoplayer.videomanage.controller.VideoControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
@@ -21,7 +25,7 @@ import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
  * At 15:08
  */
 
-public class VideoTracker extends ViewTracker implements PlayerItemChangeListener, DrawableTask.Callback {
+public class VideoTracker extends ViewTracker implements PlayerItemChangeListener, DrawableTask.Callback, OrientationDetector.OnOrientationChangedListener {
 
     private static final String TAG = VideoTracker.class.getSimpleName();
     private VideoPlayerView mVideoPlayView;
@@ -29,6 +33,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     private boolean mIsComplete;
     private DrawableTask mDrawableTask = new DrawableTask(this);
     private SimpleArrayMap<Object, BitmapDrawable> mCachedDrawables = new SimpleArrayMap<>();
+    private OrientationDetector mOrientationDetector;
 
     public VideoTracker(Activity context) {
         super(context);
@@ -76,6 +81,52 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     @Override
     public void pauseVideo() {
         mVideoPlayView.pause();
+    }
+
+    @Override
+    public void toFullScreen() {
+        super.toFullScreen();
+        mControllerView.fullScreenController(this);
+    }
+
+    @Override
+    public void toNormalScreen() {
+        super.toNormalScreen();
+        mControllerView.normalScreenController(this);
+    }
+
+    @Override
+    public IViewTracker controller(IControllerView controllerView) {
+        super.controller(controllerView);
+        if (mControllerView.enableAutoRotation()) {// auto rotation
+            if (mOrientationDetector == null) {
+                mOrientationDetector = new OrientationDetector(mContext, this);
+                mOrientationDetector.enable(true);
+            }
+        } else {
+            if (mOrientationDetector != null) {
+                mOrientationDetector.enable(false);
+            }
+            mOrientationDetector = null;
+        }
+        return this;
+    }
+
+    @Override
+    public void onOrientationChanged(int orientation) {
+        if (isSystemRotationEnabled() && mIsAttach) {
+            switch (orientation) {
+                case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
+                    toNormalScreen();
+                    break;
+                case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
+                case ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
+                    toFullScreen();
+                    break;
+                case ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT:
+                    break;
+            }
+        }
     }
 
     @Override
@@ -135,6 +186,15 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     public void onPlayerItemChanged(IViewTracker viewTracker) {
         addOrRemoveLoadingView(true);
         mVideoPlayView.setVisibility(View.INVISIBLE);
+    }
+
+    protected boolean isSystemRotationEnabled() {
+        try {
+            return Settings.System.getInt(mContext.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
     }
 
     @Override

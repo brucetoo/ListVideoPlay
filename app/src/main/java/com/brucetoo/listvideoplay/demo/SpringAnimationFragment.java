@@ -1,6 +1,7 @@
 package com.brucetoo.listvideoplay.demo;
 
 import android.os.Bundle;
+import android.support.animation.DynamicAnimation;
 import android.support.animation.SpringAnimation;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.brucetoo.listvideoplay.R;
 
@@ -21,12 +23,16 @@ import com.brucetoo.listvideoplay.R;
 
 public class SpringAnimationFragment extends Fragment {
 
-    private View mViewBox;
+    private View mViewTop;
+    private View mViewMiddle;
+    private View mViewBottom;
     private View mRootView;
     private SeekBar mStiffness;
-    private SeekBar mDampling;
+    private SeekBar mDamping;
     private VelocityTracker mVelocityTracker;
     private float mDownX, mDownY;
+    private TextView mTextStiffness;
+    private TextView mTextDamping;
 
     @Nullable
     @Override
@@ -37,11 +43,71 @@ public class SpringAnimationFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewBox = view.findViewById(R.id.view_box);
+        mViewTop = view.findViewById(R.id.view_top);
+        mViewMiddle = view.findViewById(R.id.view_middle);
+        mViewBottom = view.findViewById(R.id.view_bottom);
         mRootView = view.findViewById(R.id.layout_root);
         mStiffness = (SeekBar) view.findViewById(R.id.sb_stiffness);
-        mDampling = (SeekBar) view.findViewById(R.id.sb_damping);
+        mDamping = (SeekBar) view.findViewById(R.id.sb_damping);
+        mTextStiffness = (TextView) view.findViewById(R.id.txt_stiffness);
+        mTextDamping = (TextView) view.findViewById(R.id.txt_damping);
 
+//        final SpringForce springForce = new SpringForce();
+//        springForce.setDampingRatio(getDamping());
+//        springForce.setStiffness(getStiffness());
+
+        final SpringAnimation anim1X = new SpringAnimation(mViewTop, SpringAnimation.TRANSLATION_X);
+        final SpringAnimation anim1Y = new SpringAnimation(mViewTop, SpringAnimation.TRANSLATION_Y);
+//        anim1X.setSpring(springForce);
+//        anim1Y.setSpring(springForce);
+
+        final SpringAnimation anim2X = new SpringAnimation(mViewMiddle, SpringAnimation.TRANSLATION_X);
+        final SpringAnimation anim2Y = new SpringAnimation(mViewMiddle, SpringAnimation.TRANSLATION_Y);
+//        anim2X.setSpring(springForce);
+//        anim2Y.setSpring(springForce);
+
+        final SpringAnimation anim3X = new SpringAnimation(mViewBottom, SpringAnimation.TRANSLATION_X);
+        final SpringAnimation anim3Y = new SpringAnimation(mViewBottom, SpringAnimation.TRANSLATION_Y);
+//        anim3X.setSpring(springForce);
+//        anim3Y.setSpring(springForce);
+
+        anim1X.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+            @Override
+            public void onAnimationUpdate(DynamicAnimation animation, final float value, float velocity) {
+                runDelay(50, new Runnable() {
+                    @Override
+                    public void run() {
+                        anim2X.animateToFinalPosition(value);
+                    }
+                });
+
+                runDelay(100, new Runnable() {
+                    @Override
+                    public void run() {
+                        anim3X.animateToFinalPosition(value);
+                    }
+                });
+            }
+        });
+
+        anim1Y.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+            @Override
+            public void onAnimationUpdate(DynamicAnimation animation,final float value, float velocity) {
+                runDelay(50, new Runnable() {
+                    @Override
+                    public void run() {
+                        anim2Y.animateToFinalPosition(value);
+                    }
+                });
+
+                runDelay(100, new Runnable() {
+                    @Override
+                    public void run() {
+                        anim3Y.animateToFinalPosition(value);
+                    }
+                });
+            }
+        });
         mVelocityTracker = VelocityTracker.obtain();
 
         mRootView.setOnTouchListener(new View.OnTouchListener() {
@@ -54,27 +120,33 @@ public class SpringAnimationFragment extends Fragment {
                         mVelocityTracker.addMovement(event);
                         return true;
                     case MotionEvent.ACTION_MOVE:
-                        mViewBox.setTranslationX(event.getX() - mDownX);
-                        mViewBox.setTranslationY(event.getY() - mDownY);
-                        mVelocityTracker.addMovement(event);
+                        float finalX = event.getX() - mDownX;
+                        float finalY = event.getY() - mDownY;
+//                        mViewBox.setTranslationX(event.getX() - mDownX);
+//                        mViewBox.setTranslationY(event.getY() - mDownY);
+//                        mVelocityTracker.addMovement(event);
+                        anim1X.animateToFinalPosition(finalX);
+                        anim1Y.animateToFinalPosition(finalY);
                         return true;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        mVelocityTracker.computeCurrentVelocity(1000);
-                        if (mViewBox.getTranslationX() != 0) {
-                            SpringAnimation animX = new SpringAnimation(mViewBox, SpringAnimation.TRANSLATION_X,0);
-                            animX.getSpring().setStiffness(getStiffness());
-                            animX.getSpring().setDampingRatio(getDamping());
-                            animX.setStartVelocity(mVelocityTracker.getXVelocity());
-                            animX.start();
-                        }
-                        if (mViewBox.getTranslationY() != 0) {
-                            SpringAnimation animY = new SpringAnimation(mViewBox, SpringAnimation.TRANSLATION_Y, 0);
-                            animY.getSpring().setStiffness(getStiffness());
-                            animY.getSpring().setDampingRatio(getDamping());
-                            animY.setStartVelocity(mVelocityTracker.getYVelocity());
-                            animY.start();
-                        }
+                        anim1X.animateToFinalPosition(0);
+                        anim1Y.animateToFinalPosition(0);
+//                        mVelocityTracker.computeCurrentVelocity(1000);
+//                        if (mViewBox.getTranslationX() != 0) {
+//                            SpringAnimation animX = new SpringAnimation(mViewBox, SpringAnimation.TRANSLATION_X,0);
+//                            animX.getSpring().setStiffness(getStiffness());
+//                            animX.getSpring().setDampingRatio(getDamping());
+//                            animX.setStartVelocity(mVelocityTracker.getXVelocity());
+//                            animX.start();
+//                        }
+//                        if (mViewBox.getTranslationY() != 0) {
+//                            SpringAnimation animY = new SpringAnimation(mViewBox, SpringAnimation.TRANSLATION_Y, 0);
+//                            animY.getSpring().setStiffness(getStiffness());
+//                            animY.getSpring().setDampingRatio(getDamping());
+//                            animY.setStartVelocity(mVelocityTracker.getYVelocity());
+//                            animY.start();
+//                        }
                         mVelocityTracker.clear();
                         return true;
                 }
@@ -83,11 +155,19 @@ public class SpringAnimationFragment extends Fragment {
         });
     }
 
+    public void runDelay(long delay,Runnable runnable){
+        mViewTop.postDelayed(runnable, delay);
+    }
+
     private float getStiffness() {
-        return Math.max(mStiffness.getProgress(), 1f);
+        float stiffness = Math.max(mStiffness.getProgress(), 1f);
+        mTextStiffness.setText("Stiffness " + stiffness);
+        return stiffness;
     }
 
     private float getDamping() {
-        return mDampling.getProgress() / 100f;
+        float dampingRatio = mDamping.getProgress() / 100f;
+        mTextDamping.setText("Damping Ratio " + dampingRatio);
+        return dampingRatio;
     }
 }

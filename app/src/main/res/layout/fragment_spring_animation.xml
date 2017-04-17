@@ -6,20 +6,58 @@
               android:background="@color/colorPrimary"
               android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
 
         <View
-            android:id="@+id/view_box"
+            android:id="@+id/view_top"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:background="@color/colorAccent"
             />
 
-    </FrameLayout>
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <View
+            android:id="@+id/view_middle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@color/colorAccent"
+            />
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <View
+            android:id="@+id/view_bottom"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@color/colorAccent"
+            />
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,10 +65,11 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/txt_stiffness"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="STIFFNESS(0,10000)"
+            android:text="STIFFNESS(1,10000)"
             android:textColor="@android:color/white"/>
 
         <SeekBar
@@ -42,10 +81,11 @@
             />
 
         <TextView
+            android:id="@+id/txt_damping"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="DAMPLING(0,1)"
+            android:text="DAMPING(0,1)"
             android:textColor="@android:color/white"/>
 
         <SeekBar

@@ -37,13 +37,21 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     @Override
     public IViewTracker detach() {
         IViewTracker tracker = super.detach();
+        keepScreenOn(false);
         SingleVideoPlayerManager.getInstance().stopAnyPlayback();
         return tracker;
     }
 
     @Override
+    public IViewTracker hide() {
+        pauseVideo();
+        return super.hide();
+    }
+
+    @Override
     public IViewTracker attach() {
         IViewTracker tracker = super.attach();
+        keepScreenOn(true);
         mVideoPlayView = mFloatLayerView.getVideoPlayerView();
 //        View view = new View(getContext());
 //        view.setBackgroundColor(Color.parseColor("#dd000000"));

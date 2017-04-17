@@ -25,4 +25,6 @@ public interface IScrollDetector {
     void onScrollStateChanged(int scrollState);
 
     void detach();
+
+    boolean isIdle();
 }

@@ -86,6 +86,13 @@ public class VideoRelativeLayout extends RelativeLayout implements PlayerItemCha
                 mPlayView.setVisibility(VISIBLE);
             }
         }
+
+        @Override
+        public void onError(IViewTracker viewTracker, int what, int extra) {
+            if(mPlayView != null){
+                mPlayView.setVisibility(VISIBLE);
+            }
+        }
     };
 
     @Override

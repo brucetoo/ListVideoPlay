@@ -44,6 +44,11 @@ public class RecyclerScrollDetector extends RecyclerView.OnScrollListener implem
     }
 
     @Override
+    public boolean isIdle() {
+        return false;
+    }
+
+    @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         switch (newState) {
             case RecyclerView.SCROLL_STATE_DRAGGING:

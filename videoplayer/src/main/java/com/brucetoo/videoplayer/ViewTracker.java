@@ -122,7 +122,6 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             }
 
             restoreActivityFlag();
-            keepScreenOn(true);
         }
         mIsAttach = true;
         return this;
@@ -138,8 +137,15 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             getDecorView().removeView(mFloatLayerView);
             mFloatLayerView = null;
         }
-        keepScreenOn(false);
         mIsAttach = false;
+        return this;
+    }
+
+    @Override
+    public IViewTracker hide() {
+        if(mFloatLayerView != null){
+            mFloatLayerView.setVisibility(View.INVISIBLE);
+        }
         return this;
     }
 
@@ -395,7 +401,6 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             + " locFrom[0] -> " + locFrom[0]
             + " locFrom[1] -> " + locFrom[1]);
 
-        //TODO 此判断有问题,不够严谨
         if (rect.top != 0 || rect.bottom != toView.getHeight()
             || rect.left != 0 || rect.right != toView.getWidth()) { //reach top,bottom,left,right
             //move self
@@ -452,10 +457,18 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
             ViewAnimator.putOn(fromView).translation(moveX, moveY);
 
-            float v1 = (rect.bottom - rect.top) * 1.0f / toView.getHeight();
-            float v2 = (rect.right - rect.left) * 1.0f / toView.getWidth();
-            if (mVisibleChangeListener != null) {
-                mVisibleChangeListener.onVisibleChange(v1 == 1 ? v2 : v1, this);
+            //if tracker view still in current screen
+
+            //TODO when user scroll happened and tracker is be re-used,but user don't lift up finger
+            // we can't notify onVisibleChange
+
+            //TODO Need add ViewPager or another horizontal scroll detector ??? or ignore left <-> right ?
+            if(rect.top >= 0) {
+                float v1 = (rect.bottom - rect.top) * 1.0f / toView.getHeight();
+                float v2 = (rect.right - rect.left) * 1.0f / toView.getWidth();
+                if (mVisibleChangeListener != null) {
+                    mVisibleChangeListener.onVisibleChange(v1 == 1 ? v2 : v1, this);
+                }
             }
         } else {
 

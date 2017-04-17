@@ -39,6 +39,12 @@ public interface IViewTracker {
     IViewTracker detach();
 
     /**
+     * Just hide current {@link #getFloatLayerView()},not delete it,and pause video
+     * if exits
+     */
+    IViewTracker hide();
+
+    /**
      * {@link #detach()} and release unnecessary resources
      * Normally call in Activity or Fragment destroyed.
      */

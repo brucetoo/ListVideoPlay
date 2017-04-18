@@ -3,6 +3,7 @@ package com.brucetoo.videoplayer;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
@@ -125,6 +126,10 @@ public interface IViewTracker {
      * DecorView {@link android.view.Window#ID_ANDROID_CONTENT}
      */
     FloatLayerView getFloatLayerView();
+
+    FrameLayout getVideoTopView();
+
+    FrameLayout getVideoBottomView();
 
     /**
      * Get bound Activity instance

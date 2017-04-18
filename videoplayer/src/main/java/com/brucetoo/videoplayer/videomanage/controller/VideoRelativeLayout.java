@@ -16,7 +16,7 @@ import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
  * Created by Bruce Too
  * On 14/04/2017.
  * At 18:02
- * A RelativeLayout that can observer {@link com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener}
+ * A RelativeLayout that can observe {@link com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener}
  */
 
 public class VideoRelativeLayout extends RelativeLayout implements PlayerItemChangeListener {

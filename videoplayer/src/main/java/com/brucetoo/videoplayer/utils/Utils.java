@@ -1,6 +1,7 @@
 package com.brucetoo.videoplayer.utils;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -40,10 +41,10 @@ public class Utils {
 
         try {
             int resourceId = context.getResources().getIdentifier(
-                    "status_bar_height", "dimen", "android");
+                "status_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 statusBarHeight = context.getResources()
-                        .getDimensionPixelSize(resourceId);
+                    .getDimensionPixelSize(resourceId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +54,8 @@ public class Utils {
 
     /**
      * Get view at position of ListView
-     * @param pos position
+     *
+     * @param pos      position
      * @param listView ListView
      * @return item view
      */
@@ -61,11 +63,21 @@ public class Utils {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
         final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
 
-        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
             return listView.getAdapter().getView(pos, null, listView);
         } else {
             final int childIndex = pos - firstListItemPosition;
             return listView.getChildAt(childIndex);
         }
     }
+
+    public static boolean isSystemRotationEnabled(Context context) {
+        try {
+            return Settings.System.getInt(context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
 }

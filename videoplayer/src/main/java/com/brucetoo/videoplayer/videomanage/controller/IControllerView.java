@@ -8,6 +8,7 @@ import com.brucetoo.videoplayer.IViewTracker;
  * Created by Bruce Too
  * On 14/04/2017.
  * At 16:55
+ *
  */
 
 public interface IControllerView {
@@ -36,7 +37,16 @@ public interface IControllerView {
      */
     View loadingController(IViewTracker tracker);
 
+    /**
+     * Control mute video or not, mute video default.
+     * @return if mute video
+     */
     boolean muteVideo();
 
+    /**
+     * Enable auto rotation screen if system "auto-rotate" switch is open
+     * or when devices is landscape.Default enable auto rotate
+     * @return enable rotate
+     */
     boolean enableAutoRotation();
 }

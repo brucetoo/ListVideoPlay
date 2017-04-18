@@ -42,6 +42,10 @@ public class VideoPlayerView extends ScalableTextureView
 
     private String mVideoPath;
 
+    private int mCurrentBuffer;
+
+    private boolean mIsComplete;
+
     private final List<VideoPlayerListener> mVideoPlayerListeners = new ArrayList<>();
 
     public VideoPlayerView(Context context) {
@@ -296,6 +300,8 @@ public class VideoPlayerView extends ScalableTextureView
         for (VideoPlayerListener listener : listCopy) {
             listener.onVideoCompletion(viewTracker);
         }
+
+        mIsComplete = true;
     }
 
     @Override
@@ -348,6 +354,8 @@ public class VideoPlayerView extends ScalableTextureView
         for (VideoPlayerListener listener : listCopy) {
             listener.onBufferingUpdate(viewTracker, percent);
         }
+
+        mCurrentBuffer = percent;
     }
 
     @Override
@@ -504,6 +512,14 @@ public class VideoPlayerView extends ScalableTextureView
         synchronized (mVideoPlayerListeners) {
             mVideoPlayerListeners.clear();
         }
+    }
+
+    public boolean isComplete(){
+        return mIsComplete;
+    }
+
+    public int getCurrentBuffer(){
+        return mCurrentBuffer;
     }
 
     @Override

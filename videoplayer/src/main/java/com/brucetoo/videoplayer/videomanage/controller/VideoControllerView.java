@@ -254,7 +254,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
      */
     private View makeControllerView() {
         LayoutInflater inflate = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRootView = inflate.inflate(R.layout.media_controller, null);
+        mRootView = inflate.inflate(R.layout.layout_media_controller, null);
         initControllerView();
 
         return mRootView;
@@ -596,6 +596,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
      * Seek bar drag listener
      */
     private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
         public void onStartTrackingTouch(SeekBar bar) {
             show();
             mIsDragging = true;
@@ -603,6 +604,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
             mHandler.removeCallbacks(mHideRunnable);
         }
 
+        @Override
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
             if (mMediaPlayerControlListener == null) {
                 return;
@@ -614,12 +616,16 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
             long duration = mMediaPlayerControlListener.getDuration();
             long newPosition = (duration * progress) / 1000L;
-            mMediaPlayerControlListener.seekTo((int) newPosition);
+//            mMediaPlayerControlListener.seekTo((int) newPosition);
             if (mCurrentTime != null)
                 mCurrentTime.setText(stringToTime((int) newPosition));
         }
 
+        @Override
         public void onStopTrackingTouch(SeekBar bar) {
+            long duration = mMediaPlayerControlListener.getDuration();
+            long newPosition = (duration * bar.getProgress()) / 1000L;
+            mMediaPlayerControlListener.seekTo((int) newPosition);
             mIsDragging = false;
             setSeekProgress();
             togglePausePlay();

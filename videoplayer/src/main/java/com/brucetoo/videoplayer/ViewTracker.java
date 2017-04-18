@@ -190,6 +190,16 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
+    public FrameLayout getVideoTopView() {
+        return mVideoTopView;
+    }
+
+    @Override
+    public FrameLayout getVideoBottomView() {
+        return mVideoBottomView;
+    }
+
+    @Override
     public Context getContext() {
         return mContext;
     }

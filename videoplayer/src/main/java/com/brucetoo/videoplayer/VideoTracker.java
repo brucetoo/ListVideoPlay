@@ -2,9 +2,9 @@ package com.brucetoo.videoplayer;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
@@ -12,8 +12,8 @@ import android.view.View;
 
 import com.brucetoo.videoplayer.utils.DrawableTask;
 import com.brucetoo.videoplayer.utils.OrientationDetector;
+import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
-import com.brucetoo.videoplayer.videomanage.controller.VideoControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
@@ -29,8 +29,6 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
     private static final String TAG = VideoTracker.class.getSimpleName();
     private VideoPlayerView mVideoPlayView;
-    private int mCurrentBuffer;
-    private boolean mIsComplete;
     private DrawableTask mDrawableTask = new DrawableTask(this);
     private SimpleArrayMap<Object, BitmapDrawable> mCachedDrawables = new SimpleArrayMap<>();
     private OrientationDetector mOrientationDetector;
@@ -60,9 +58,8 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         mVideoPlayView = mFloatLayerView.getVideoPlayerView();
 //        View view = new View(getContext());
 //        view.setBackgroundColor(Color.parseColor("#dd000000"));
-//        //TODO Add immerse view here
+//        //TODO Add immerse view when enable mask
 //        tracker.getFloatLayerView().addView(view,0);
-        getVideoTopLayer();
         return tracker;
     }
 
@@ -84,17 +81,13 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     }
 
     @Override
-    public void toFullScreen() {
-        super.toFullScreen();
-        //TODO switch controller view to full-screen view
-        mControllerView.fullScreenController(this);
-    }
-
-    @Override
-    public void toNormalScreen() {
-        super.toNormalScreen();
-        //TODO switch controller view to normal-screen view
-        mControllerView.normalScreenController(this);
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (isFullScreen()) {
+            addFullScreenView();
+        } else {
+            addNormalScreenView();
+        }
     }
 
     @Override
@@ -111,12 +104,13 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
             }
             mOrientationDetector = null;
         }
+        addNormalScreenView();
         return this;
     }
 
     @Override
     public void onOrientationChanged(int orientation) {
-        if (isSystemRotationEnabled() && mIsAttach) {
+        if (Utils.isSystemRotationEnabled(mContext) && mIsAttach) {
             switch (orientation) {
                 case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
                     toNormalScreen();
@@ -151,16 +145,6 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
         SingleVideoPlayerManager.getInstance().addVideoPlayerListener(new SimpleVideoPlayerListener() {
             @Override
-            public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
-                mCurrentBuffer = percent;
-            }
-
-            @Override
-            public void onVideoCompletion(IViewTracker viewTracker) {
-                mIsComplete = true;
-            }
-
-            @Override
             public void onInfo(IViewTracker viewTracker, int what) {
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     //hide loading view
@@ -173,6 +157,11 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
                     //hide loading view
                     addOrRemoveLoadingView(false);
                 }
+            }
+
+            @Override
+            public void onVideoCompletion(IViewTracker viewTracker) {
+                detach();
             }
         });
 
@@ -190,15 +179,6 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         mVideoPlayView.setVisibility(View.INVISIBLE);
     }
 
-    protected boolean isSystemRotationEnabled() {
-        try {
-            return Settings.System.getInt(mContext.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return true;
-        }
-    }
-
     @Override
     public void done(Object key, BitmapDrawable drawable) {
         Log.i(TAG, "mDrawableTask done, addKey : " + key);
@@ -206,6 +186,12 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         mVideoBottomView.setBackground(drawable);
     }
 
+    /**
+     * Prevent the abrupt black screen in {@link #mFloatLayerView},and set tracker view's
+     * background into {@link #mFloatLayerView} to make a better visual connection
+     *
+     * @param trackView the view be tracked
+     */
     private void addTrackerImageToVideoBottomView(View trackView) {
         boolean containsKey = mCachedDrawables.containsKey(mBoundObject);
         Log.i(TAG, "addTrackerImageToVideoBottomView, containsKey : " + containsKey);
@@ -214,6 +200,20 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         } else {
             mDrawableTask.execute(mBoundObject, trackView);
         }
+    }
+
+    /**
+     * When {@link #mFloatLayerView} {@link #attach()} to tracker view,
+     * we need add normal screen view first.
+     */
+    public void addNormalScreenView() {
+        mVideoTopView.removeAllViews();
+        mVideoTopView.addView(mControllerView.normalScreenController(this));
+    }
+
+    public void addFullScreenView() {
+        mVideoTopView.removeAllViews();
+        mVideoTopView.addView(mControllerView.fullScreenController(this));
     }
 
     private void addOrRemoveLoadingView(boolean add) {
@@ -228,82 +228,4 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
             }
         }
     }
-
-    private View getVideoTopLayer() {
-        return new VideoControllerView.Builder(mContext, mPlayerControlListener)
-            .withVideoTitle("TEST VIDEO")
-            .withVideoView(mFollowerView)//to enable toggle display controller view
-            .canControlBrightness(true)
-            .canControlVolume(true)
-            .canSeekVideo(false)
-            .exitIcon(R.drawable.video_top_back)
-            .pauseIcon(R.drawable.ic_media_pause)
-            .playIcon(R.drawable.ic_media_play)
-            .shrinkIcon(R.drawable.ic_media_fullscreen_shrink)
-            .stretchIcon(R.drawable.ic_media_fullscreen_stretch)
-            .build(mVideoTopView);//layout container that hold video play view
-    }
-
-    private VideoControllerView.MediaPlayerControlListener mPlayerControlListener = new VideoControllerView.MediaPlayerControlListener() {
-        @Override
-        public void start() {
-            mVideoPlayView.start();
-        }
-
-        @Override
-        public void pause() {
-            mVideoPlayView.pause();
-        }
-
-        @Override
-        public int getDuration() {
-            return mVideoPlayView.getDuration();
-        }
-
-        @Override
-        public int getCurrentPosition() {
-            return mVideoPlayView.getCurrentPosition();
-        }
-
-        @Override
-        public void seekTo(int position) {
-            mVideoPlayView.seekTo(position);
-        }
-
-        @Override
-        public boolean isPlaying() {
-            return mVideoPlayView.isPlaying();
-        }
-
-        @Override
-        public boolean isComplete() {
-            return mIsComplete;
-        }
-
-        @Override
-        public int getBufferPercentage() {
-            return mCurrentBuffer;
-        }
-
-        @Override
-        public boolean isFullScreen() {
-            return VideoTracker.this.isFullScreen();
-        }
-
-        @Override
-        public void toggleFullScreen() {
-            if (isFullScreen()) {
-                toNormalScreen();
-            } else {
-                toFullScreen();
-            }
-        }
-
-        @Override
-        public void exit() {
-            if (isFullScreen()) {
-                toNormalScreen();
-            }
-        }
-    };
 }

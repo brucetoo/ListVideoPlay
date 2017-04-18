@@ -254,7 +254,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
      */
     private View makeControllerView() {
         LayoutInflater inflate = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRootView = inflate.inflate(R.layout.media_controller, null);
+        mRootView = inflate.inflate(R.layout.layout_media_controller, null);
         initControllerView();
 
         return mRootView;

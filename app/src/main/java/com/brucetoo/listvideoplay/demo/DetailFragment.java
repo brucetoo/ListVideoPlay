@@ -28,6 +28,7 @@ public class DetailFragment extends Fragment implements Backable {
     public static final String TAG = "DetailFragment";
     private ImageView mImageCover;
     private TextView mTextDetail;
+    private boolean mAnimateRunning;
 
     @Nullable
     @Override
@@ -96,10 +97,17 @@ public class DetailFragment extends Fragment implements Backable {
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mAnimateRunning = true;
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 //we must simple change tracker view to new one when animation end
                 Tracker.changeTrackView(getActivity(),mImageCover);
+                mAnimateRunning = false;
             }
         });
         animator.setDuration(500);
@@ -143,13 +151,15 @@ public class DetailFragment extends Fragment implements Backable {
 
     @Override
     public boolean onBackPressed() {
-        startMoveOutside(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if(getActivity() != null)
-                    getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
+        if(!mAnimateRunning) {
+            startMoveOutside(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (getActivity() != null)
+                        getActivity().getSupportFragmentManager().popBackStack();
+                }
+            });
+        }
         return true;
     }
 }

@@ -16,26 +16,25 @@ import com.brucetoo.videoplayer.R;
  * At 17:05
  */
 
-public class LoadingControllerView extends RelativeLayout {
+public class LoadingControllerView extends BaseControllerView {
 
     public LoadingControllerView(Context context) {
         super(context);
-        initView();
     }
 
     public LoadingControllerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initView();
     }
 
     public LoadingControllerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView();
     }
 
     private RotateAnimation animation;
     private ImageView loading;
-    private void initView() {
+
+    @Override
+    protected void initView() {
 
         loading = new ImageView(getContext());
         loading.setImageResource(R.drawable.video_loading);
@@ -50,14 +49,11 @@ public class LoadingControllerView extends RelativeLayout {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        loading.startAnimation(animation);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        loading.clearAnimation();
+    protected void attachWindow(boolean attach) {
+        if(attach){
+            loading.startAnimation(animation);
+        }else {
+            loading.clearAnimation();
+        }
     }
 }

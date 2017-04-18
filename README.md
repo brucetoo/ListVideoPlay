@@ -55,6 +55,56 @@
 
 More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/master/videoplayer/src/main/java/com/brucetoo/videoplayer)
 
+## USAGE
+
+### Tracker
+
+   * Tracker attach
+
+   ```java
+
+    Tracker
+         .attach(activity) // A activity only has a single IViewTracker
+         .trackView(trackView) // Set track view,let IViewTracker's getFollowerView() can observe it scroll change
+         .into(IScrollDetector) // Observe tracker view's parent scroll state change, see demo in ListScrollDetector
+         .controller(IControllerView)// Switch video controller view in different scene,see demo in DefaultControllerView
+         .visibleListener(this);// Observe tracker view visible rect changed in screen.
+   ```
+
+
+   * Tracker detach
+
+   ```java
+    Tracker.detach(getActivity()); //just remove all view in decor view
+   ```
+
+   * Tracker destroy
+
+   ```java
+    Tracker.destroy(getActivity()); //remove all view in decor view and clear all instanses
+   ```
+
+   * Change tracker view
+
+   ```java
+   Tracker.changeTrackView(getActivity(),newTrackerView);// re-bound to new tracker view
+   ```
+
+### VideoPlayManager
+
+   * Register item changed listener
+
+   ```java
+        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
+   ```
+
+   * Register video play listener
+
+   ```java
+  SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
+   ```
+
+All Demo you can see in [ListSupportFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/ListSupportFragment.java) and[DetailFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/DetailFragment.java)
 
 ## THANKS
 

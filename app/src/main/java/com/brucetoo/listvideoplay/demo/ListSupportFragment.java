@@ -100,14 +100,13 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     @Override
     public void onVisibleChange(float visibleRatio, IViewTracker tracker) {
         Log.e(TAG, "onVisibleChange : edge -> " + tracker.getEdgeString());
-        //only care about vertical scroll
-        if(tracker.getEdge() != IViewTracker.LEFT_EDGE || tracker.getEdge() != IViewTracker.RIGHT_EDGE) {
-            if (visibleRatio <= 0.5) {
-                tracker.getFloatLayerView().setVisibility(View.INVISIBLE);
-                tracker.pauseVideo();
-            } else {
-                tracker.getFloatLayerView().setVisibility(View.VISIBLE);
-                tracker.startVideo();
+        if(!tracker.getFloatLayerView().getVideoPlayerView().isComplete()) {
+            if (tracker.getEdge() != IViewTracker.LEFT_EDGE || tracker.getEdge() != IViewTracker.RIGHT_EDGE) {
+                if (visibleRatio <= 0.5) {
+                    tracker.hide();
+                } else {
+                    tracker.show();
+                }
             }
         }
     }

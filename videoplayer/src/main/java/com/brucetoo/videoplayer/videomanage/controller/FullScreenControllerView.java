@@ -14,6 +14,8 @@ import com.brucetoo.videoplayer.R;
  */
 
 public class FullScreenControllerView extends BaseControllerView {
+
+    private VideoControllerView mControllerView;
     
     public FullScreenControllerView(Context context) {
         super(context);
@@ -35,19 +37,24 @@ public class FullScreenControllerView extends BaseControllerView {
     @Override
     public void setViewTracker(IViewTracker viewTracker) {
         super.setViewTracker(viewTracker);
-        // TODO: 18/04/2017 Separate VideoController View
-        new VideoControllerView.Builder((Activity) viewTracker.getContext(), mPlayerControlListener)
-            .withVideoTitle("TEST VIDEO")
-            .withVideoView(viewTracker.getFollowerView())//to enable toggle display controller view
-            .canControlBrightness(true)
-            .canControlVolume(true)
-            .canSeekVideo(false)
-            .exitIcon(R.drawable.video_top_back)
-            .pauseIcon(R.drawable.ic_media_pause)
-            .playIcon(R.drawable.ic_media_play)
-            .shrinkIcon(R.drawable.ic_media_fullscreen_shrink)
-            .stretchIcon(R.drawable.ic_media_fullscreen_stretch)
-            .build(this);//layout container that hold video play view
+        viewTracker.muteVideo(false);
+        // TODO: 18/04/2017 Separate VideoController View,don't need create VideoControllerView every time ,here just a demo
+        if(mControllerView == null) {
+            mControllerView = new VideoControllerView.Builder((Activity) viewTracker.getContext(), mPlayerControlListener)
+                .withVideoTitle("TEST VIDEO")
+                .withVideoView(viewTracker.getFollowerView())//to enable toggle display controller view
+                .canControlBrightness(true)
+                .canControlVolume(true)
+                .canSeekVideo(false)
+                .exitIcon(R.drawable.video_top_back)
+                .pauseIcon(R.drawable.ic_media_pause)
+                .playIcon(R.drawable.ic_media_play)
+                .shrinkIcon(R.drawable.ic_media_fullscreen_shrink)
+                .stretchIcon(R.drawable.ic_media_fullscreen_stretch)
+                .build(this);//layout container that hold video play view
+        }else {
+            mControllerView.setMediaPlayerControlListener(mPlayerControlListener);
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.view.View;
 import com.brucetoo.videoplayer.utils.DrawableTask;
 import com.brucetoo.videoplayer.utils.OrientationDetector;
 import com.brucetoo.videoplayer.utils.Utils;
+import com.brucetoo.videoplayer.videomanage.controller.BaseControllerView;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
@@ -32,6 +33,9 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     private DrawableTask mDrawableTask = new DrawableTask(this);
     private SimpleArrayMap<Object, BitmapDrawable> mCachedDrawables = new SimpleArrayMap<>();
     private OrientationDetector mOrientationDetector;
+    private View mLoadingControllerView;
+    private BaseControllerView mNormalScreenControllerView;
+    private BaseControllerView mFullScreenControllerView;
 
     public VideoTracker(Activity context) {
         super(context);
@@ -49,6 +53,12 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     public IViewTracker hide() {
         pauseVideo();
         return super.hide();
+    }
+
+    @Override
+    public IViewTracker show() {
+        startVideo();
+        return super.show();
     }
 
     @Override
@@ -104,7 +114,9 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
             }
             mOrientationDetector = null;
         }
-        addNormalScreenView();
+        mLoadingControllerView = controllerView.loadingController(this);
+        mNormalScreenControllerView = (BaseControllerView) controllerView.normalScreenController(this);
+        mFullScreenControllerView = (BaseControllerView) controllerView.fullScreenController(this);
         return this;
     }
 
@@ -160,8 +172,8 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
             }
 
             @Override
-            public void onVideoCompletion(IViewTracker viewTracker) {
-                detach();
+            public void onVideoPrepared(IViewTracker viewTracker) {
+                addNormalScreenView();
             }
         });
 
@@ -202,29 +214,30 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         }
     }
 
-    /**
-     * When {@link #mFloatLayerView} {@link #attach()} to tracker view,
-     * we need add normal screen view first.
-     */
     public void addNormalScreenView() {
-        mVideoTopView.removeAllViews();
-        mVideoTopView.addView(mControllerView.normalScreenController(this));
+        mVideoTopView.removeView(mFullScreenControllerView);
+        if(mNormalScreenControllerView.getParent() == null) {
+            mVideoTopView.addView(mNormalScreenControllerView);
+        }
+        mNormalScreenControllerView.setViewTracker(this);
     }
 
     public void addFullScreenView() {
-        mVideoTopView.removeAllViews();
-        mVideoTopView.addView(mControllerView.fullScreenController(this));
+        mVideoTopView.removeView(mNormalScreenControllerView);
+        if(mFullScreenControllerView.getParent() == null) {
+            mVideoTopView.addView(mFullScreenControllerView);
+        }
+        mFullScreenControllerView.setViewTracker(this);
     }
 
     private void addOrRemoveLoadingView(boolean add) {
         if (mControllerView != null) {
-            View loading = mControllerView.loadingController(this);
             if (add) {
-                if (loading.getParent() == null) {
-                    mVideoTopView.addView(loading);
+                if (mLoadingControllerView.getParent() == null) {
+                    mVideoTopView.addView(mLoadingControllerView);
                 }
             } else {
-                mVideoTopView.removeView(loading);
+                mVideoTopView.removeView(mLoadingControllerView);
             }
         }
     }

@@ -12,18 +12,10 @@ import com.brucetoo.videoplayer.IViewTracker;
 
 public class DefaultControllerView implements IControllerView {
 
-    private View mLoadingView;
-    private BaseControllerView mNormalScreenView;
-    private BaseControllerView mFullScreenView;
-
     @Override
     public View normalScreenController(IViewTracker tracker) {
-        tracker.muteVideo(true);
-        if(mNormalScreenView == null){
-            mNormalScreenView = new NormalScreenControllerView(tracker.getContext());
-            (mNormalScreenView).setViewTracker(tracker);
-        }
-        return mNormalScreenView;
+//        tracker.muteVideo(true);
+        return new NormalScreenControllerView(tracker.getContext());
     }
 
     @Override
@@ -33,20 +25,13 @@ public class DefaultControllerView implements IControllerView {
 
     @Override
     public View fullScreenController(IViewTracker tracker) {
-        tracker.muteVideo(false);
-        if(mFullScreenView == null){
-            mFullScreenView = new FullScreenControllerView(tracker.getContext());
-            mFullScreenView.setViewTracker(tracker);
-        }
-        return mFullScreenView;
+//        tracker.muteVideo(false);
+        return new FullScreenControllerView(tracker.getContext());
     }
 
     @Override
     public View loadingController(IViewTracker tracker) {
-        if (mLoadingView == null){
-            mLoadingView = new LoadingControllerView(tracker.getContext());
-        }
-        return mLoadingView;
+        return new LoadingControllerView(tracker.getContext());
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
+import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.R;
 import com.brucetoo.videoplayer.utils.Utils;
 
@@ -46,11 +47,16 @@ public class NormalScreenControllerView extends BaseControllerView {
 
     @Override
     protected void attachWindow(boolean attach) {
-        if(attach){
-            post(mProgressRunnable);
-        }else {
+        if (!attach) {
             removeCallbacks(mProgressRunnable);
         }
+    }
+
+    @Override
+    public void setViewTracker(IViewTracker viewTracker) {
+        super.setViewTracker(viewTracker);
+        viewTracker.muteVideo(true);
+        post(mProgressRunnable);
     }
 
     private Runnable mProgressRunnable = new Runnable() {
@@ -61,8 +67,9 @@ public class NormalScreenControllerView extends BaseControllerView {
             if (duration != 0) {
                 long pos = 1000L * position / duration;
                 mProgressBar.setProgress((int) pos);
-                mProgressBar.setSecondaryProgress(mVideoPlayerView.getCurrentBuffer());
-                postDelayed(this,1000);
+                //max = 1000
+                mProgressBar.setSecondaryProgress(mVideoPlayerView.getCurrentBuffer() * 10);
+                postDelayed(this, 500);
             }
         }
     };

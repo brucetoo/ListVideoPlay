@@ -46,6 +46,12 @@ public interface IViewTracker {
     IViewTracker hide();
 
     /**
+     * Just show current {@link #getFloatLayerView()},and start play video
+     * if exits
+     */
+    IViewTracker show();
+
+    /**
      * {@link #detach()} and release unnecessary resources
      * Normally call in Activity or Fragment destroyed.
      */

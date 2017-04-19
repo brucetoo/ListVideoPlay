@@ -9,6 +9,7 @@ import android.view.View;
  * Created by Bruce Too
  * On 01/04/2017.
  * At 17:38
+ * TODO Offer more api to control video and tracker view
  */
 
 public class Tracker{

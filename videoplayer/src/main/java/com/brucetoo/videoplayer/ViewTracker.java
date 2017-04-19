@@ -112,16 +112,15 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public IViewTracker attach() {
-        if (mFloatLayerView == null) {
+        if (mFloatLayerView == null) {//first time
             mFloatLayerView = new FloatLayerView(mContext);
-            if (mFloatLayerView.getParent() == null) {
-                getDecorView().addView(mFloatLayerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-                mFollowerView = mFloatLayerView.getVideoRootView();
-                mVideoTopView = mFloatLayerView.getVideoTopView();
-                mVideoBottomView = mFloatLayerView.getVideoBottomView();
-            }
-
+            mFollowerView = mFloatLayerView.getVideoRootView();
+            mVideoTopView = mFloatLayerView.getVideoTopView();
+            mVideoBottomView = mFloatLayerView.getVideoBottomView();
             restoreActivityFlag();
+        }
+        if(mFloatLayerView.getParent() == null) {
+            getDecorView().addView(mFloatLayerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         }
         mIsAttach = true;
         return this;
@@ -133,9 +132,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             mTrackView.getViewTreeObserver().removeOnScrollChangedListener(this);
         }
 
-        if (mFloatLayerView != null && mFloatLayerView.getParent() != null) {
+        if (mFloatLayerView != null) {
             getDecorView().removeView(mFloatLayerView);
-            mFloatLayerView = null;
         }
         mIsAttach = false;
         return this;
@@ -145,6 +143,14 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     public IViewTracker hide() {
         if(mFloatLayerView != null){
             mFloatLayerView.setVisibility(View.INVISIBLE);
+        }
+        return this;
+    }
+
+    @Override
+    public IViewTracker show() {
+        if(mFloatLayerView != null){
+            mFloatLayerView.setVisibility(View.VISIBLE);
         }
         return this;
     }

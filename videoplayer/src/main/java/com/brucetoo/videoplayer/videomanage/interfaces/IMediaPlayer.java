@@ -29,6 +29,7 @@ public interface IMediaPlayer {
         ERROR
     }
 
+    //TODO handle IllegalStateException too.
     void setDataSource(@NonNull String url) throws IOException;
 
     void prepare() throws IOException;

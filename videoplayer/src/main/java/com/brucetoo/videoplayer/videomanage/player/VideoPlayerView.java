@@ -80,7 +80,7 @@ public class VideoPlayerView extends ScalableTextureView
         if (mMediaPlayer != null)
             try {
                 mMediaPlayer.reset();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
     }
@@ -90,7 +90,7 @@ public class VideoPlayerView extends ScalableTextureView
         if (mMediaPlayer != null)
             try {
                 mMediaPlayer.release();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
     }
@@ -136,7 +136,7 @@ public class VideoPlayerView extends ScalableTextureView
             if (mMediaPlayer != null) {
                 mMediaPlayer.prepare();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -147,7 +147,7 @@ public class VideoPlayerView extends ScalableTextureView
             if (mMediaPlayer != null) {
                 mMediaPlayer.stop();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -190,7 +190,7 @@ public class VideoPlayerView extends ScalableTextureView
                     mMediaPlayer.setVolume(1, 1);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -202,7 +202,7 @@ public class VideoPlayerView extends ScalableTextureView
             } else {
                 return 0;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
@@ -215,7 +215,7 @@ public class VideoPlayerView extends ScalableTextureView
             } else {
                 return 0;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
@@ -226,7 +226,7 @@ public class VideoPlayerView extends ScalableTextureView
             if (mMediaPlayer != null) {
                 mMediaPlayer.seekTo(mis);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -259,7 +259,7 @@ public class VideoPlayerView extends ScalableTextureView
             if (mMediaPlayer != null) {
                 mMediaPlayer.setDataSource(path);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Logger.d(TAG, e.getMessage());
             throw new RuntimeException(e);
         }
@@ -316,6 +316,7 @@ public class VideoPlayerView extends ScalableTextureView
             listener.onVideoPrepared(viewTracker);
         }
 
+        mIsComplete = false;
         muteVideo(viewTracker.getControllerView().muteVideo());
     }
 

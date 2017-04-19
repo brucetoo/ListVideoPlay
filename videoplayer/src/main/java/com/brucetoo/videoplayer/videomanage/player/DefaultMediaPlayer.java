@@ -380,7 +380,11 @@ public class DefaultMediaPlayer implements IMediaPlayer,
 
         if (surfaceTexture != null) {
             mSurface = new Surface(surfaceTexture);
-            mMediaPlayer.setSurface(mSurface);
+            try {
+                mMediaPlayer.setSurface(mSurface);
+            }catch (IllegalStateException e){
+                //TODO handle exception
+            }
         } else {
             mMediaPlayer.setSurface(mSurface);
         }

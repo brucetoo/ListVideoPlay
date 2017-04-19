@@ -137,6 +137,8 @@ public class VideoPlayerView extends ScalableTextureView
                 mMediaPlayer.prepare();
             }
         } catch (Exception e) {
+            //TODO handle different error here
+            onError(mViewTracker,0,0);
             e.printStackTrace();
         }
     }
@@ -154,7 +156,7 @@ public class VideoPlayerView extends ScalableTextureView
 
 
     /**
-     * Following Media api can called in main thread
+     * Following Media api can call in main thread
      */
     public void start() {
         if (SHOW_LOGS) Logger.v(TAG, ">> start");
@@ -318,6 +320,11 @@ public class VideoPlayerView extends ScalableTextureView
 
         mIsComplete = false;
         muteVideo(viewTracker.getControllerView().muteVideo());
+        /*
+        Prevent VideoPlayerView flash the screen when render next video
+        and setAlpha(0) when detach to screen first.
+         */
+        setAlpha(1f);
     }
 
     @Override

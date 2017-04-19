@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
@@ -66,6 +67,8 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         IViewTracker tracker = super.attach();
         keepScreenOn(true);
         mVideoPlayView = mFloatLayerView.getVideoPlayerView();
+        mVideoPlayView.refreshSurfaceTexture(0, 0);
+        mVideoPlayView.setAlpha(0f);
 //        View view = new View(getContext());
 //        view.setBackgroundColor(Color.parseColor("#dd000000"));
 //        //TODO Add immerse view when enable mask
@@ -158,9 +161,12 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
         SingleVideoPlayerManager.getInstance().addVideoPlayerListener(new SimpleVideoPlayerListener() {
             @Override
             public void onInfo(IViewTracker viewTracker, int what) {
+                //This callback may not be called
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    //hide loading view
                     mVideoPlayView.setVisibility(View.VISIBLE);
+                    //clear back ground
+                    mVideoBottomView.setBackground(null);
+                    //hide loading view
                     addOrRemoveLoadingView(false);
                 } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
                     //show loading view
@@ -172,7 +178,21 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
             }
 
             @Override
+            public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
+                if(percent == 100){
+                    mVideoPlayView.setVisibility(View.VISIBLE);
+                    addOrRemoveLoadingView(false);
+                    mVideoBottomView.setBackground(null);
+                }
+            }
+
+            @Override
             public void onVideoPrepared(IViewTracker viewTracker) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    mVideoPlayView.setVisibility(View.VISIBLE);
+                    addOrRemoveLoadingView(false);
+                    mVideoBottomView.setBackground(null);
+                }
                 addNormalScreenView();
             }
         });

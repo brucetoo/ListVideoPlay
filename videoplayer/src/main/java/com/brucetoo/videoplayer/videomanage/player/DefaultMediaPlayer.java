@@ -231,6 +231,10 @@ public class DefaultMediaPlayer implements IMediaPlayer,
 
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        /*
+        Note:
+        System media play sometimes not trigger onInfo callback
+         */
         if (SHOW_LOGS) Logger.v(TAG, "onInfo");
         printInfo(what);
         if (mListener != null) {
@@ -281,7 +285,11 @@ public class DefaultMediaPlayer implements IMediaPlayer,
 
         synchronized (mState) {
             if (SHOW_LOGS) Logger.v(TAG, "start, mState " + mState);
-            mMediaPlayer.start();
+            try {
+                mMediaPlayer.start();
+            }catch (Exception e){
+
+            }
             mState.set(State.STARTED);
 
             if (mListener != null) {
@@ -403,7 +411,7 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     }
 
     @Override
-    public int getCurrentPosition() throws IOException{
+    public int getCurrentPosition(){
         int currentPos;
         try {
             currentPos = mMediaPlayer.getCurrentPosition();

@@ -299,7 +299,7 @@ public abstract class ScalableTextureView extends TextureView {
         return (int) (mContentScaleY * getMeasuredHeight());
     }
 
-    protected void refreshSurfaceTexture(int contentWidth, int contentHeight) {
+    public void refreshSurfaceTexture(int contentWidth, int contentHeight) {
         this.mContentWidth = contentWidth;
         this.mContentHeight = contentHeight;
         updateTextureViewSize();

@@ -30,7 +30,7 @@
 
  * Define [IControllerView](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/videomanage/controller/IControllerView.java) added in [FloatLayerView](!https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/FloatLayerView.java)
   ```java
-    /**
+        /**
         * Normal video controller view added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
         * when attach to portrait(normal) tracker view
         */
@@ -50,6 +50,11 @@
         * when video is preparing
         */
        View loadingController(IViewTracker tracker);
+
+       /**
+        * Another controller view need be added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
+        */
+       View anotherController(IViewTracker tracker);
 
   ```
 
@@ -101,7 +106,7 @@ More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/ma
    * Register video play listener
 
    ```java
-  SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
+        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
    ```
 
 All Demo you can see in [ListSupportFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/ListSupportFragment.java) and[DetailFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/DetailFragment.java)

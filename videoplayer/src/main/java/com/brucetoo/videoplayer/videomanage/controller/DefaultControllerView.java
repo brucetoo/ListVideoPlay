@@ -35,6 +35,11 @@ public class DefaultControllerView implements IControllerView {
     }
 
     @Override
+    public View anotherController(IViewTracker tracker) {
+        return null;
+    }
+
+    @Override
     public boolean muteVideo() {
         return true;
     }

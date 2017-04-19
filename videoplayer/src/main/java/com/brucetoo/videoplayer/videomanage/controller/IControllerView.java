@@ -38,6 +38,11 @@ public interface IControllerView {
     View loadingController(IViewTracker tracker);
 
     /**
+     * Another controller view need be added in {@link com.brucetoo.videoplayer.VideoTracker#mVideoTopView}
+     */
+    View anotherController(IViewTracker tracker);
+
+    /**
      * Control mute video or not, mute video default.
      * @return if mute video
      */

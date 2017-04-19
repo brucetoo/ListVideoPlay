@@ -65,7 +65,7 @@ public class FullScreenControllerView extends BaseControllerView {
     private VideoControllerView.MediaPlayerControlListener mPlayerControlListener = new VideoControllerView.MediaPlayerControlListener() {
         @Override
         public void start() {
-            mVideoPlayerView.start();
+           mVideoPlayerView.start();
         }
 
         @Override

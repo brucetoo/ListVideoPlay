@@ -90,7 +90,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
     @Override
     public void pauseVideo() {
-        mVideoPlayView.pause();
+        SingleVideoPlayerManager.getInstance().pauseVideo(this);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
     @Override
     public void startVideo() {
-        mVideoPlayView.start();
+        SingleVideoPlayerManager.getInstance().startVideo(this);
     }
 
     @Override
@@ -179,7 +179,8 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
             @Override
             public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
-                if(percent == 100){
+                //TODO some times, onInfo not be called
+                if(percent > 50){
                     mVideoPlayView.setVisibility(View.VISIBLE);
                     addOrRemoveLoadingView(false);
                     mVideoBottomView.setBackground(null);
@@ -193,7 +194,11 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
                     addOrRemoveLoadingView(false);
                     mVideoBottomView.setBackground(null);
                 }
-                addNormalScreenView();
+                if(!isFullScreen()) {
+                    addNormalScreenView();
+                }else {
+                    addFullScreenView();
+                }
             }
         });
 

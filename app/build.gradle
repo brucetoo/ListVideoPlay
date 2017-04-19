@@ -31,5 +31,6 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
     compile 'com.android.support:support-dynamic-animation:25.3.0'
+    compile 'com.github.markzhai:blockcanary-android:1.5.0'
     testCompile 'junit:junit:4.12'
 }

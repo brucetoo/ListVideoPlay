@@ -111,6 +111,10 @@ More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/ma
 
 All Demo you can see in [ListSupportFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/ListSupportFragment.java) and[DetailFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/DetailFragment.java)
 
+## Known issues
+
+   * When tracker view be re-used in ListView/RecyclerView may cause **re-tracked**
+
 ## THANKS
 
 [VideoPlayerManager](https://github.com/danylovolokh/VideoPlayerManager): Changes happened in many places,

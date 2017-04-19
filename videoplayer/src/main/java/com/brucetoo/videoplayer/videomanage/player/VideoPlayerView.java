@@ -155,10 +155,8 @@ public class VideoPlayerView extends ScalableTextureView
     }
 
 
-    /**
-     * Following Media api can call in main thread
-     */
     public void start() {
+        checkThread();
         if (SHOW_LOGS) Logger.v(TAG, ">> start");
         if (mMediaPlayer != null) {
             try {
@@ -171,6 +169,7 @@ public class VideoPlayerView extends ScalableTextureView
     }
 
     public void pause() {
+        checkThread();
         if (SHOW_LOGS) Logger.d(TAG, ">> pause ");
         try {
             if (mMediaPlayer != null) {

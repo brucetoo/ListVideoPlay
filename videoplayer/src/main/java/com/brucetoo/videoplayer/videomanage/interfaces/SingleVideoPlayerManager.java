@@ -11,10 +11,12 @@ import com.brucetoo.videoplayer.videomanage.PlayerMessageState;
 import com.brucetoo.videoplayer.videomanage.SetNewViewForPlayback;
 import com.brucetoo.videoplayer.videomanage.messages.ClearPlayerInstance;
 import com.brucetoo.videoplayer.videomanage.messages.CreateNewPlayerInstance;
+import com.brucetoo.videoplayer.videomanage.messages.Pause;
 import com.brucetoo.videoplayer.videomanage.messages.Prepare;
 import com.brucetoo.videoplayer.videomanage.messages.Release;
 import com.brucetoo.videoplayer.videomanage.messages.Reset;
 import com.brucetoo.videoplayer.videomanage.messages.SetUrlDataSourceMessage;
+import com.brucetoo.videoplayer.videomanage.messages.Start;
 import com.brucetoo.videoplayer.videomanage.messages.Stop;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
@@ -142,55 +144,55 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
             Logger.v(TAG, "<< resetMediaPlayer, mCurrentPlayerState " + mCurrentPlayerState);
     }
 
-//    @Override
-//    public void startVideo(IViewTracker viewTracker) {
-//        if (SHOW_LOGS)
-//            Logger.v(TAG, ">> startVideo, mCurrentPlayerState " + mCurrentPlayerState);
-//
-//        mPlayerHandler.pauseQueueProcessing(TAG);
-//        if (SHOW_LOGS)
-//            Logger.v(TAG, "startVideo, mCurrentPlayerState " + mCurrentPlayerState);
-//
-//        switch (mCurrentPlayerState) {
-//            case STARTING:
-//            case STARTED:
-//            case PAUSING:
-//            case PAUSED:
-//            case STOPPING:
-//            case STOPPED:
-//                mPlayerHandler.addMessage(new Start(mCurrentPlayer, this));
-//                break;
-//        }
-//
-//        mPlayerHandler.resumeQueueProcessing(TAG);
-//
-//        if (SHOW_LOGS)
-//            Logger.v(TAG, "<< startVideo, mCurrentPlayerState " + mCurrentPlayerState);
-//    }
-//
-//    @Override
-//    public void pauseVideo(IViewTracker viewTracker) {
-//        if (SHOW_LOGS)
-//            Logger.v(TAG, ">> pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
-//
-//        mPlayerHandler.pauseQueueProcessing(TAG);
-//        if (SHOW_LOGS)
-//            Logger.v(TAG, "pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
-//
-//        switch (mCurrentPlayerState) {
-//            case STARTING:
-//            case STARTED:
-//            case PAUSING:
-//            case PAUSED:
-//                mPlayerHandler.addMessage(new Pause(mCurrentPlayer, this));
-//                break;
-//        }
-//
-//        mPlayerHandler.resumeQueueProcessing(TAG);
-//
-//        if (SHOW_LOGS)
-//            Logger.v(TAG, "<< pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
-//    }
+    @Override
+    public void startVideo(IViewTracker viewTracker) {
+        if (SHOW_LOGS)
+            Logger.v(TAG, ">> startVideo, mCurrentPlayerState " + mCurrentPlayerState);
+
+        mPlayerHandler.pauseQueueProcessing(TAG);
+        if (SHOW_LOGS)
+            Logger.v(TAG, "startVideo, mCurrentPlayerState " + mCurrentPlayerState);
+
+        switch (mCurrentPlayerState) {
+            case STARTING:
+            case STARTED:
+            case PAUSING:
+            case PAUSED:
+            case STOPPING:
+            case STOPPED:
+                mPlayerHandler.addMessage(new Start(mCurrentPlayer, this));
+                break;
+        }
+
+        mPlayerHandler.resumeQueueProcessing(TAG);
+
+        if (SHOW_LOGS)
+            Logger.v(TAG, "<< startVideo, mCurrentPlayerState " + mCurrentPlayerState);
+    }
+
+    @Override
+    public void pauseVideo(IViewTracker viewTracker) {
+        if (SHOW_LOGS)
+            Logger.v(TAG, ">> pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
+
+        mPlayerHandler.pauseQueueProcessing(TAG);
+        if (SHOW_LOGS)
+            Logger.v(TAG, "pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
+
+        switch (mCurrentPlayerState) {
+            case STARTING:
+            case STARTED:
+            case PAUSING:
+            case PAUSED:
+                mPlayerHandler.addMessage(new Pause(mCurrentPlayer, this));
+                break;
+        }
+
+        mPlayerHandler.resumeQueueProcessing(TAG);
+
+        if (SHOW_LOGS)
+            Logger.v(TAG, "<< pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
+    }
 
     /**
      * This method posts a message that will eventually call {@link PlayerItemChangeListener#onPlayerItemChanged(IViewTracker)}

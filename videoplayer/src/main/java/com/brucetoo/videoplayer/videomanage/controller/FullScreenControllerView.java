@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.R;
+import com.brucetoo.videoplayer.Tracker;
 
 /**
  * Created by Bruce Too
@@ -65,12 +66,12 @@ public class FullScreenControllerView extends BaseControllerView {
     private VideoControllerView.MediaPlayerControlListener mPlayerControlListener = new VideoControllerView.MediaPlayerControlListener() {
         @Override
         public void start() {
-           mVideoPlayerView.start();
+           Tracker.startVideo();
         }
 
         @Override
         public void pause() {
-            mVideoPlayerView.pause();
+            Tracker.pauseVideo();
         }
 
         @Override

@@ -171,8 +171,8 @@ public class Tracker{
         SingleVideoPlayerManager.getInstance().pauseVideo();
     }
 
-    public static void playNewVideo(IViewTracker viewTracker, VideoPlayerView videoPlayerView, String videoUrl){
-        SingleVideoPlayerManager.getInstance().playNewVideo(viewTracker, videoPlayerView, videoUrl);
+    public static void playNewVideo(IViewTracker viewTracker, VideoPlayerView videoPlayerView){
+        SingleVideoPlayerManager.getInstance().playNewVideo(viewTracker, videoPlayerView);
     }
 
     public static void stopAnyPlayback(){

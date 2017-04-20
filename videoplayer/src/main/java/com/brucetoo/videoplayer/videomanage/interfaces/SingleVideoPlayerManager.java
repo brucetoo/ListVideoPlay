@@ -70,24 +70,23 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
      *
      * @param viewTracker     current item bounded IViewTracker
      * @param videoPlayerView - the actual video player
-     * @param videoUrl        - the link to the video source
      */
     @Override
-    public void playNewVideo(IViewTracker viewTracker, VideoPlayerView videoPlayerView, String videoUrl) {
+    public void playNewVideo(IViewTracker viewTracker, VideoPlayerView videoPlayerView) {
         if (SHOW_LOGS)
             Logger.v(TAG, ">> playNewVideo, videoPlayer " + videoPlayerView + ", mCurrentPlayer " + mCurrentPlayer + ", videoPlayerView " + videoPlayerView);
 
         mPlayerHandler.pauseQueueProcessing(TAG);
 
-        startNewPlayback(viewTracker, videoPlayerView, videoUrl);
+        startNewPlayback(viewTracker, videoPlayerView);
 
         mPlayerHandler.resumeQueueProcessing(TAG);
 
         if (SHOW_LOGS)
-            Logger.v(TAG, "<< playNewVideo, videoPlayer " + videoPlayerView + ", videoUrl " + videoUrl);
+            Logger.v(TAG, "<< playNewVideo, videoPlayer " + videoPlayerView);
     }
 
-    private void startNewPlayback(IViewTracker viewTracker, VideoPlayerView videoPlayerView, String videoUrl) {
+    private void startNewPlayback(IViewTracker viewTracker, VideoPlayerView videoPlayerView) {
 
         // set listener for new player
         videoPlayerView.addMediaPlayerListener(this);
@@ -99,7 +98,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
         stopResetReleaseClearCurrentPlayer();
 
         //start play in new player
-        setNewViewForPlaybackAndPlay(viewTracker, videoPlayerView, videoUrl);
+        setNewViewForPlaybackAndPlay(viewTracker, videoPlayerView);
     }
 
     /**
@@ -198,7 +197,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
      * This method posts a message that will eventually call {@link PlayerItemChangeListener#onPlayerItemChanged(IViewTracker)}
      * When current player is stopped and new player is about to be active this message sets new player
      */
-    private void setNewViewForPlaybackAndPlay(IViewTracker viewTracker, VideoPlayerView videoPlayerView, String videoUrl) {
+    private void setNewViewForPlaybackAndPlay(IViewTracker viewTracker, VideoPlayerView videoPlayerView) {
         if (SHOW_LOGS)
             Logger.v(TAG, "setNewViewForPlaybackAndPlay, viewTracker " + viewTracker + ", videoPlayer " + videoPlayerView);
         mPlayerHandler.addMessages(Arrays.asList(
@@ -206,7 +205,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
             new SetNewViewForPlayback(viewTracker, videoPlayerView, this),
             //create new one and start prepare video play
             new CreateNewPlayerInstance(videoPlayerView, this),
-            new SetUrlDataSourceMessage(videoPlayerView, videoUrl, this),
+            new SetUrlDataSourceMessage(videoPlayerView, viewTracker.getMetaData(), this),
             new Prepare(videoPlayerView, this)
         ));
     }

@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerManagerCallback;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 
@@ -13,15 +14,16 @@ import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
  */
 public class SetUrlDataSourceMessage extends SetDataSourceMessage{
 
-    private final String mVideoUrl;
+    private final MetaData mMetaData;
 
-    public SetUrlDataSourceMessage(VideoPlayerView videoPlayerView, String videoUrl, VideoPlayerManagerCallback callback) {
+    public SetUrlDataSourceMessage(VideoPlayerView videoPlayerView, MetaData metaData, VideoPlayerManagerCallback callback) {
         super(videoPlayerView, callback);
-        mVideoUrl = videoUrl;
+        mMetaData = metaData;
     }
 
     @Override
     protected void performAction(VideoPlayerView currentPlayer) {
-        currentPlayer.setDataSource(mVideoUrl);
+        //Get video url
+        currentPlayer.setDataSource(mMetaData.getVideoUrl());
     }
 }

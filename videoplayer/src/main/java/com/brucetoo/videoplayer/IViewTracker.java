@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 
 /**
  * Created by Bruce Too
@@ -16,7 +17,7 @@ import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
  * And track origin location changed
  */
 
-public interface IViewTracker<MetaData> {
+public interface IViewTracker{
 
     /**
      * Scroll edge of follower view

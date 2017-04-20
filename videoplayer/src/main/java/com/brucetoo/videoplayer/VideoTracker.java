@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.brucetoo.videoplayer.utils.DrawableTask;
 import com.brucetoo.videoplayer.utils.OrientationDetector;
@@ -117,10 +118,27 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
             }
             mOrientationDetector = null;
         }
+        handleControllerView(controllerView);
+        return this;
+    }
+
+    private void handleControllerView(IControllerView controllerView) {
+        //remove previous controller view first
+        if(mLoadingControllerView != null && mLoadingControllerView.getParent() != null){
+            ((ViewGroup) mLoadingControllerView.getParent()).removeView(mLoadingControllerView);
+        }
+
+        if(mNormalScreenControllerView != null && mNormalScreenControllerView.getParent() != null){
+            ((ViewGroup) mNormalScreenControllerView.getParent()).removeView(mNormalScreenControllerView);
+        }
+
+        if(mFullScreenControllerView != null && mFullScreenControllerView.getParent() != null){
+            ((ViewGroup) mFullScreenControllerView.getParent()).removeView(mFullScreenControllerView);
+        }
+
         mLoadingControllerView = controllerView.loadingController(this);
         mNormalScreenControllerView = (BaseControllerView) controllerView.normalScreenController(this);
         mFullScreenControllerView = (BaseControllerView) controllerView.fullScreenController(this);
-        return this;
     }
 
     @Override
@@ -160,7 +178,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
         addTrackerImageToVideoBottomView(trackView);
 
-        Tracker.playNewVideo(this, mVideoPlayView, mMetaData.getVideoUrl());
+        Tracker.playNewVideo(this, mVideoPlayView);
         Tracker.addPlayerItemChangeListener(this);
 
         Tracker.addVideoPlayerListener(new SimpleVideoPlayerListener() {

@@ -75,7 +75,8 @@ More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/ma
          .controller(IControllerView)// Switch video controller view in different scene,see demo in DefaultControllerView
          .visibleListener(this);// Observe tracker view visible rect changed in screen.
    ```
-
+   > **NOTE**: [IScrollDetector](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/scrolldetector/IScrollDetector.java) and [IControllerView](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/videomanage/controller/IControllerView.java) will still **BE THE SAME** when change tracker view by [Tracker#changeTrackView](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/Tracker.java#L108)
+    unless we re-call [Tracker#into](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/IViewTracker.java#L79) or [Trakcer#controller](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/IViewTracker.java#L88) again to bind new one
 
    * Tracker detach
 
@@ -95,21 +96,36 @@ More details see [VideoPlayer](https://github.com/brucetoo/ListVideoPlay/tree/ma
    Tracker.changeTrackView(getActivity(),newTrackerView);// re-bound to new tracker view
    ```
 
-### VideoPlayManager
+### Video Play Control
 
    * Register item changed listener
 
    ```java
-        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
+        Tracker.addPlayerItemChangeListener(this);
    ```
 
    * Register video play listener
 
    ```java
-        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
+        Tracker.addVideoPlayerListener(this);
    ```
 
-All Demo you can see in [ListSupportFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/ListSupportFragment.java) and[DetailFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/DetailFragment.java)
+   * Start play new one with [MetaData](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/videomanage/meta/MetaData.java)
+
+   ```java
+        Tracker.playNewVideo(this, mVideoPlayView, mMetaData.getVideoUrl());
+   ```
+   >  [MetaData](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/videomanage/meta/MetaData.java) can bind origin date information along with [IViewTracler](https://github.com/brucetoo/ListVideoPlay/blob/master/videoplayer/src/main/java/com/brucetoo/videoplayer/IViewTracker.java)
+
+
+   * Stop playing one
+
+   ```java
+        Tracker.stopAnyPlayback();
+   ```
+
+
+All Demo you can see in [ListSupportFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/ListSupportFragment.java) and [DetailFragment](https://github.com/brucetoo/ListVideoPlay/blob/master/app/src/main/java/com/brucetoo/listvideoplay/demo/DetailFragment.java)
 
 ## Known issues
 

@@ -112,6 +112,13 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
 
     @Override
     public IViewTracker attach() {
+        //remove FloatLayerView from decorView if exits before add new one
+        for (int i = 0; i < getDecorView().getChildCount(); i++) {
+            View child = getDecorView().getChildAt(i);
+            if(child instanceof FloatLayerView){
+                getDecorView().removeView(child);
+            }
+        }
         if (mFloatLayerView == null) {//first time
             mFloatLayerView = new FloatLayerView(mContext);
             mFollowerView = mFloatLayerView.getVideoRootView();

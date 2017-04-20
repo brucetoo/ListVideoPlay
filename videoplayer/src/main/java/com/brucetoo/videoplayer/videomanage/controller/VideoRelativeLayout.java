@@ -7,9 +7,9 @@ import android.widget.RelativeLayout;
 
 import com.brucetoo.videoplayer.IViewTracker;
 import com.brucetoo.videoplayer.R;
+import com.brucetoo.videoplayer.Tracker;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
-import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
 
 /**
@@ -46,15 +46,15 @@ public class VideoRelativeLayout extends RelativeLayout implements PlayerItemCha
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(mVideoPlayerListener);
-        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
+        Tracker.addVideoPlayerListener(mVideoPlayerListener);
+        Tracker.addPlayerItemChangeListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        SingleVideoPlayerManager.getInstance().removeVideoPlayerListener(mVideoPlayerListener);
-        SingleVideoPlayerManager.getInstance().removePlayerItemChangeListener(this);
+        Tracker.removeVideoPlayerListener(mVideoPlayerListener);
+        Tracker.removePlayerItemChangeListener(this);
     }
 
     private VideoPlayerListener mVideoPlayerListener = new SimpleVideoPlayerListener(){

@@ -16,7 +16,7 @@ import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
  * And track origin location changed
  */
 
-public interface IViewTracker {
+public interface IViewTracker<MetaData> {
 
     /**
      * Scroll edge of follower view
@@ -114,7 +114,10 @@ public interface IViewTracker {
      */
     View getTrackerView();
 
-    Object getBoundObject();
+    /**
+     * Get bound metadata
+     */
+    MetaData getMetaData();
 
     /**
      * The unique id of {@link #getTrackerView()}, use this to find next  {@link #getTrackerView()}

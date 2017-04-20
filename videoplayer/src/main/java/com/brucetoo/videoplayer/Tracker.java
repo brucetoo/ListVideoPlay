@@ -5,6 +5,11 @@ import android.content.res.Configuration;
 import android.support.v4.util.ArrayMap;
 import android.view.View;
 
+import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
+import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
+import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
+import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
+
 /**
  * Created by Bruce Too
  * On 01/04/2017.
@@ -95,6 +100,11 @@ public class Tracker{
         return false;
     }
 
+    /**
+     * Single change track view,re-bound {@link FloatLayerView} to it
+     * @param context activity
+     * @param trackView new track view
+     */
     public static void changeTrackView(Activity context,View trackView){
         if(getViewTracker(context) != null){
             getViewTracker(context).changeTrackView(trackView);
@@ -102,10 +112,75 @@ public class Tracker{
     }
 
 
+    /**
+     * If need auto rotation player view,we should call this in {@link Activity#onConfigurationChanged(Configuration)}
+     * @param context activity
+     * @param newConfig new Configuration
+     */
     public static void onConfigurationChanged(Activity context,Configuration newConfig){
         if(getViewTracker(context) != null){
             getViewTracker(context).onConfigurationChanged(newConfig);
         }
+    }
+
+    /**
+     * Add global item change listener
+     * @param playerItemChangeListener play item changed
+     */
+    public static void addPlayerItemChangeListener(PlayerItemChangeListener playerItemChangeListener) {
+        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(playerItemChangeListener);
+    }
+
+    public static void removePlayerItemChangeListener(PlayerItemChangeListener playerItemChangeListener) {
+        SingleVideoPlayerManager.getInstance().removePlayerItemChangeListener(playerItemChangeListener);
+    }
+
+    public static void removePlayerItemChangeListeners() {
+        SingleVideoPlayerManager.getInstance().removePlayerItemChangeListeners();
+    }
+
+    /**
+     * Add global {@link VideoPlayerListener} call this before {@link #playNewVideo(IViewTracker, VideoPlayerView, String)}
+     * if {@link PlayerItemChangeListener} happened, it's useless to call this,instead can use new {@link VideoPlayerView}
+     * to control video player.
+     * @param videoPlayerListener VideoPlayerListener
+     */
+    public static void addVideoPlayerListener(VideoPlayerListener videoPlayerListener) {
+        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(videoPlayerListener);
+    }
+
+    public static void removeVideoPlayerListener(VideoPlayerListener videoPlayerListener) {
+        SingleVideoPlayerManager.getInstance().removeVideoPlayerListener(videoPlayerListener);
+    }
+
+    public static void removeAllVideoPlayerListeners() {
+        SingleVideoPlayerManager.getInstance().removeAllVideoPlayerListeners();
+    }
+
+    /**
+     * Start a pause/stop video
+     */
+    public static void startVideo(){
+        SingleVideoPlayerManager.getInstance().startVideo();
+    }
+
+    /**
+     * Pause a prepared/stared video
+     */
+    public static void pauseVideo(){
+        SingleVideoPlayerManager.getInstance().pauseVideo();
+    }
+
+    public static void playNewVideo(IViewTracker viewTracker, VideoPlayerView videoPlayerView, String videoUrl){
+        SingleVideoPlayerManager.getInstance().playNewVideo(viewTracker, videoPlayerView, videoUrl);
+    }
+
+    public static void stopAnyPlayback(){
+        SingleVideoPlayerManager.getInstance().stopAnyPlayback();
+    }
+
+    public static void resetMediaPlayer(){
+        SingleVideoPlayerManager.getInstance().resetMediaPlayer();
     }
 
 }

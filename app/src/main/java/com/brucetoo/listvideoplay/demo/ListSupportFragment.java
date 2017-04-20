@@ -20,8 +20,8 @@ import com.brucetoo.videoplayer.VisibleChangeListener;
 import com.brucetoo.videoplayer.scrolldetector.ListScrollDetector;
 import com.brucetoo.videoplayer.videomanage.controller.DefaultControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
-import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
+import com.brucetoo.videoplayer.videomanage.meta.DefaultMetaData;
 import com.brucetoo.videoplayer.videomanage.player.RatioImageView;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
@@ -58,8 +58,9 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
                 Picasso.with(getActivity())
                     .load(item.coverImage)
                     .into(imageCover);
-                imageCover.setOriginalSize(16,9);
-                imageCover.setTag(R.id.tag_tracker_view,item.videoUrl);
+                imageCover.setRatio(16,9);
+                //bind meta data
+                imageCover.setTag(R.id.tag_tracker_view,new DefaultMetaData(item.videoUrl));
                 imageCover.setOnClickListener(ListSupportFragment.this);
             }
         };
@@ -79,8 +80,8 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
                 }
             }
         });
-        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
-        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(this);
+        Tracker.addPlayerItemChangeListener(this);
+        Tracker.addVideoPlayerListener(this);
     }
 
     @Override

@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
 import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.utils.ViewAnimator;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 
 /**
@@ -69,7 +70,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
      */
     protected FloatLayerView mFloatLayerView;
 
-    protected Object mBoundObject;
+    protected MetaData mMetaData;
 
     /**
      * {@link #mTrackView}'s current edge triggered
@@ -166,7 +167,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     public IViewTracker destroy() {
         detach();
         mVisibleChangeListener = null;
-//        mContext = null;//prevent memory leak
+//        mContext = null;//prevent memory leak?
         mScrollDetector.detach();
         mScrollDetector = null;
         return this;
@@ -183,8 +184,8 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
     }
 
     @Override
-    public Object getBoundObject() {
-        return mBoundObject;
+    public MetaData getMetaData() {
+        return mMetaData;
     }
 
     @Override

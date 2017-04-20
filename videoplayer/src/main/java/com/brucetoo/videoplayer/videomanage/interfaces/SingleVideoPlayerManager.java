@@ -145,7 +145,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     }
 
     @Override
-    public void startVideo(IViewTracker viewTracker) {
+    public void startVideo() {
         if (SHOW_LOGS)
             Logger.v(TAG, ">> startVideo, mCurrentPlayerState " + mCurrentPlayerState);
 
@@ -171,7 +171,7 @@ public class SingleVideoPlayerManager implements VideoPlayerManager<IViewTracker
     }
 
     @Override
-    public void pauseVideo(IViewTracker viewTracker) {
+    public void pauseVideo() {
         if (SHOW_LOGS)
             Logger.v(TAG, ">> pauseVideo, mCurrentPlayerState " + mCurrentPlayerState);
 

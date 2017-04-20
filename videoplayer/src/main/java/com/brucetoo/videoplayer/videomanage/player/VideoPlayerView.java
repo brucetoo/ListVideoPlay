@@ -193,6 +193,7 @@ public class VideoPlayerView extends ScalableTextureView
             }
         } catch (Exception e) {
             e.printStackTrace();
+            //when video is preparing,will throw IllegalStateException
         }
     }
 
@@ -205,6 +206,7 @@ public class VideoPlayerView extends ScalableTextureView
             }
         } catch (Exception e) {
             e.printStackTrace();
+            //when video is preparing,will throw IllegalStateException
         }
         return 0;
     }
@@ -218,6 +220,7 @@ public class VideoPlayerView extends ScalableTextureView
             }
         } catch (Exception e) {
             e.printStackTrace();
+            //when video is preparing,will throw IllegalStateException
         }
         return 0;
     }
@@ -229,6 +232,7 @@ public class VideoPlayerView extends ScalableTextureView
             }
         } catch (Exception e) {
             e.printStackTrace();
+            //when video is preparing,will throw IllegalStateException
         }
     }
 

@@ -32,8 +32,8 @@ public interface VideoPlayerManager<T extends IViewTracker> {
      */
     void resetMediaPlayer();
 
-    void startVideo(T viewTracker);
+    void startVideo();
 
-    void pauseVideo(T viewTracker);
+    void pauseVideo();
 
 }

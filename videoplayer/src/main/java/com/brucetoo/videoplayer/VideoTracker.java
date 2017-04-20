@@ -14,11 +14,11 @@ import android.view.View;
 import com.brucetoo.videoplayer.utils.DrawableTask;
 import com.brucetoo.videoplayer.utils.OrientationDetector;
 import com.brucetoo.videoplayer.utils.Utils;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.controller.BaseControllerView;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
-import com.brucetoo.videoplayer.videomanage.interfaces.SingleVideoPlayerManager;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 /**
@@ -46,7 +46,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     public IViewTracker detach() {
         IViewTracker tracker = super.detach();
         keepScreenOn(false);
-        SingleVideoPlayerManager.getInstance().stopAnyPlayback();
+        Tracker.stopAnyPlayback();
         return tracker;
     }
 
@@ -79,7 +79,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     @Override
     public IViewTracker destroy() {
         IViewTracker tracker = super.destroy();
-        SingleVideoPlayerManager.getInstance().resetMediaPlayer();
+        Tracker.resetMediaPlayer();
         return tracker;
     }
 
@@ -90,7 +90,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
     @Override
     public void pauseVideo() {
-        SingleVideoPlayerManager.getInstance().pauseVideo(this);
+        Tracker.pauseVideo();
     }
 
     @Override
@@ -142,23 +142,28 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
     @Override
     public void startVideo() {
-        SingleVideoPlayerManager.getInstance().startVideo(this);
+        Tracker.startVideo();
     }
 
     @Override
     public IViewTracker trackView(@NonNull View trackView) {
         IViewTracker tracker = super.trackView(trackView);
-        mBoundObject = tracker.getTrackerView().getTag(R.id.tag_tracker_view);
-        if (mBoundObject == null) {
+        Object data = tracker.getTrackerView().getTag(R.id.tag_tracker_view);
+        if (data == null) {
             throw new IllegalArgumentException("Tracker view need set tag by id:tag_tracker_view !");
+        }
+        if(data instanceof MetaData){
+            mMetaData = (MetaData) data;
+        }else {
+            throw new IllegalArgumentException("Tracker view'tag should be instanceof MetaData!");
         }
 
         addTrackerImageToVideoBottomView(trackView);
-        //TODO mBoundObject typedef
-        SingleVideoPlayerManager.getInstance().playNewVideo(this, mVideoPlayView, (String) mBoundObject);
-        SingleVideoPlayerManager.getInstance().addPlayerItemChangeListener(this);
 
-        SingleVideoPlayerManager.getInstance().addVideoPlayerListener(new SimpleVideoPlayerListener() {
+        Tracker.playNewVideo(this, mVideoPlayView, mMetaData.getVideoUrl());
+        Tracker.addPlayerItemChangeListener(this);
+
+        Tracker.addVideoPlayerListener(new SimpleVideoPlayerListener() {
             @Override
             public void onInfo(IViewTracker viewTracker, int what) {
                 //This callback may not be called
@@ -206,8 +211,8 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
     }
 
     @Override
-    public Object getBoundObject() {
-        return mBoundObject;
+    public MetaData getMetaData() {
+        return mMetaData;
     }
 
     @Override
@@ -230,12 +235,12 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
      * @param trackView the view be tracked
      */
     private void addTrackerImageToVideoBottomView(View trackView) {
-        boolean containsKey = mCachedDrawables.containsKey(mBoundObject);
+        boolean containsKey = mCachedDrawables.containsKey(mMetaData);
         Log.i(TAG, "addTrackerImageToVideoBottomView, containsKey : " + containsKey);
         if (containsKey) {
-            mVideoBottomView.setBackground(mCachedDrawables.get(mBoundObject));
+            mVideoBottomView.setBackground(mCachedDrawables.get(mMetaData));
         } else {
-            mDrawableTask.execute(mBoundObject, trackView);
+            mDrawableTask.execute(mMetaData, trackView);
         }
     }
 

@@ -11,8 +11,8 @@ import android.util.AttributeSet;
 
 public class RatioImageView extends android.support.v7.widget.AppCompatImageView {
 
-    private int mOriginalWidth;
-    private int mOriginalHeight;
+    private int mWidth;
+    private int mHeight;
 
     public RatioImageView(Context context) {
         this(context, null);
@@ -26,15 +26,15 @@ public class RatioImageView extends android.support.v7.widget.AppCompatImageView
         super(context, attrs, defStyleAttr);
     }
 
-    public void setOriginalSize(int originalWidth, int originalHeight) {
-        mOriginalWidth = originalWidth;
-        mOriginalHeight = originalHeight;
+    public void setRatio(int width, int height) {
+        mWidth = width;
+        mHeight = height;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mOriginalWidth > 0 && mOriginalHeight > 0) {
-            float ratio = (float) mOriginalWidth / mOriginalHeight;
+        if (mWidth > 0 && mHeight > 0) {
+            float ratio = (float) mWidth / mHeight;
             int width = MeasureSpec.getSize(widthMeasureSpec);
             int height = MeasureSpec.getSize(heightMeasureSpec);
             if (width > 0) {

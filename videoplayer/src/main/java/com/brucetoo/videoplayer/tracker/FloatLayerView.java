@@ -46,7 +46,9 @@ public class FloatLayerView extends FrameLayout {
     //test view always lay in top
     public TextView testView;
     private FrameLayout mVideoBottomView;
+    //TODO Find a way to make VideoPlayerView configurable,put it inside IControllerView?
     private VideoPlayerView mVideoPlayerView;
+    //TODO overdraw problems??
     private FrameLayout mVideoTopView;
 
     private void init() {

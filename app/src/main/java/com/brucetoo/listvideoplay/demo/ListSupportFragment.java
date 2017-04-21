@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.brucetoo.listvideoplay.MainActivity;
 import com.brucetoo.listvideoplay.R;
-import com.brucetoo.videoplayer.IViewTracker;
-import com.brucetoo.videoplayer.Tracker;
-import com.brucetoo.videoplayer.VisibleChangeListener;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
+import com.brucetoo.videoplayer.tracker.Tracker;
+import com.brucetoo.videoplayer.tracker.VisibleChangeListener;
 import com.brucetoo.videoplayer.scrolldetector.ListScrollDetector;
 import com.brucetoo.videoplayer.videomanage.controller.DefaultControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.brucetoo.listvideoplay.Backable;
 import com.brucetoo.listvideoplay.R;
-import com.brucetoo.videoplayer.Tracker;
+import com.brucetoo.videoplayer.tracker.Tracker;
 
 /**
  * Created by Bruce Too

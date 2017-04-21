@@ -1,6 +1,6 @@
 package com.brucetoo.videoplayer.videomanage.interfaces;
 
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 
 /**
  * Created by Bruce Too

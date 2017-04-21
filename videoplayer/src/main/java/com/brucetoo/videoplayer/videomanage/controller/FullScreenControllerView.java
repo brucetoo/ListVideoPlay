@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 import com.brucetoo.videoplayer.R;
-import com.brucetoo.videoplayer.Tracker;
+import com.brucetoo.videoplayer.tracker.Tracker;
 
 /**
  * Created by Bruce Too

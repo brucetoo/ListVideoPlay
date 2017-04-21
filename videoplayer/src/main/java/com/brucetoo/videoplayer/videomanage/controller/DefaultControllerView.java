@@ -2,7 +2,7 @@ package com.brucetoo.videoplayer.videomanage.controller;
 
 import android.view.View;
 
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 
 /**
  * Created by Bruce Too

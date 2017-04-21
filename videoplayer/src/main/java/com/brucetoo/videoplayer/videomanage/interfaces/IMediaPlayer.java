@@ -4,7 +4,7 @@ import android.graphics.SurfaceTexture;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 
 import java.io.IOException;
 

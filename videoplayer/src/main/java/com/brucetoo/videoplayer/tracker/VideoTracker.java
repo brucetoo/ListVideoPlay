@@ -1,4 +1,4 @@
-package com.brucetoo.videoplayer;
+package com.brucetoo.videoplayer.tracker;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -8,18 +8,19 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.brucetoo.videoplayer.R;
 import com.brucetoo.videoplayer.utils.DrawableTask;
+import com.brucetoo.videoplayer.utils.Logger;
 import com.brucetoo.videoplayer.utils.OrientationDetector;
 import com.brucetoo.videoplayer.utils.Utils;
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.controller.BaseControllerView;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
 import com.brucetoo.videoplayer.videomanage.interfaces.PlayerItemChangeListener;
 import com.brucetoo.videoplayer.videomanage.interfaces.SimpleVideoPlayerListener;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 
 /**
@@ -241,7 +242,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
 
     @Override
     public void done(Object key, BitmapDrawable drawable) {
-        Log.i(TAG, "mDrawableTask done, addKey : " + key);
+        Logger.i(TAG, "mDrawableTask done, addKey : " + key);
         mCachedDrawables.put(key, drawable);
         mVideoBottomView.setBackground(drawable);
     }
@@ -254,7 +255,7 @@ public class VideoTracker extends ViewTracker implements PlayerItemChangeListene
      */
     private void addTrackerImageToVideoBottomView(View trackView) {
         boolean containsKey = mCachedDrawables.containsKey(mMetaData);
-        Log.i(TAG, "addTrackerImageToVideoBottomView, containsKey : " + containsKey);
+        Logger.i(TAG, "addTrackerImageToVideoBottomView, containsKey : " + containsKey);
         if (containsKey) {
             mVideoBottomView.setBackground(mCachedDrawables.get(mMetaData));
         } else {

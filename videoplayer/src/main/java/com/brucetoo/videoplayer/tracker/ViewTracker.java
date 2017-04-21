@@ -1,4 +1,4 @@
-package com.brucetoo.videoplayer;
+package com.brucetoo.videoplayer.tracker;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -15,11 +14,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.brucetoo.videoplayer.Config;
+import com.brucetoo.videoplayer.R;
 import com.brucetoo.videoplayer.scrolldetector.IScrollDetector;
+import com.brucetoo.videoplayer.utils.Logger;
 import com.brucetoo.videoplayer.utils.Utils;
 import com.brucetoo.videoplayer.utils.ViewAnimator;
-import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
+import com.brucetoo.videoplayer.videomanage.meta.MetaData;
 
 /**
  * Created by Bruce Too
@@ -28,7 +30,7 @@ import com.brucetoo.videoplayer.videomanage.controller.IControllerView;
  */
 public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChangedListener {
 
-    private static final String TAG = "ViewTracker";
+    private static final String TAG = ViewTracker.class.getSimpleName();
 
     /**
      * A activity only has a single {@link ViewTracker} instance,for find decor view
@@ -392,14 +394,14 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         int[] locTo = new int[2];
         toView.getLocationOnScreen(locTo);
         View parent = (View) fromView.getParent();
-        Log.e(TAG, "rebindViewToTracker locTo[0] -> " + locTo[0] + " locTo[1] -> " + locTo[1]);
+        Logger.i(TAG, "rebindViewToTracker locTo[0] -> " + locTo[0] + " locTo[1] -> " + locTo[1]);
         ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
             .andPutOn(fromView).translation(0, 0);
         mOriginX = locTo[0];
         mOriginY = locTo[1];
         mOriginWidth = toView.getWidth();
         mOriginHeight = toView.getHeight();
-        Log.e(TAG, "rebindViewToTracker mOriginX:" + mOriginX + " mOriginY:" + mOriginY + " mOriginWidth:" + mOriginWidth + " mOriginHeight:" + mOriginHeight);
+        Logger.i(TAG, "rebindViewToTracker mOriginX:" + mOriginX + " mOriginY:" + mOriginY + " mOriginWidth:" + mOriginWidth + " mOriginHeight:" + mOriginHeight);
         fromView.getLayoutParams().width = mOriginWidth;
         fromView.getLayoutParams().height = mOriginHeight;
         fromView.requestLayout();
@@ -420,7 +422,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         Rect rect = new Rect();
         toView.getLocalVisibleRect(rect);
 
-        Log.e(TAG, "moveCurrentView: rect.top -> " + rect.top
+        Logger.w(TAG, "moveCurrentView: rect.top -> " + rect.top
             + " rect.bottom -> " + rect.bottom
             + " rect.left -> " + rect.left
             + " rect.right -> " + rect.right
@@ -432,7 +434,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         if (rect.top != 0 || rect.bottom != toView.getHeight()
             || rect.left != 0 || rect.right != toView.getWidth()) { //reach top,bottom,left,right
             //move self
-            Log.e(TAG, "moveCurrentView: move self");
+            Logger.v(TAG, "moveCurrentView: move self");
             float moveX = 0;
             float moveY = 0;
 
@@ -501,7 +503,7 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         } else {
 
             if (locTo[0] != 0 || locTo[1] != 0) {
-                Log.e(TAG, "moveCurrentView: move parent");
+                Logger.v(TAG, "moveCurrentView: move parent");
                 //move parent
                 ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
                     .andPutOn(fromView).translation(0, 0);

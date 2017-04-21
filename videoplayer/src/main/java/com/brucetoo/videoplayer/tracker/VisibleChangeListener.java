@@ -1,4 +1,6 @@
-package com.brucetoo.videoplayer;
+package com.brucetoo.videoplayer.tracker;
+
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 
 /**
  * Created by Bruce Too

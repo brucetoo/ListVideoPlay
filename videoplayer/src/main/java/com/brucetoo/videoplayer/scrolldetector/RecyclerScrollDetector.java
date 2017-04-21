@@ -3,7 +3,7 @@ package com.brucetoo.videoplayer.scrolldetector;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 
 /**
  * Created by Bruce Too

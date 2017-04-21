@@ -1,4 +1,4 @@
-package com.brucetoo.videoplayer;
+package com.brucetoo.videoplayer.tracker;
 
 import android.app.Activity;
 import android.content.res.Configuration;

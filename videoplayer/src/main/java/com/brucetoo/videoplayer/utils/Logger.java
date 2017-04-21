@@ -2,34 +2,42 @@ package com.brucetoo.videoplayer.utils;
 
 import android.util.Log;
 
+import com.brucetoo.videoplayer.Config;
+
 public class Logger {
 
-    public static int err(final String TAG, final String message) {
-        return Log.e(TAG, attachThreadId(message));
+    public static void e(final String TAG, final String message) {
+        if (Config.SHOW_LOGS)
+            Log.e(TAG, attachThreadId(message));
     }
 
-    public static int err(final String TAG, final String message, Throwable throwable) {
-        return Log.e(TAG, attachThreadId(message), throwable);
+    public static void e(final String TAG, final String message, Throwable throwable) {
+        if (Config.SHOW_LOGS)
+            Log.e(TAG, attachThreadId(message), throwable);
     }
 
-    public static int w(final String TAG, final String message) {
-        return Log.w(TAG, attachThreadId(message));
+    public static void w(final String TAG, final String message) {
+        if (Config.SHOW_LOGS)
+            Log.w(TAG, attachThreadId(message));
     }
 
-    public static int inf(final String TAG, final String message) {
-        return Log.i(TAG, attachThreadId(message));
+    public static void i(final String TAG, final String message) {
+        if (Config.SHOW_LOGS)
+            Log.i(TAG, attachThreadId(message));
     }
 
-    public static int d(final String TAG, final String message) {
-        return Log.d(TAG, attachThreadId(message));
+    public static void d(final String TAG, final String message) {
+        if (Config.SHOW_LOGS)
+            Log.d(TAG, attachThreadId(message));
     }
 
-    public static int v(final String TAG, final String message) {
-        return Log.v(TAG, attachThreadId(message));
+    public static void v(final String TAG, final String message) {
+        if (Config.SHOW_LOGS)
+            Log.v(TAG, attachThreadId(message));
     }
 
-    private static String attachThreadId(String str){
-        return "" + Thread.currentThread().getId() + " " + str;
+    private static String attachThreadId(String str) {
+        return Thread.currentThread().getId() + " " + str;
     }
 
 }

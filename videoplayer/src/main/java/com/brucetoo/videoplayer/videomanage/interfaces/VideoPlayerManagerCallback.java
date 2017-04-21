@@ -1,7 +1,7 @@
 package com.brucetoo.videoplayer.videomanage.interfaces;
 
 
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 import com.brucetoo.videoplayer.videomanage.PlayerMessageState;
 import com.brucetoo.videoplayer.videomanage.player.VideoPlayerView;
 

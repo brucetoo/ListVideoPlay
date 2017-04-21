@@ -16,7 +16,7 @@ import com.brucetoo.listvideoplay.demo.PagerSupportFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewFragment;
 import com.brucetoo.listvideoplay.demo.RecyclerViewSmallScreenFragment;
 import com.brucetoo.listvideoplay.demo.SpringAnimationFragment;
-import com.brucetoo.videoplayer.Tracker;
+import com.brucetoo.videoplayer.tracker.Tracker;
 
 public class MainActivity extends AppCompatActivity{
 

@@ -1,4 +1,4 @@
-package com.brucetoo.videoplayer;
+package com.brucetoo.videoplayer.tracker;
 
 import android.content.Context;
 import android.graphics.Color;

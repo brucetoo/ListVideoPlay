@@ -10,8 +10,7 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.TextureView;
 
-import com.brucetoo.videoplayer.Config;
-import com.brucetoo.videoplayer.IViewTracker;
+import com.brucetoo.videoplayer.tracker.IViewTracker;
 import com.brucetoo.videoplayer.utils.Logger;
 import com.brucetoo.videoplayer.videomanage.interfaces.IMediaPlayer;
 import com.brucetoo.videoplayer.videomanage.interfaces.VideoPlayerListener;
@@ -31,7 +30,6 @@ public class VideoPlayerView extends ScalableTextureView
     implements TextureView.SurfaceTextureListener,
     VideoPlayerListener {
 
-    private static final boolean SHOW_LOGS = Config.SHOW_LOGS;
     private String TAG = VideoPlayerView.class.getSimpleName();
 
     private IMediaPlayer mMediaPlayer;
@@ -96,7 +94,7 @@ public class VideoPlayerView extends ScalableTextureView
     }
 
     public void clearPlayerInstance() {
-        if (SHOW_LOGS) Logger.v(TAG, ">> clearPlayerInstance mMediaPlayer " + mMediaPlayer);
+        Logger.v(TAG, ">> clearPlayerInstance mMediaPlayer " + mMediaPlayer);
 
         checkThread();
 
@@ -104,22 +102,22 @@ public class VideoPlayerView extends ScalableTextureView
             mMediaPlayer.clearAll();
         }
         mMediaPlayer = null;
-        if (SHOW_LOGS) Logger.v(TAG, "<< clearPlayerInstance ");
+        Logger.v(TAG, "<< clearPlayerInstance ");
     }
 
     public void createNewPlayerInstance() {
-        if (SHOW_LOGS) Logger.v(TAG, ">> createNewPlayerInstance");
+        Logger.v(TAG, ">> createNewPlayerInstance");
 
         checkThread();
 
-        if (SHOW_LOGS) Logger.v(TAG, "createNewPlayerInstance mMediaPlayer " + mMediaPlayer);
+        Logger.v(TAG, "createNewPlayerInstance mMediaPlayer " + mMediaPlayer);
         if (mMediaPlayer == null) {
             mMediaPlayer = new DefaultMediaPlayer(getContext(), this);
             mMediaPlayer.setViewTracker(mViewTracker);
         }
 
         SurfaceTexture texture = getSurfaceTexture();
-        if (SHOW_LOGS) Logger.v(TAG, "texture " + texture);
+        Logger.v(TAG, "texture " + texture);
         try {
             if (mMediaPlayer != null) {
                 mMediaPlayer.setSurfaceTexture(texture);
@@ -127,7 +125,7 @@ public class VideoPlayerView extends ScalableTextureView
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (SHOW_LOGS) Logger.v(TAG, "<< createNewPlayerInstance");
+        Logger.v(TAG, "<< createNewPlayerInstance");
     }
 
     public void prepare() {
@@ -138,7 +136,7 @@ public class VideoPlayerView extends ScalableTextureView
             }
         } catch (Exception e) {
             //TODO handle different error here
-            onError(mViewTracker,0,0);
+            onError(mViewTracker, 0, 0);
             e.printStackTrace();
         }
     }
@@ -157,7 +155,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     public void start() {
         checkThread();
-        if (SHOW_LOGS) Logger.v(TAG, ">> start");
+        Logger.v(TAG, ">> start");
         if (mMediaPlayer != null) {
             try {
                 mMediaPlayer.start();
@@ -165,12 +163,12 @@ public class VideoPlayerView extends ScalableTextureView
                 e.printStackTrace();
             }
         }
-        if (SHOW_LOGS) Logger.v(TAG, "<< start");
+        Logger.v(TAG, "<< start");
     }
 
     public void pause() {
         checkThread();
-        if (SHOW_LOGS) Logger.d(TAG, ">> pause ");
+        Logger.d(TAG, ">> pause ");
         try {
             if (mMediaPlayer != null) {
                 mMediaPlayer.pause();
@@ -178,7 +176,7 @@ public class VideoPlayerView extends ScalableTextureView
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (SHOW_LOGS) Logger.d(TAG, "<< pause");
+        Logger.d(TAG, "<< pause");
     }
 
 
@@ -236,8 +234,8 @@ public class VideoPlayerView extends ScalableTextureView
         }
     }
 
-    public boolean isPlaying(){
-        if(mMediaPlayer != null) {
+    public boolean isPlaying() {
+        if (mMediaPlayer != null) {
             return mMediaPlayer.isPlaying();
         }
         return false;
@@ -245,7 +243,6 @@ public class VideoPlayerView extends ScalableTextureView
 
     private void initView() {
         if (!isInEditMode()) {
-            if (SHOW_LOGS) Logger.v(TAG, "initView");
             setScaleType(ScaleType.FILL);
             super.setSurfaceTextureListener(this);
         }
@@ -258,7 +255,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     public void setDataSource(String path) {
         checkThread();
-        if (SHOW_LOGS) Logger.v(TAG, "setDataSource, path " + path + ", this " + this);
+        Logger.v(TAG, "setDataSource, path " + path + ", this " + this);
 
         try {
             if (mMediaPlayer != null) {
@@ -274,8 +271,7 @@ public class VideoPlayerView extends ScalableTextureView
     @Override
     public void onVideoSizeChanged(IViewTracker viewTracker, int width, int height) {
 
-        if (SHOW_LOGS)
-            Logger.v(TAG, ">> onVideoSizeChanged, width " + width + ", height " + height);
+        Logger.v(TAG, ">> onVideoSizeChanged, width " + width + ", height " + height);
 
         if (width != 0 && height != 0) {
             refreshSurfaceTexture(width, height);
@@ -290,14 +286,13 @@ public class VideoPlayerView extends ScalableTextureView
             listener.onVideoSizeChanged(viewTracker, width, height);
         }
 
-        if (SHOW_LOGS)
-            Logger.v(TAG, "<< onVideoSizeChanged, width " + width + ", height " + height);
+        Logger.v(TAG, "<< onVideoSizeChanged, width " + width + ", height " + height);
     }
 
     @Override
     public void onVideoCompletion(IViewTracker viewTracker) {
 
-        if (SHOW_LOGS) Logger.v(TAG, "notifyVideoCompletion");
+        Logger.v(TAG, "notifyVideoCompletion");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -312,7 +307,7 @@ public class VideoPlayerView extends ScalableTextureView
     @Override
     public void onVideoPrepared(IViewTracker viewTracker) {
 
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoPrepared");
+        Logger.v(TAG, "notifyOnVideoPrepared");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -332,19 +327,16 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onError(IViewTracker viewTracker, final int what, final int extra) {
-        if (SHOW_LOGS) Logger.v(TAG, "onError, this " + VideoPlayerView.this);
+        Logger.v(TAG, "onError, this " + VideoPlayerView.this);
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                if (SHOW_LOGS) Logger.v(TAG, "onError, what MEDIA_ERROR_SERVER_DIED");
                 printErrorExtra(extra);
                 break;
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-                if (SHOW_LOGS) Logger.v(TAG, "onError, what MEDIA_ERROR_UNKNOWN");
                 printErrorExtra(extra);
                 break;
         }
-
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnError");
+        Logger.v(TAG, "notifyOnError");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -357,7 +349,7 @@ public class VideoPlayerView extends ScalableTextureView
     @Override
     public void onBufferingUpdate(IViewTracker viewTracker, int percent) {
 
-        if (SHOW_LOGS) Logger.v(TAG, "notifyBufferingUpdate");
+        Logger.v(TAG, "notifyBufferingUpdate");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -371,7 +363,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onVideoStopped(IViewTracker viewTracker) {
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoStopped");
+        Logger.v(TAG, "notifyOnVideoStopped");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -383,7 +375,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onVideoReset(IViewTracker viewTracker) {
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoRest");
+        Logger.v(TAG, "notifyOnVideoRest");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -395,7 +387,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onVideoReleased(IViewTracker viewTracker) {
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnVideoReleased");
+        Logger.v(TAG, "notifyOnVideoReleased");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -407,7 +399,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onInfo(IViewTracker viewTracker, int what) {
-        if (SHOW_LOGS) Logger.v(TAG, "notifyOnInfo");
+        Logger.v(TAG, "notifyOnInfo");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -419,7 +411,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onVideoStarted(IViewTracker viewTracker) {
-        if (SHOW_LOGS) Logger.v(TAG, "onVideoStarted");
+        Logger.v(TAG, "onVideoStarted");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -431,7 +423,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public void onVideoPaused(IViewTracker viewTracker) {
-        if (SHOW_LOGS) Logger.v(TAG, "onVideoPaused");
+        Logger.v(TAG, "onVideoPaused");
         List<VideoPlayerListener> listCopy;
         synchronized (mVideoPlayerListeners) {
             listCopy = new ArrayList<>(mVideoPlayerListeners);
@@ -444,24 +436,23 @@ public class VideoPlayerView extends ScalableTextureView
     private void printErrorExtra(int extra) {
         switch (extra) {
             case MediaPlayer.MEDIA_ERROR_IO:
-                if (SHOW_LOGS) Logger.v(TAG, "error extra MEDIA_ERROR_IO");
+                Logger.v(TAG, "error extra MEDIA_ERROR_IO");
                 break;
             case MediaPlayer.MEDIA_ERROR_MALFORMED:
-                if (SHOW_LOGS) Logger.v(TAG, "error extra MEDIA_ERROR_MALFORMED");
+                Logger.v(TAG, "error extra MEDIA_ERROR_MALFORMED");
                 break;
             case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-                if (SHOW_LOGS) Logger.v(TAG, "error extra MEDIA_ERROR_UNSUPPORTED");
+                Logger.v(TAG, "error extra MEDIA_ERROR_UNSUPPORTED");
                 break;
             case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
-                if (SHOW_LOGS) Logger.v(TAG, "error extra MEDIA_ERROR_TIMED_OUT");
+                Logger.v(TAG, "error extra MEDIA_ERROR_TIMED_OUT");
                 break;
         }
     }
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-        if (SHOW_LOGS)
-            Logger.v(TAG, "onSurfaceTextureAvailable, width " + width + ", height " + height + ", this " + this);
+        Logger.v(TAG, "onSurfaceTextureAvailable, width " + width + ", height " + height + ", this " + this);
         if (mLocalSurfaceTextureListener != null) {
             mLocalSurfaceTextureListener.onSurfaceTextureAvailable(surfaceTexture, width, height);
         }
@@ -484,7 +475,7 @@ public class VideoPlayerView extends ScalableTextureView
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        if (SHOW_LOGS) Logger.v(TAG, "onSurfaceTextureDestroyed, surface " + surface);
+        Logger.v(TAG, "onSurfaceTextureDestroyed, surface " + surface);
 
         if (mLocalSurfaceTextureListener != null) {
             mLocalSurfaceTextureListener.onSurfaceTextureDestroyed(surface);
@@ -525,11 +516,11 @@ public class VideoPlayerView extends ScalableTextureView
         }
     }
 
-    public boolean isComplete(){
+    public boolean isComplete() {
         return mIsComplete;
     }
 
-    public int getCurrentBuffer(){
+    public int getCurrentBuffer() {
         return mCurrentBuffer;
     }
 

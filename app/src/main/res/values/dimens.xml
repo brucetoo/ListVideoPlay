@@ -11,4 +11,7 @@
     <dimen name="video_small_screen_height">150dp</dimen>
     <dimen name="video_small_screen_width">200dp</dimen>
     <dimen name="video_small_screen_margin">5dp</dimen>
+    <dimen name="dimen_max">30dp</dimen>
+    <dimen name="dimen_min">0dp</dimen>
+    <dimen name="dimen_1">1dp</dimen>
 </resources>

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.brucetoo.listvideoplay"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -30,7 +30,9 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
-    compile 'com.android.support:support-dynamic-animation:25.3.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:support-annotations:26.1.0'
+//    compile 'com.android.support:support-dynamic-animation:26.1.0'
     compile 'com.github.markzhai:blockcanary-android:1.5.0'
     testCompile 'junit:junit:4.12'
 }

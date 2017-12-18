@@ -19,7 +19,7 @@ package android.support.animation;
 import android.support.annotation.FloatRange;
 
 /**
- * <p>Fling animation is an animation that continues an initial momentum (most often from gesture
+ * <p>Fling animation is an animation that continues an initial momentum（动力） (most often from gesture
  * velocity) and gradually slows down. The fling animation will come to a stop when the velocity of
  * the animation is below the threshold derived from {@link #setMinimumVisibleChange(float)},
  * or when the value of the animation has gone beyond the min or max value defined via
@@ -181,6 +181,7 @@ public final class FlingAnimation extends DynamicAnimation<FlingAnimation> {
 
     @Override
     boolean isAtEquilibrium(float value, float velocity) {
+        //是否在动力平衡点
         return value >= mMaxValue
                 || value <= mMinValue
                 || mFlingForce.isAtEquilibrium(value, velocity);
@@ -193,7 +194,7 @@ public final class FlingAnimation extends DynamicAnimation<FlingAnimation> {
 
     private static final class DragForce implements Force {
 
-        private static final float DEFAULT_FRICTION = -4.2f;
+        private static final float DEFAULT_FRICTION = -4.2f;//默认摩擦系数
 
         // This multiplier is used to calculate the velocity threshold given a certain value
         // threshold. The idea is that if it takes >= 1 frame to move the value threshold amount,
@@ -214,9 +215,12 @@ public final class FlingAnimation extends DynamicAnimation<FlingAnimation> {
         }
 
         MassState updateValueAndVelocity(float value, float velocity, long deltaT) {
+            //计算当前帧的实时速率
             mMassState.mVelocity = (float) (velocity * Math.exp((deltaT / 1000f) * mFriction));
+            //当前帧值
             mMassState.mValue = (float) (value - velocity / mFriction
                     + velocity / mFriction * Math.exp(mFriction * deltaT / 1000f));
+            //平衡条件（标准一帧的时间）
             if (isAtEquilibrium(mMassState.mValue, mMassState.mVelocity)) {
                 mMassState.mVelocity = 0f;
             }

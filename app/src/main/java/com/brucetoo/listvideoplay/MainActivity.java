@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.brucetoo.listvideoplay.demo.ConstraintFragment;
 import com.brucetoo.listvideoplay.demo.DetailFragment;
 import com.brucetoo.listvideoplay.demo.ListViewFragment;
 import com.brucetoo.listvideoplay.demo.ListViewMaskFragment;
@@ -136,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
             .replace(R.id.layout_container, new PagerSupportFragment(), "PagerSupportFragment")
             .addToBackStack("PagerSupportFragment")
             .commit();
+    }
+
+
+    public void onConstraintLayout(View view) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_container, new ConstraintFragment(), "ConstraintFragment")
+                .addToBackStack("ConstraintFragment")
+                .commit();
     }
 
     public void addDetailFragment() {

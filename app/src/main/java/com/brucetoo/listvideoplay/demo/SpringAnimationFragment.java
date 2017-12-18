@@ -2,9 +2,12 @@ package com.brucetoo.listvideoplay.demo;
 
 import android.os.Bundle;
 import android.support.animation.DynamicAnimation;
+import android.support.animation.FlingAnimation;
+import android.support.animation.FloatValueHolder;
 import android.support.animation.SpringAnimation;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -55,6 +58,18 @@ public class SpringAnimationFragment extends Fragment {
 //        final SpringForce springForce = new SpringForce();
 //        springForce.setDampingRatio(getDamping());
 //        springForce.setStiffness(getStiffness());
+
+        FlingAnimation flingAnimation = new FlingAnimation(new FloatValueHolder(1));
+        flingAnimation.setStartVelocity(-2000);//设置动能开始时的速率
+        flingAnimation.setStartValue(500);//开始位置，对应最终需要执行的属性(TranslationY)
+        flingAnimation.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+            @Override
+            public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
+                Log.i("flingAnimation", "onAnimationUpdate: value -> " + value + " velocity -> " + velocity);
+                mViewTop.setTranslationY(value);
+            }
+        });
+        flingAnimation.start();
 
         final SpringAnimation anim1X = new SpringAnimation(mViewTop, SpringAnimation.TRANSLATION_X);
         final SpringAnimation anim1Y = new SpringAnimation(mViewTop, SpringAnimation.TRANSLATION_Y);

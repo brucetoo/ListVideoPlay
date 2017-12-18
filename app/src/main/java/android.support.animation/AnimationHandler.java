@@ -53,6 +53,7 @@ class AnimationHandler {
      */
     private final SimpleArrayMap<AnimationFrameCallback, Long> mDelayedCallbackStartTime =
             new SimpleArrayMap<>();
+    //每个调用线程都会拥有一个 AnimationHandler
     public static final ThreadLocal<AnimationHandler> sAnimatorHandler = new ThreadLocal<>();
     private final ArrayList<AnimationFrameCallback> mAnimationCallbacks = new ArrayList<>();
     private AnimationFrameCallbackProvider mProvider;
@@ -64,6 +65,7 @@ class AnimationHandler {
             mCurrentFrameTime = System.currentTimeMillis();
             doAnimationFrame(mCurrentFrameTime);
             if (mAnimationCallbacks.size() > 0) {
+                //注册下一帧回调
                 getProvider().postFrameCallback(this);
             }
         }
@@ -109,6 +111,8 @@ class AnimationHandler {
      */
     public void addAnimationFrameCallback(final AnimationFrameCallback callback, long delay) {
         if (mAnimationCallbacks.size() == 0) {
+            //提供默认的Choreographer作为定时脉冲
+            //当下一帧被渲染时触发
             getProvider().postFrameCallback(mFrameCallback);
         }
         if (!mAnimationCallbacks.contains(callback)) {

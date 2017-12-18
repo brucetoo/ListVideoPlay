@@ -284,17 +284,17 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>>
     private static final float THRESHOLD_MULTIPLIER = 0.75f;
 
     // Internal tracking for velocity.
-    float mVelocity = 0;
+    float mVelocity = 0;//内部速率记录
 
     // Internal tracking for value.
-    float mValue = UNSET;
+    float mValue = UNSET;//内部值记录
 
     // Tracks whether start value is set. If not, the animation will obtain the value at the time
     // of starting through the getter and use that as the starting value of the animation.
-    boolean mStartValueIsSet = false;
+    boolean mStartValueIsSet = false;//初始值为设置，则会通过getter方法去获取当前的对应值作为初始值
 
     // Target to be animated.
-    final Object mTarget;
+    final Object mTarget;//执行动画的目标
 
     // View property id.
     final FloatPropertyCompat mProperty;
@@ -307,7 +307,7 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>>
     float mMinValue = -mMaxValue;
 
     // Last frame time. Always gets reset to -1  at the end of the animation.
-    private long mLastFrameTime = 0;
+    private long mLastFrameTime = 0;//上一帧时间
 
     private float mMinVisibleChange;
 
@@ -329,6 +329,7 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>>
      * @param floatValueHolder the FloatValueHolder instance to be animated.
      */
     DynamicAnimation(final FloatValueHolder floatValueHolder) {
+        //只执行某float值变化，不需要target
         mTarget = null;
         mProperty = new FloatPropertyCompat("FloatValueHolder") {
             @Override
@@ -619,6 +620,7 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>>
                         + " value and max value");
             }
             AnimationHandler.getInstance().addAnimationFrameCallback(this, 0);
+            //开始执行后，每一帧的回调都会执行到 doAnimationFrame
         }
     }
 
@@ -626,14 +628,14 @@ public abstract class DynamicAnimation<T extends DynamicAnimation<T>>
      * This gets call on each frame of the animation. Animation value and velocity are updated
      * in this method based on the new frame time. The property value of the view being animated
      * is then updated. The animation's ending conditions are also checked in this method. Once
-     * the animation reaches equilibrium, the animation will come to its end, and end listeners
+     * the animation reaches equilibrium(平衡点), the animation will come to its end, and end listeners
      * will be notified, if any.
-     *
+     * 动画执行的每一帧都会在此回调，动画的值以及速率都会在此被更新
      * @hide
      */
     @Override
     public boolean doAnimationFrame(long frameTime) {
-        if (mLastFrameTime == 0) {
+        if (mLastFrameTime == 0) {//第一帧
             // First frame.
             mLastFrameTime = frameTime;
             setPropertyValue(mValue);

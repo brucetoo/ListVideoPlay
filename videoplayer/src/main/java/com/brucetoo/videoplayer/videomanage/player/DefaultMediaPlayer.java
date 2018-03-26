@@ -176,9 +176,6 @@ public class DefaultMediaPlayer implements IMediaPlayer,
     @Override
     public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
         Logger.v(TAG, "onVideoSizeChanged, width " + width + ", height " + height);
-        if (!inUiThread()) {
-            throw new RuntimeException("this should be called in Main Thread");
-        }
         if (mListener != null) {
             mListener.onVideoSizeChanged(mViewTracker, width, height);
         }
@@ -460,7 +457,4 @@ public class DefaultMediaPlayer implements IMediaPlayer,
         return getClass().getSimpleName() + "@" + hashCode();
     }
 
-    private boolean inUiThread() {
-        return Thread.currentThread().getId() == 1;
-    }
 }

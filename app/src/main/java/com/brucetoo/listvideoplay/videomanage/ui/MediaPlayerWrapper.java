@@ -147,9 +147,6 @@ public abstract class MediaPlayerWrapper
     @Override
     public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
         if (SHOW_LOGS) Logger.v(TAG, "onVideoSizeChanged, width " + width + ", height " + height);
-        if (!inUiThread()) {
-            throw new RuntimeException("this should be called in Main Thread");
-        }
         if (mListener != null) {
             mListener.onVideoSizeChangedMainThread(width, height);
         }

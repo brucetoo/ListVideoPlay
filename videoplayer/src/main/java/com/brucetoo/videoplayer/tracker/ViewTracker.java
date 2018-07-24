@@ -490,16 +490,12 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                 mCurrentEdge = RIGHT_EDGE;
             }
 
+            //TODO mCurrentEdge is not accurate,fix it!
 
             ViewAnimator.putOn(fromView).translation(moveX, moveY);
 
             //if tracker view still in current screen
-
-            //TODO when user scroll happened and tracker is be re-used,but user don't lift up finger
-            // we can't notify onVisibleChange
-
-            //TODO Need add ViewPager or another horizontal scroll detector ??? or ignore left <-> right ?
-            if(toViewR.top >= 0) {
+            if(!isViewOutOfListRect(toViewR,scrollViewR)) {
                 float v1 = (toViewR.bottom - toViewR.top) * 1.0f / toView.getHeight();
                 float v2 = (toViewR.right - toViewR.left) * 1.0f / toView.getWidth();
                 if (mVisibleChangeListener != null) {
@@ -507,16 +503,18 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                 }
             }
         } else {
-//            if (locTo[0] != 0 || locTo[1] != 0) {
                 Logger.v(TAG, "moveCurrentView: move parent");
                 //move parent
                 ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
                     .andPutOn(fromView).translation(0, 0);
-                mCurrentEdge = NONE_EDGE;
-//            } else {
-//                mCurrentEdge = TOP_EDGE;
-//            }
         }
+    }
+
+    private boolean isViewOutOfListRect(Rect viewR, Rect scrollViewR) {
+        return viewR.top > scrollViewR.bottom || // bottom
+                viewR.bottom < 0 ||// top
+                viewR.left > scrollViewR.right - scrollViewR.left ||//right
+                viewR.right < 0;//left
     }
 
     private String getCalculateValueByString(View toView) {

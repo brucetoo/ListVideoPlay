@@ -102,12 +102,10 @@ public class ListSupportFragment extends Fragment implements View.OnClickListene
     public void onVisibleChange(float visibleRatio, IViewTracker tracker) {
         Log.e(TAG, "onVisibleChange : edge -> " + tracker.getEdgeString());
         if(!tracker.getFloatLayerView().getVideoPlayerView().isComplete()) {
-            if (tracker.getEdge() != IViewTracker.LEFT_EDGE || tracker.getEdge() != IViewTracker.RIGHT_EDGE) {
-                if (visibleRatio <= 0.5) {
-                    tracker.hide();
-                } else {
-                    tracker.show();
-                }
+            if (visibleRatio <= 0.5) {
+                tracker.hide();
+            } else {
+                tracker.show();
             }
         }
     }

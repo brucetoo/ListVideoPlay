@@ -507,16 +507,15 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                 }
             }
         } else {
-
-            if (locTo[0] != 0 || locTo[1] != 0) {
+//            if (locTo[0] != 0 || locTo[1] != 0) {
                 Logger.v(TAG, "moveCurrentView: move parent");
                 //move parent
                 ViewAnimator.putOn(parent).translation(locTo[0], locTo[1])
                     .andPutOn(fromView).translation(0, 0);
                 mCurrentEdge = NONE_EDGE;
-            } else {
-                mCurrentEdge = TOP_EDGE;
-            }
+//            } else {
+//                mCurrentEdge = TOP_EDGE;
+//            }
         }
     }
 

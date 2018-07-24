@@ -407,68 +407,74 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
         fromView.requestLayout();
     }
 
+
+    private int[] locScroll = new int[2];
+    private int[] locTo = new int[2];
+    private int[] locFrom = new int[2];
+    private Rect toViewR = new Rect();
+    private Rect scrollViewR = new Rect();
+
     private void moveCurrentView(View scrollParent, View fromView, View toView) {
-        int[] locScroll = new int[2];
+
         scrollParent.getLocationOnScreen(locScroll);
 
         View parent = ((View) fromView.getParent());
 
-        int[] locTo = new int[2];
         toView.getLocationOnScreen(locTo);
 
-        int[] locFrom = new int[2];
         fromView.getLocationOnScreen(locFrom);
 
-        Rect rect = new Rect();
-        toView.getLocalVisibleRect(rect);
+        toView.getLocalVisibleRect(toViewR);
 
-        Logger.w(TAG, "moveCurrentView: rect.top -> " + rect.top
-            + " rect.bottom -> " + rect.bottom
-            + " rect.left -> " + rect.left
-            + " rect.right -> " + rect.right
+        scrollParent.getLocalVisibleRect(scrollViewR);
+
+        Logger.w(TAG, "moveCurrentView: toViewR.top -> " + toViewR.top
+            + " toViewR.bottom -> " + toViewR.bottom
+            + " toViewR.left -> " + toViewR.left
+            + " toViewR.right -> " + toViewR.right
             + " locTo[0] -> " + locTo[0]
             + " locTo[1] -> " + locTo[1]
             + " locFrom[0] -> " + locFrom[0]
             + " locFrom[1] -> " + locFrom[1]);
 
-        if (rect.top != 0 || rect.bottom != toView.getHeight()
-            || rect.left != 0 || rect.right != toView.getWidth()) { //reach top,bottom,left,right
+        if (toViewR.top != 0 || toViewR.bottom != toView.getHeight()
+            || toViewR.left != 0 || toViewR.right != toView.getWidth()) { //reach top,bottom,left,right
             //move self
             Logger.v(TAG, "moveCurrentView: move self");
             float moveX = 0;
             float moveY = 0;
 
             //top
-            if (rect.top > 0 && rect.top != 0) {
-                moveX = -rect.left;
-                moveY = -rect.top;
+            if (toViewR.top > 0 && toViewR.top != 0) {
+                moveX = -toViewR.left;
+                moveY = -toViewR.top;
                 //let the parent sticky to top
-                ViewAnimator.putOn(parent).translation(getVerticalScrollView().getPaddingLeft() + getVerticalScrollView().getLeft(),
-                    locScroll[1] + getVerticalScrollView().getPaddingTop());
+                ViewAnimator.putOn(parent).translation(locTo[0],
+                        locScroll[1] + scrollParent.getPaddingTop());
                 mCurrentEdge = TOP_EDGE;
             }
 
             //bottom
-            if (rect.bottom > 0 && rect.bottom != toView.getHeight()) {
-                moveY = toView.getHeight() - rect.bottom;
-                moveX = toView.getWidth() - rect.right;
+            if (toViewR.bottom > 0 && toViewR.bottom != toView.getHeight()) {
+                moveY = toView.getHeight() - toViewR.bottom;
+                moveX = toView.getWidth() - toViewR.right;
                 //let the parent sticky to bottom
-                ViewAnimator.putOn(parent).translation(getVerticalScrollView().getPaddingLeft() + getVerticalScrollView().getLeft(),
-                    locScroll[1] + scrollParent.getHeight() - toView.getHeight() - getVerticalScrollView().getPaddingBottom());
+                ViewAnimator.putOn(parent).translation(locTo[0],
+                        locScroll[1] + scrollViewR.bottom - scrollViewR.top - toView.getMeasuredHeight());
                 mCurrentEdge = BOTTOM_EDGE;
             }
 
             //left
-            if (rect.left > 0 && rect.left != 0) {
-                moveX = -rect.left;
+            if (toViewR.left > 0 && toViewR.left != 0) {
+                moveX = -toViewR.left;
                 //let the parent sticky to left
                 ViewAnimator.putOn(parent).translationX(0);
                 mCurrentEdge = LEFT_EDGE;
             }
 
             //right
-            if (rect.right > 0 && rect.right != toView.getWidth()) {
-                moveX = toView.getWidth() - rect.right;
+            if (toViewR.right > 0 && toViewR.right != toView.getWidth()) {
+                moveX = toView.getWidth() - toViewR.right;
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getVerticalScrollView().getLayoutParams();
                 //let the parent sticky to right
                 ViewAnimator.putOn(parent).translationX(getVerticalScrollView().getPaddingRight() + getVerticalScrollView().getPaddingLeft()
@@ -476,11 +482,11 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
                 mCurrentEdge = RIGHT_EDGE;
             }
 
-            if (rect.left < 0 && rect.right < 0) {
+            if (toViewR.left < 0 && toViewR.right < 0) {
                 mCurrentEdge = LEFT_EDGE;
             }
 
-            if (rect.right >= Utils.getDeviceWidth(mContext)) {
+            if (toViewR.right >= Utils.getDeviceWidth(mContext)) {
                 mCurrentEdge = RIGHT_EDGE;
             }
 
@@ -493,9 +499,9 @@ public class ViewTracker implements IViewTracker, ViewTreeObserver.OnScrollChang
             // we can't notify onVisibleChange
 
             //TODO Need add ViewPager or another horizontal scroll detector ??? or ignore left <-> right ?
-            if(rect.top >= 0) {
-                float v1 = (rect.bottom - rect.top) * 1.0f / toView.getHeight();
-                float v2 = (rect.right - rect.left) * 1.0f / toView.getWidth();
+            if(toViewR.top >= 0) {
+                float v1 = (toViewR.bottom - toViewR.top) * 1.0f / toView.getHeight();
+                float v2 = (toViewR.right - toViewR.left) * 1.0f / toView.getWidth();
                 if (mVisibleChangeListener != null) {
                     mVisibleChangeListener.onVisibleChange(v1 == 1 ? v2 : v1, this);
                 }
